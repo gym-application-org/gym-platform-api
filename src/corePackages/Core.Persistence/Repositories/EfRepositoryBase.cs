@@ -341,7 +341,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
                 || x.PrincipalToDependent?.IsCollection == true
                 || x.DependentToPrincipal?.ForeignKey.DeclaringEntityType.ClrType == entity.GetType()
             );
-        
+
         // The following lines throws errors on 1-1 relations, that says it is *-* relation even it is not
         // Always soft delete will be used, thus no need for a permanent delete.
         /*
