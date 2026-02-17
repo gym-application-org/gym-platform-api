@@ -1,12 +1,12 @@
-﻿using Core.Persistence.Repositories;
-using Core.Security.Entities;
-using Domain.Common;
-using Domain.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Persistence.Repositories;
+using Core.Security.Entities;
+using Domain.Common;
+using Domain.Enums;
 
 namespace Domain.Entities;
 
@@ -21,8 +21,7 @@ public class Staff : TenantEntity<Guid>
     public Guid UserId { get; set; }
     public virtual User User { get; set; } = null!;
 
-
-    public Staff() { } 
+    public Staff() { }
 
     public Staff(Guid tenantId, string name, StaffRole role, string? phone, string? email, bool isActive = true)
         : base(tenantId)

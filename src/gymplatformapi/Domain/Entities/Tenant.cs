@@ -1,9 +1,9 @@
-﻿using Core.Persistence.Repositories;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Persistence.Repositories;
 
 namespace Domain.Entities;
 
@@ -14,10 +14,10 @@ public class Tenant : Entity<Guid>
 
     private Tenant() { }
 
-    public Tenant(string name, bool isActive = true) : base()
+    public Tenant(string name, bool isActive = true)
+        : base()
     {
         Name = name;
         IsActive = isActive;
     }
-
 }

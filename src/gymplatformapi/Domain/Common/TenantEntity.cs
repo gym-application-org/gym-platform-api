@@ -1,9 +1,9 @@
-﻿using Core.Persistence.Repositories;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Persistence.Repositories;
 
 namespace Domain.Common
 {
@@ -15,10 +15,10 @@ namespace Domain.Common
         {
             TenantId = Guid.NewGuid();
         }
+
         public TenantEntity(Guid tenantId)
         {
             TenantId = tenantId;
         }
-        
     }
 }

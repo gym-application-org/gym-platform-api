@@ -1,11 +1,11 @@
-﻿using Core.Security.Entities;
-using Domain.Common;
-using Domain.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Security.Entities;
+using Domain.Common;
+using Domain.Enums;
 
 namespace Domain.Entities;
 
@@ -20,11 +20,10 @@ public class Member : TenantEntity<Guid>
     public Guid UserId { get; set; }
     public virtual User User { get; set; } = null!;
 
-
     public Member() { }
-    
+
     public Member(Guid tenantId, string firstName, string lastName, string? phone, string? email)
-            : base(tenantId)
+        : base(tenantId)
     {
         FirstName = firstName;
         LastName = lastName;
@@ -32,5 +31,4 @@ public class Member : TenantEntity<Guid>
         Email = email;
         Status = MemberStatus.Active;
     }
-
 }

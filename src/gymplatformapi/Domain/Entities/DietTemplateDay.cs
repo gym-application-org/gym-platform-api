@@ -1,9 +1,9 @@
-﻿using Domain.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Common;
 
 namespace Domain.Entities;
 
@@ -18,7 +18,7 @@ public class DietTemplateDay : TenantEntity<int>
     public int DietTemplateId { get; set; }
     public virtual DietTemplate DietTemplate { get; set; } = null!;
 
-    public DietTemplateDay() { } 
+    public DietTemplateDay() { }
 
     public DietTemplateDay(Guid tenantId, int dietTemplateId, int dayNumber, string title)
         : base(tenantId)

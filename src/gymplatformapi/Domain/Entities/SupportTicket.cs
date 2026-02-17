@@ -1,10 +1,10 @@
-﻿using Domain.Common;
-using Domain.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Common;
+using Domain.Enums;
 
 namespace Domain.Entities;
 
@@ -20,7 +20,7 @@ public class SupportTicket : TenantEntity<int>
     public Guid CreatedByStaffId { get; set; }
     public virtual Staff CreatedByStaff { get; set; } = null!;
 
-    public SupportTicket() { } 
+    public SupportTicket() { }
 
     public SupportTicket(Guid tenantId, Guid createdByStaffId, string title, string description, TicketPriority priority)
         : base(tenantId)

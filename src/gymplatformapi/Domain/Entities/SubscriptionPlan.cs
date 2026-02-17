@@ -1,9 +1,9 @@
-﻿using Domain.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Common;
 
 namespace Domain.Entities;
 
@@ -16,11 +16,17 @@ public class SubscriptionPlan : TenantEntity<int>
     public string? Description { get; set; }
     public bool IsActive { get; set; }
 
+    public SubscriptionPlan() { }
 
-
-    public SubscriptionPlan() { } 
-
-    public SubscriptionPlan(Guid tenantId, string name, int durationDays, decimal price, string? description, string currency = "TRY", bool isActive = true)
+    public SubscriptionPlan(
+        Guid tenantId,
+        string name,
+        int durationDays,
+        decimal price,
+        string? description,
+        string currency = "TRY",
+        bool isActive = true
+    )
         : base(tenantId)
     {
         Name = name;
@@ -30,5 +36,4 @@ public class SubscriptionPlan : TenantEntity<int>
         IsActive = isActive;
         Currency = currency;
     }
-
 }

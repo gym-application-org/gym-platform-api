@@ -1,9 +1,9 @@
-﻿using Domain.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Common;
 
 namespace Domain.Entities;
 
@@ -26,7 +26,7 @@ public class ProgressEntry : TenantEntity<int>
     public Guid MemberId { get; set; }
     public virtual Member Member { get; set; } = null!;
 
-    public ProgressEntry() { } 
+    public ProgressEntry() { }
 
     public ProgressEntry(
         Guid tenantId,
@@ -40,7 +40,9 @@ public class ProgressEntry : TenantEntity<int>
         decimal? hipCm,
         decimal? armCm,
         decimal? legCm,
-        string? note) : base(tenantId)
+        string? note
+    )
+        : base(tenantId)
     {
         MemberId = memberId;
         Date = date.Date;

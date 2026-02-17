@@ -1,9 +1,9 @@
-﻿using Domain.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Common;
 
 namespace Domain.Entities;
 
@@ -12,8 +12,8 @@ public class DietTemplateMealItem : TenantEntity<int>
     public int Order { get; set; }
 
     public string FoodName { get; set; } = default!;
-    public decimal? Quantity { get; set; } 
-    public string? Unit { get; set; }      
+    public decimal? Quantity { get; set; }
+    public string? Unit { get; set; }
 
     public int? Calories { get; set; }
     public int? ProteinG { get; set; }
@@ -25,7 +25,7 @@ public class DietTemplateMealItem : TenantEntity<int>
     public int DietTemplateMealId { get; set; }
     public virtual DietTemplateMeal DietTemplateMeal { get; set; } = null!;
 
-    public DietTemplateMealItem() { } 
+    public DietTemplateMealItem() { }
 
     public DietTemplateMealItem(
         Guid tenantId,
@@ -38,7 +38,9 @@ public class DietTemplateMealItem : TenantEntity<int>
         int? proteinG,
         int? carbG,
         int? fatG,
-        string? note) : base(tenantId)
+        string? note
+    )
+        : base(tenantId)
     {
         DietTemplateMealId = dietTemplateMealId;
         Order = order;
