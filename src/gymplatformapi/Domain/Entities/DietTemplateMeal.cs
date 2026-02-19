@@ -18,7 +18,7 @@ public class DietTemplateMeal : TenantEntity<int>
     public int DietTemplateDayId { get; set; }
     public virtual DietTemplateDay DietTemplateDay { get; set; } = null!;
 
-    public DietTemplateMeal() { } // EF
+    public DietTemplateMeal() { }
 
     public DietTemplateMeal(Guid tenantId, int dietTemplateDayId, string name, int order, string? notes)
         : base(tenantId)

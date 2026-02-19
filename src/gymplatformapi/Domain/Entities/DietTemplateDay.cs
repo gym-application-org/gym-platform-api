@@ -9,9 +9,9 @@ namespace Domain.Entities;
 
 public class DietTemplateDay : TenantEntity<int>
 {
-    public int DayNumber { get; private set; }
-    public string Title { get; private set; } = default!;
-    public string? Notes { get; private set; }
+    public int DayNumber { get; set; }
+    public string Title { get; set; } = default!;
+    public string? Notes { get; set; }
 
     public ICollection<DietTemplateMeal> Meals = new List<DietTemplateMeal>();
 
