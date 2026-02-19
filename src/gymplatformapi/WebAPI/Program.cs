@@ -1,4 +1,5 @@
 using Application;
+using Core.Application.Abstractions.Security;
 using Core.CrossCuttingConcerns.Exceptions.Extensions;
 using Core.Localization.WebApi;
 using Core.Persistence.WebApi;
@@ -13,6 +14,7 @@ using Microsoft.OpenApi.Models;
 using Persistence;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using WebAPI;
+using WebAPI.Services.Security;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +26,8 @@ builder.Services.AddSecurityServices();
 builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddInfrastructureServices();
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<ICurrentTenant, CurrentTenant>();
 
 const string tokenOptionsConfigurationSection = "TokenOptions";
 TokenOptions tokenOptions =

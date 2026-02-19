@@ -19,10 +19,6 @@
     <PackageReference Include="MediatR" Version="12.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Services\" />
-    <Folder Include="Services\Repositories" />
-  </ItemGroup>
-  <ItemGroup>
     <None Update="Features\**\Resources\Locales\*.*.yaml">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

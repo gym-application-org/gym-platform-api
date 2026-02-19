@@ -1,6 +1,8 @@
 ﻿using System.Reflection;
+using Application.Pipelines.Authorization;
 using Application.Services.AuthenticatorService;
 using Application.Services.AuthService;
+using Application.Services.TenantMembershipService;
 using Application.Services.UsersService;
 using Core.Application.Pipelines.Authorization;
 using Core.Application.Pipelines.Caching;
@@ -27,6 +29,7 @@ public static class ApplicationServiceRegistration
         services.AddMediatR(configuration =>
         {
             configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+            configuration.AddOpenBehavior(typeof(TenantAuthorizationBehavior<,>));
             configuration.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
             configuration.AddOpenBehavior(typeof(CachingBehavior<,>));
             configuration.AddOpenBehavior(typeof(CacheRemovingBehavior<,>));
@@ -46,6 +49,7 @@ public static class ApplicationServiceRegistration
         services.AddScoped<IAuthService, AuthManager>();
         services.AddScoped<IAuthenticatorService, AuthenticatorManager>();
         services.AddScoped<IUserService, UserManager>();
+        services.AddScoped<ITenantMembershipService, TenantMembershipManager>();
 
         services.AddYamlResourceLocalization();
 
