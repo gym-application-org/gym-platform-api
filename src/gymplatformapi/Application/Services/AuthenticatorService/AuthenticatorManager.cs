@@ -88,7 +88,7 @@ public class AuthenticatorManager : IAuthenticatorService
         emailAuthenticator.ActivationKey = authenticatorCode;
         await _emailAuthenticatorRepository.UpdateAsync(emailAuthenticator);
 
-        var toEmailList = new List<MailboxAddress> { new(name: $"{user.FirstName} {user.LastName}", user.Email) };
+        var toEmailList = new List<MailboxAddress> { new(name: $"REPLACE THOSE", user.Email) };
 
         _mailService.SendMail(
             new Mail

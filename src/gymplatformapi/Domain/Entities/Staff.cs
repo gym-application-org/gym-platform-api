@@ -18,7 +18,7 @@ public class Staff : TenantEntity<Guid>
     public StaffRole Role { get; set; }
     public bool IsActive { get; set; }
 
-    public Guid UserId { get; set; }
+    public int UserId { get; set; }
     public virtual User User { get; set; } = null!;
 
     public Staff() { }

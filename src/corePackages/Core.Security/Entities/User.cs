@@ -5,8 +5,6 @@ namespace Core.Security.Entities;
 
 public class User : Entity<int>
 {
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
     public string Email { get; set; }
     public byte[] PasswordSalt { get; set; }
     public byte[] PasswordHash { get; set; }
@@ -20,25 +18,13 @@ public class User : Entity<int>
 
     public User()
     {
-        FirstName = string.Empty;
-        LastName = string.Empty;
         Email = string.Empty;
         PasswordHash = Array.Empty<byte>();
         PasswordSalt = Array.Empty<byte>();
     }
 
-    public User(
-        string firstName,
-        string lastName,
-        string email,
-        byte[] passwordSalt,
-        byte[] passwordHash,
-        bool status,
-        AuthenticatorType authenticatorType
-    )
+    public User(string email, byte[] passwordSalt, byte[] passwordHash, bool status, AuthenticatorType authenticatorType)
     {
-        FirstName = firstName;
-        LastName = lastName;
         Email = email;
         PasswordSalt = passwordSalt;
         PasswordHash = passwordHash;
@@ -46,20 +32,9 @@ public class User : Entity<int>
         AuthenticatorType = authenticatorType;
     }
 
-    public User(
-        int id,
-        string firstName,
-        string lastName,
-        string email,
-        byte[] passwordSalt,
-        byte[] passwordHash,
-        bool status,
-        AuthenticatorType authenticatorType
-    )
+    public User(int id, string email, byte[] passwordSalt, byte[] passwordHash, bool status, AuthenticatorType authenticatorType)
         : base(id)
     {
-        FirstName = firstName;
-        LastName = lastName;
         Email = email;
         PasswordSalt = passwordSalt;
         PasswordHash = passwordHash;

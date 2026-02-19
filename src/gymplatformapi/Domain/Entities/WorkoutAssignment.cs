@@ -10,9 +10,9 @@ namespace Domain.Entities;
 
 public class WorkoutAssignment : TenantEntity<int>
 {
-    public DateTime StartDate { get; private set; }
-    public DateTime? EndDate { get; private set; }
-    public AssignmentStatus Status { get; private set; }
+    public DateTime StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+    public AssignmentStatus Status { get; set; }
 
     public Guid MemberId { get; set; }
     public virtual Member Member { get; set; } = null!;

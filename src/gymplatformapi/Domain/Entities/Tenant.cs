@@ -9,10 +9,10 @@ namespace Domain.Entities;
 
 public class Tenant : Entity<Guid>
 {
-    public string Name { get; private set; } = default!;
-    public bool IsActive { get; private set; }
+    public string Name { get; set; } = default!;
+    public bool IsActive { get; set; }
 
-    private Tenant() { }
+    public Tenant() { }
 
     public Tenant(string name, bool isActive = true)
         : base()
