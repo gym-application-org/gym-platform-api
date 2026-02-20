@@ -39,4 +39,20 @@ public class AttendanceLogBusinessRules : BaseBusinessRules
         );
         await AttendanceLogShouldExistWhenSelected(attendanceLog);
     }
+
+    public async Task MemberShouldExistWhenSelected(Member? member)
+    {
+        if (member == null)
+        {
+            await throwBusinessException(AttendanceLogsBusinessMessages.MemberNotExists);
+        }
+    }
+
+    public async Task TenantShouldExistWhenSelected(bool hasTenant)
+    {
+        if (!hasTenant)
+        {
+            await throwBusinessException(AttendanceLogsBusinessMessages.TenantNotExists);
+        }
+    }
 }

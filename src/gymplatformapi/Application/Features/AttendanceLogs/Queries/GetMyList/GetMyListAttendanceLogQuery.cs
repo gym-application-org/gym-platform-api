@@ -1,6 +1,9 @@
 using Application.Features.AttendanceLogs.Constants;
+using Application.Features.AttendanceLogs.Rules;
+using Application.Services.Members;
 using Application.Services.Repositories;
 using AutoMapper;
+using Core.Application.Abstractions.Security;
 using Core.Application.Pipelines.Authorization;
 using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
@@ -12,9 +15,9 @@ using Domain.Enums;
 using MediatR;
 using static Application.Features.AttendanceLogs.Constants.AttendanceLogsOperationClaims;
 
-namespace Application.Features.AttendanceLogs.Queries.GetList;
+namespace Application.Features.AttendanceLogs.Queries.GetMyList;
 
-public class GetListAttendanceLogQuery : IRequest<GetListResponse<GetListAttendanceLogListItemDto>>, ISecuredRequest, ITenantRequest
+public class GetMyListAttendanceLogQuery : IRequest<GetListResponse<GetMyListAttendanceLogListItemDto>>, ISecuredRequest, ITenantRequest
 {
     public PageRequest PageRequest { get; set; }
     public int? GateId { get; set; }
@@ -24,26 +27,45 @@ public class GetListAttendanceLogQuery : IRequest<GetListResponse<GetListAttenda
 
     public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
 
-    public class GetListAttendanceLogQueryHandler
-        : IRequestHandler<GetListAttendanceLogQuery, GetListResponse<GetListAttendanceLogListItemDto>>
+    public class GetMyListAttendanceLogQueryHandler
+        : IRequestHandler<GetMyListAttendanceLogQuery, GetListResponse<GetMyListAttendanceLogListItemDto>>
     {
         private readonly IAttendanceLogRepository _attendanceLogRepository;
         private readonly IMapper _mapper;
+        private readonly AttendanceLogBusinessRules _attendanceLogBusinessRules;
+        private readonly IMemberService _memberService;
+        private readonly ICurrentUser _currentUser;
 
-        public GetListAttendanceLogQueryHandler(IAttendanceLogRepository attendanceLogRepository, IMapper mapper)
+        public GetMyListAttendanceLogQueryHandler(
+            IAttendanceLogRepository attendanceLogRepository,
+            IMapper mapper,
+            ICurrentUser currentUser,
+            IMemberService memberService,
+            AttendanceLogBusinessRules attendanceLogBusinessRules
+        )
         {
             _attendanceLogRepository = attendanceLogRepository;
             _mapper = mapper;
+            _currentUser = currentUser;
+            _memberService = memberService;
+            _attendanceLogBusinessRules = attendanceLogBusinessRules;
         }
 
-        public async Task<GetListResponse<GetListAttendanceLogListItemDto>> Handle(
-            GetListAttendanceLogQuery request,
+        public async Task<GetListResponse<GetMyListAttendanceLogListItemDto>> Handle(
+            GetMyListAttendanceLogQuery request,
             CancellationToken cancellationToken
         )
         {
+            Member? member = await _memberService.GetAsync(
+                predicate: x => x.UserId == _currentUser.UserId,
+                cancellationToken: cancellationToken
+            );
+            await _attendanceLogBusinessRules.MemberShouldExistWhenSelected(member);
+
             IPaginate<AttendanceLog> attendanceLogs = await _attendanceLogRepository.GetListAsync(
                 predicate: x =>
-                    (!request.GateId.HasValue || x.GateId == request.GateId)
+                    x.MemberId == member!.Id
+                    && (!request.GateId.HasValue || x.GateId == request.GateId)
                     && (!request.Result.HasValue || x.Result == request.Result)
                     && (!request.From.HasValue || x.CreatedDate >= request.From)
                     && (!request.To.HasValue || x.CreatedDate <= request.To),
@@ -54,7 +76,7 @@ public class GetListAttendanceLogQuery : IRequest<GetListResponse<GetListAttenda
                 cancellationToken: cancellationToken
             );
 
-            GetListResponse<GetListAttendanceLogListItemDto> response = _mapper.Map<GetListResponse<GetListAttendanceLogListItemDto>>(
+            GetListResponse<GetMyListAttendanceLogListItemDto> response = _mapper.Map<GetListResponse<GetMyListAttendanceLogListItemDto>>(
                 attendanceLogs
             );
             return response;

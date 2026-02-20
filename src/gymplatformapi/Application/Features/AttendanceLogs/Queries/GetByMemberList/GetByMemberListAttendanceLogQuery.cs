@@ -12,11 +12,16 @@ using Domain.Enums;
 using MediatR;
 using static Application.Features.AttendanceLogs.Constants.AttendanceLogsOperationClaims;
 
-namespace Application.Features.AttendanceLogs.Queries.GetList;
+namespace Application.Features.AttendanceLogs.Queries.GetByMemberList;
 
-public class GetListAttendanceLogQuery : IRequest<GetListResponse<GetListAttendanceLogListItemDto>>, ISecuredRequest, ITenantRequest
+public class GetByMemberListAttendanceLogQuery
+    : IRequest<GetListResponse<GetByMemberListAttendanceLogListItemDto>>,
+        ISecuredRequest,
+        ICachableRequest,
+        ITenantRequest
 {
     public PageRequest PageRequest { get; set; }
+    public Guid MemberId { get; set; }
     public int? GateId { get; set; }
     public AttendanceResult? Result { get; set; }
     public DateTime? From { get; set; }
@@ -24,26 +29,40 @@ public class GetListAttendanceLogQuery : IRequest<GetListResponse<GetListAttenda
 
     public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
 
-    public class GetListAttendanceLogQueryHandler
-        : IRequestHandler<GetListAttendanceLogQuery, GetListResponse<GetListAttendanceLogListItemDto>>
+    public bool BypassCache { get; }
+    public string? CacheKey =>
+        $"GetByMemberAttendanceLogs("
+        + $"{PageRequest.PageIndex},"
+        + $"{PageRequest.PageSize},"
+        + $"{MemberId},"
+        + $"{GateId},"
+        + $"{Result},"
+        + $"{From},"
+        + $"{To})";
+    public string? CacheGroupKey => "GetByMemberAttendanceLogs";
+    public TimeSpan? SlidingExpiration { get; }
+
+    public class GetByMemberListAttendanceLogQueryHandler
+        : IRequestHandler<GetByMemberListAttendanceLogQuery, GetListResponse<GetByMemberListAttendanceLogListItemDto>>
     {
         private readonly IAttendanceLogRepository _attendanceLogRepository;
         private readonly IMapper _mapper;
 
-        public GetListAttendanceLogQueryHandler(IAttendanceLogRepository attendanceLogRepository, IMapper mapper)
+        public GetByMemberListAttendanceLogQueryHandler(IAttendanceLogRepository attendanceLogRepository, IMapper mapper)
         {
             _attendanceLogRepository = attendanceLogRepository;
             _mapper = mapper;
         }
 
-        public async Task<GetListResponse<GetListAttendanceLogListItemDto>> Handle(
-            GetListAttendanceLogQuery request,
+        public async Task<GetListResponse<GetByMemberListAttendanceLogListItemDto>> Handle(
+            GetByMemberListAttendanceLogQuery request,
             CancellationToken cancellationToken
         )
         {
             IPaginate<AttendanceLog> attendanceLogs = await _attendanceLogRepository.GetListAsync(
                 predicate: x =>
-                    (!request.GateId.HasValue || x.GateId == request.GateId)
+                    x.MemberId == request.MemberId
+                    && (!request.GateId.HasValue || x.GateId == request.GateId)
                     && (!request.Result.HasValue || x.Result == request.Result)
                     && (!request.From.HasValue || x.CreatedDate >= request.From)
                     && (!request.To.HasValue || x.CreatedDate <= request.To),
@@ -54,9 +73,9 @@ public class GetListAttendanceLogQuery : IRequest<GetListResponse<GetListAttenda
                 cancellationToken: cancellationToken
             );
 
-            GetListResponse<GetListAttendanceLogListItemDto> response = _mapper.Map<GetListResponse<GetListAttendanceLogListItemDto>>(
-                attendanceLogs
-            );
+            GetListResponse<GetByMemberListAttendanceLogListItemDto> response = _mapper.Map<
+                GetListResponse<GetByMemberListAttendanceLogListItemDto>
+            >(attendanceLogs);
             return response;
         }
     }

@@ -3,17 +3,18 @@ using Application.Features.AttendanceLogs.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
+using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
 using static Application.Features.AttendanceLogs.Constants.AttendanceLogsOperationClaims;
 
 namespace Application.Features.AttendanceLogs.Queries.GetById;
 
-public class GetByIdAttendanceLogQuery : IRequest<GetByIdAttendanceLogResponse>, ISecuredRequest
+public class GetByIdAttendanceLogQuery : IRequest<GetByIdAttendanceLogResponse>, ISecuredRequest, ITenantRequest
 {
     public int Id { get; set; }
 
-    public string[] Roles => [Admin, Read];
+    public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
 
     public class GetByIdAttendanceLogQueryHandler : IRequestHandler<GetByIdAttendanceLogQuery, GetByIdAttendanceLogResponse>
     {

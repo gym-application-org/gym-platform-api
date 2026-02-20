@@ -1,9 +1,9 @@
 using Core.Application.Dtos;
 using Domain.Enums;
 
-namespace Application.Features.AttendanceLogs.Queries.GetList;
+namespace Application.Features.AttendanceLogs.Queries.GetMyList;
 
-public class GetListAttendanceLogListItemDto : IDto
+public class GetMyListAttendanceLogListItemDto : IDto
 {
     public int Id { get; set; }
     public AttendanceResult Result { get; set; }
