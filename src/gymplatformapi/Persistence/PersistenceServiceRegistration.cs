@@ -1,4 +1,4 @@
-﻿using Application.Services.Repositories;
+using Application.Services.Repositories;
 using Core.Persistence.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +23,25 @@ public static class PersistenceServiceRegistration
         _ = services.AddScoped<IUserOperationClaimRepository, UserOperationClaimRepository>();
         _ = services.AddScoped<ITenantMembershipRepository, TenantMembershipRepository>();
 
+        services.AddScoped<IAttendanceLogRepository, AttendanceLogRepository>();
+        services.AddScoped<IDietAssignmentRepository, DietAssignmentRepository>();
+        services.AddScoped<IDietTemplateRepository, DietTemplateRepository>();
+        services.AddScoped<IDietTemplateDayRepository, DietTemplateDayRepository>();
+        services.AddScoped<IDietTemplateMealRepository, DietTemplateMealRepository>();
+        services.AddScoped<IDietTemplateMealItemRepository, DietTemplateMealItemRepository>();
+        services.AddScoped<IExerciseRepository, ExerciseRepository>();
+        services.AddScoped<IGateRepository, GateRepository>();
+        services.AddScoped<IMemberRepository, MemberRepository>();
+        services.AddScoped<IProgressEntryRepository, ProgressEntryRepository>();
+        services.AddScoped<IStaffRepository, StaffRepository>();
+        services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+        services.AddScoped<ISubscriptionPlanRepository, SubscriptionPlanRepository>();
+        services.AddScoped<ISupportTicketRepository, SupportTicketRepository>();
+        services.AddScoped<ITenantRepository, TenantRepository>();
+        services.AddScoped<IWorkoutAssignmentRepository, WorkoutAssignmentRepository>();
+        services.AddScoped<IWorkoutTemplateRepository, WorkoutTemplateRepository>();
+        services.AddScoped<IWorkoutTemplateDayRepository, WorkoutTemplateDayRepository>();
+        services.AddScoped<IWorkoutTemplateDayExerciseRepository, WorkoutTemplateDayExerciseRepository>();
         return services;
     }
 }

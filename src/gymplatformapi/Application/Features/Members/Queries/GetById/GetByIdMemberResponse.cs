@@ -1,0 +1,15 @@
+using Core.Application.Responses;
+using Domain.Enums;
+
+namespace Application.Features.Members.Queries.GetById;
+
+public class GetByIdMemberResponse : IResponse
+{
+    public Guid Id { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string? Phone { get; set; }
+    public string? Email { get; set; }
+    public MemberStatus Status { get; set; }
+    public int UserId { get; set; }
+}
