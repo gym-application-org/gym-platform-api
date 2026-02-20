@@ -1,0 +1,70 @@
+using Application.Features.DietTemplateMealItems.Constants;
+using Application.Features.DietTemplateMealItems.Rules;
+using Application.Services.Repositories;
+using AutoMapper;
+using Core.Application.Pipelines.Authorization;
+using Core.Application.Pipelines.Caching;
+using Core.Application.Pipelines.Logging;
+using Core.Application.Pipelines.Transaction;
+using Domain.Entities;
+using MediatR;
+using static Application.Features.DietTemplateMealItems.Constants.DietTemplateMealItemsOperationClaims;
+
+namespace Application.Features.DietTemplateMealItems.Commands.Create;
+
+public class CreateDietTemplateMealItemCommand
+    : IRequest<CreatedDietTemplateMealItemResponse>,
+        ISecuredRequest,
+        ICacheRemoverRequest,
+        ILoggableRequest,
+        ITransactionalRequest
+{
+    public int Order { get; set; }
+    public string FoodName { get; set; }
+    public decimal? Quantity { get; set; }
+    public string? Unit { get; set; }
+    public int? Calories { get; set; }
+    public int? ProteinG { get; set; }
+    public int? CarbG { get; set; }
+    public int? FatG { get; set; }
+    public string? Note { get; set; }
+    public int DietTemplateMealId { get; set; }
+
+    public string[] Roles => [Admin, Write, DietTemplateMealItemsOperationClaims.Create];
+
+    public bool BypassCache { get; }
+    public string? CacheKey { get; }
+    public string[]? CacheGroupKey => ["GetDietTemplateMealItems"];
+
+    public class CreateDietTemplateMealItemCommandHandler
+        : IRequestHandler<CreateDietTemplateMealItemCommand, CreatedDietTemplateMealItemResponse>
+    {
+        private readonly IMapper _mapper;
+        private readonly IDietTemplateMealItemRepository _dietTemplateMealItemRepository;
+        private readonly DietTemplateMealItemBusinessRules _dietTemplateMealItemBusinessRules;
+
+        public CreateDietTemplateMealItemCommandHandler(
+            IMapper mapper,
+            IDietTemplateMealItemRepository dietTemplateMealItemRepository,
+            DietTemplateMealItemBusinessRules dietTemplateMealItemBusinessRules
+        )
+        {
+            _mapper = mapper;
+            _dietTemplateMealItemRepository = dietTemplateMealItemRepository;
+            _dietTemplateMealItemBusinessRules = dietTemplateMealItemBusinessRules;
+        }
+
+        public async Task<CreatedDietTemplateMealItemResponse> Handle(
+            CreateDietTemplateMealItemCommand request,
+            CancellationToken cancellationToken
+        )
+        {
+            DietTemplateMealItem dietTemplateMealItem = _mapper.Map<DietTemplateMealItem>(request);
+
+            await _dietTemplateMealItemRepository.AddAsync(dietTemplateMealItem);
+
+            CreatedDietTemplateMealItemResponse response = _mapper.Map<CreatedDietTemplateMealItemResponse>(dietTemplateMealItem);
+            return response;
+        }
+    }
+}

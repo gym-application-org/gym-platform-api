@@ -1,0 +1,14 @@
+using Core.Application.Dtos;
+using Domain.Enums;
+
+namespace Application.Features.WorkoutAssignments.Queries.GetList;
+
+public class GetListWorkoutAssignmentListItemDto : IDto
+{
+    public int Id { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+    public AssignmentStatus Status { get; set; }
+    public Guid MemberId { get; set; }
+    public int WorkoutTemplateId { get; set; }
+}
