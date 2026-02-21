@@ -9,35 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/exercises")]
 [ApiController]
 public class ExercisesController : BaseController
 {
-    [HttpPost]
-    public async Task<IActionResult> Add([FromBody] CreateExerciseCommand createExerciseCommand)
-    {
-        CreatedExerciseResponse response = await Mediator.Send(createExerciseCommand);
-
-        return Created(uri: "", response);
-    }
-
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateExerciseCommand updateExerciseCommand)
-    {
-        UpdatedExerciseResponse response = await Mediator.Send(updateExerciseCommand);
-
-        return Ok(response);
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] int id)
-    {
-        DeletedExerciseResponse response = await Mediator.Send(new DeleteExerciseCommand { Id = id });
-
-        return Ok(response);
-    }
-
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         GetByIdExerciseResponse response = await Mediator.Send(new GetByIdExerciseQuery { Id = id });

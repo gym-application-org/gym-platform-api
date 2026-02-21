@@ -3,6 +3,7 @@ using Application.Features.Exercises.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
+using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
 using static Application.Features.Exercises.Constants.ExercisesOperationClaims;
@@ -13,7 +14,8 @@ public class GetByIdExerciseQuery : IRequest<GetByIdExerciseResponse>, ISecuredR
 {
     public int Id { get; set; }
 
-    public string[] Roles => [Admin, Read];
+    public string[] Roles =>
+        [GeneralOperationClaims.Admin, GeneralOperationClaims.Staff, GeneralOperationClaims.Owner, GeneralOperationClaims.Member];
 
     public class GetByIdExerciseQueryHandler : IRequestHandler<GetByIdExerciseQuery, GetByIdExerciseResponse>
     {
