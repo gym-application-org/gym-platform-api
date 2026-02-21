@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/admin/attendance-logs")]
 [ApiController]
 public class AdminAttendanceLogsController : BaseController
 {

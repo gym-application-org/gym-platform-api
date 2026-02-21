@@ -6,6 +6,7 @@ using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
+using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
 using static Application.Features.Exercises.Constants.ExercisesOperationClaims;
@@ -16,7 +17,8 @@ public class GetListExerciseQuery : IRequest<GetListResponse<GetListExerciseList
 {
     public PageRequest PageRequest { get; set; }
 
-    public string[] Roles => [Admin, Read];
+    public string[] Roles =>
+        [GeneralOperationClaims.Admin, GeneralOperationClaims.Owner, GeneralOperationClaims.Staff, GeneralOperationClaims.Member];
 
     public bool BypassCache { get; }
     public string? CacheKey => $"GetListExercises({PageRequest.PageIndex},{PageRequest.PageSize})";

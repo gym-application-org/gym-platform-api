@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/attendance-logs")]
 [ApiController]
 public class AttendanceLogsController : BaseController
 {

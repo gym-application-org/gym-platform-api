@@ -6,6 +6,7 @@ using Core.Application.Pipelines.Authorization;
 using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
+using Core.Security.Constants;
 using Domain.Entities;
 using Domain.Enums;
 using MediatR;
@@ -29,7 +30,7 @@ public class CreateExerciseCommand
     public string? ThumbnailUrl { get; set; }
     public bool IsActive { get; set; }
 
-    public string[] Roles => [Admin, Write, ExercisesOperationClaims.Create];
+    public string[] Roles => [GeneralOperationClaims.Admin];
 
     public bool BypassCache { get; }
     public string? CacheKey { get; }
