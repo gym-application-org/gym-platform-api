@@ -5,4 +5,6 @@ public static class ProgressEntriesBusinessMessages
     public const string SectionName = "ProgressEntry";
 
     public const string ProgressEntryNotExists = "ProgressEntryNotExists";
+
+    public const string MemberNotExists = "MemberNotExists";
 }

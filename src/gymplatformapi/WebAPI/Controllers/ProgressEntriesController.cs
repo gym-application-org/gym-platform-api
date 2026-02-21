@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/progress-entries")]
 [ApiController]
 public class ProgressEntriesController : BaseController
 {
@@ -29,7 +29,7 @@ public class ProgressEntriesController : BaseController
         return Ok(response);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
         DeletedProgressEntryResponse response = await Mediator.Send(new DeleteProgressEntryCommand { Id = id });
@@ -37,7 +37,7 @@ public class ProgressEntriesController : BaseController
         return Ok(response);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         GetByIdProgressEntryResponse response = await Mediator.Send(new GetByIdProgressEntryQuery { Id = id });
@@ -45,9 +45,15 @@ public class ProgressEntriesController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetList([FromQuery] PageRequest pageRequest)
+    public async Task<IActionResult> GetList([FromQuery] PageRequest pageRequest, [FromQuery] DateTime? from, [FromQuery] DateTime? to)
     {
-        GetListProgressEntryQuery getListProgressEntryQuery = new() { PageRequest = pageRequest };
+        GetListProgressEntryQuery getListProgressEntryQuery =
+            new()
+            {
+                PageRequest = pageRequest,
+                From = from,
+                To = to
+            };
         GetListResponse<GetListProgressEntryListItemDto> response = await Mediator.Send(getListProgressEntryQuery);
         return Ok(response);
     }
