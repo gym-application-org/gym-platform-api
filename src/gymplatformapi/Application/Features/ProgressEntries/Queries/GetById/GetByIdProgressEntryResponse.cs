@@ -15,5 +15,4 @@ public class GetByIdProgressEntryResponse : IResponse
     public decimal? ArmCm { get; set; }
     public decimal? LegCm { get; set; }
     public string? Note { get; set; }
-    public Guid MemberId { get; set; }
 }

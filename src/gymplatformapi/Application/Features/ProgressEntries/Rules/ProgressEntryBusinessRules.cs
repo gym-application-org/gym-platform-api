@@ -39,4 +39,10 @@ public class ProgressEntryBusinessRules : BaseBusinessRules
         );
         await ProgressEntryShouldExistWhenSelected(progressEntry);
     }
+
+    public async Task MemberShouldExistWhenSelected(Member? member)
+    {
+        if (member == null)
+            await throwBusinessException(ProgressEntriesBusinessMessages.MemberNotExists);
+    }
 }
