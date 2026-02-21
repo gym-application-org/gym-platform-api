@@ -7,6 +7,7 @@ public class UpdateGateCommandValidator : AbstractValidator<UpdateGateCommand>
     public UpdateGateCommandValidator()
     {
         RuleFor(c => c.Id).NotEmpty();
+        RuleFor(c => c.TenantId).NotEmpty();
         RuleFor(c => c.Name).NotEmpty();
         RuleFor(c => c.GateCode).NotEmpty();
         RuleFor(c => c.IsActive).NotEmpty();
