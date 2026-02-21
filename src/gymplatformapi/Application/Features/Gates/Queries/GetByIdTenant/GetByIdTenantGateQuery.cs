@@ -3,37 +3,38 @@ using Application.Features.Gates.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
+using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
 using static Application.Features.Gates.Constants.GatesOperationClaims;
 
-namespace Application.Features.Gates.Queries.GetById;
+namespace Application.Features.Gates.Queries.GetByIdTenant;
 
-public class GetByIdGateQuery : IRequest<GetByIdGateResponse>, ISecuredRequest
+public class GetByIdTenantGateQuery : IRequest<GetByIdTenantGateResponse>, ISecuredRequest, ITenantRequest
 {
     public int Id { get; set; }
 
-    public string[] Roles => [Admin, Read];
+    public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
 
-    public class GetByIdGateQueryHandler : IRequestHandler<GetByIdGateQuery, GetByIdGateResponse>
+    public class GetByIdTenantGateQueryHandler : IRequestHandler<GetByIdTenantGateQuery, GetByIdTenantGateResponse>
     {
         private readonly IMapper _mapper;
         private readonly IGateRepository _gateRepository;
         private readonly GateBusinessRules _gateBusinessRules;
 
-        public GetByIdGateQueryHandler(IMapper mapper, IGateRepository gateRepository, GateBusinessRules gateBusinessRules)
+        public GetByIdTenantGateQueryHandler(IMapper mapper, IGateRepository gateRepository, GateBusinessRules gateBusinessRules)
         {
             _mapper = mapper;
             _gateRepository = gateRepository;
             _gateBusinessRules = gateBusinessRules;
         }
 
-        public async Task<GetByIdGateResponse> Handle(GetByIdGateQuery request, CancellationToken cancellationToken)
+        public async Task<GetByIdTenantGateResponse> Handle(GetByIdTenantGateQuery request, CancellationToken cancellationToken)
         {
             Gate? gate = await _gateRepository.GetAsync(predicate: g => g.Id == request.Id, cancellationToken: cancellationToken);
             await _gateBusinessRules.GateShouldExistWhenSelected(gate);
 
-            GetByIdGateResponse response = _mapper.Map<GetByIdGateResponse>(gate);
+            GetByIdTenantGateResponse response = _mapper.Map<GetByIdTenantGateResponse>(gate);
             return response;
         }
     }

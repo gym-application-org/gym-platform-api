@@ -6,6 +6,7 @@ using Core.Application.Pipelines.Authorization;
 using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
+using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
 using static Application.Features.Gates.Constants.GatesOperationClaims;
@@ -20,11 +21,13 @@ public class UpdateGateCommand
         ITransactionalRequest
 {
     public int Id { get; set; }
+
+    public Guid TenantId { get; set; }
     public string Name { get; set; }
     public string GateCode { get; set; }
     public bool IsActive { get; set; }
 
-    public string[] Roles => [Admin, Write, GatesOperationClaims.Update];
+    public string[] Roles => [GeneralOperationClaims.Admin];
 
     public bool BypassCache { get; }
     public string? CacheKey { get; }
