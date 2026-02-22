@@ -21,7 +21,7 @@ public class GetListTenantGateQuery
 {
     public PageRequest PageRequest { get; set; }
 
-    public string[] Roles => [GeneralOperationClaims.Admin];
+    public string[] Roles => [GeneralOperationClaims.Owner, GeneralOperationClaims.Staff];
 
     public bool BypassCache { get; }
     public string? CacheKey => $"GetListGates({PageRequest.PageIndex},{PageRequest.PageSize})";

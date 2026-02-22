@@ -46,6 +46,7 @@ public class CreateProgressEntryCommand
         private readonly IProgressEntryRepository _progressEntryRepository;
         private readonly ProgressEntryBusinessRules _progressEntryBusinessRules;
         private readonly ICurrentUser _currentUser;
+        private readonly ICurrentTenant _currentTenant;
         private readonly IMemberService _memberService;
 
         public CreateProgressEntryCommandHandler(
@@ -53,6 +54,7 @@ public class CreateProgressEntryCommand
             IProgressEntryRepository progressEntryRepository,
             ProgressEntryBusinessRules progressEntryBusinessRules,
             ICurrentUser currentUser,
+            ICurrentTenant currentTenant,
             IMemberService memberService
         )
         {
@@ -61,6 +63,7 @@ public class CreateProgressEntryCommand
             _progressEntryBusinessRules = progressEntryBusinessRules;
             _currentUser = currentUser;
             _memberService = memberService;
+            _currentTenant = currentTenant;
         }
 
         public async Task<CreatedProgressEntryResponse> Handle(CreateProgressEntryCommand request, CancellationToken cancellationToken)
@@ -73,6 +76,7 @@ public class CreateProgressEntryCommand
 
             ProgressEntry progressEntry = _mapper.Map<ProgressEntry>(request);
             progressEntry.MemberId = member!.Id;
+            progressEntry.TenantId = _currentTenant.TenantId!.Value;
 
             await _progressEntryRepository.AddAsync(progressEntry);
 
