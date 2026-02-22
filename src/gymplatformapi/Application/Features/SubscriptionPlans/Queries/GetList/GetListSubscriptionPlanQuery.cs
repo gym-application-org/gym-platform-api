@@ -6,17 +6,22 @@ using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
+using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
 using static Application.Features.SubscriptionPlans.Constants.SubscriptionPlansOperationClaims;
 
 namespace Application.Features.SubscriptionPlans.Queries.GetList;
 
-public class GetListSubscriptionPlanQuery : IRequest<GetListResponse<GetListSubscriptionPlanListItemDto>>, ISecuredRequest, ICachableRequest
+public class GetListSubscriptionPlanQuery
+    : IRequest<GetListResponse<GetListSubscriptionPlanListItemDto>>,
+        ISecuredRequest,
+        ICachableRequest,
+        ITenantRequest
 {
     public PageRequest PageRequest { get; set; }
 
-    public string[] Roles => [Admin, Read];
+    public string[] Roles => [GeneralOperationClaims.Owner, GeneralOperationClaims.Staff, GeneralOperationClaims.Member];
 
     public bool BypassCache { get; }
     public string? CacheKey => $"GetListSubscriptionPlans({PageRequest.PageIndex},{PageRequest.PageSize})";

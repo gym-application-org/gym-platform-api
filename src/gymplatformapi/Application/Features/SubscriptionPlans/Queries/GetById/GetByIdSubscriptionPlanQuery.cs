@@ -3,17 +3,18 @@ using Application.Features.SubscriptionPlans.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
+using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
 using static Application.Features.SubscriptionPlans.Constants.SubscriptionPlansOperationClaims;
 
 namespace Application.Features.SubscriptionPlans.Queries.GetById;
 
-public class GetByIdSubscriptionPlanQuery : IRequest<GetByIdSubscriptionPlanResponse>, ISecuredRequest
+public class GetByIdSubscriptionPlanQuery : IRequest<GetByIdSubscriptionPlanResponse>, ISecuredRequest, ITenantRequest
 {
     public int Id { get; set; }
 
-    public string[] Roles => [Admin, Read];
+    public string[] Roles => [GeneralOperationClaims.Member, GeneralOperationClaims.Owner, GeneralOperationClaims.Staff];
 
     public class GetByIdSubscriptionPlanQueryHandler : IRequestHandler<GetByIdSubscriptionPlanQuery, GetByIdSubscriptionPlanResponse>
     {
