@@ -2,10 +2,12 @@ using Application.Features.SubscriptionPlans.Constants;
 using Application.Features.SubscriptionPlans.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
+using Core.Application.Abstractions.Security;
 using Core.Application.Pipelines.Authorization;
 using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
+using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
 using static Application.Features.SubscriptionPlans.Constants.SubscriptionPlansOperationClaims;
@@ -27,7 +29,7 @@ public class UpdateSubscriptionPlanCommand
     public string? Description { get; set; }
     public bool IsActive { get; set; }
 
-    public string[] Roles => [Admin, Write, SubscriptionPlansOperationClaims.Update];
+    public string[] Roles => [GeneralOperationClaims.Owner, GeneralOperationClaims.Staff];
 
     public bool BypassCache { get; }
     public string? CacheKey { get; }
@@ -38,16 +40,19 @@ public class UpdateSubscriptionPlanCommand
         private readonly IMapper _mapper;
         private readonly ISubscriptionPlanRepository _subscriptionPlanRepository;
         private readonly SubscriptionPlanBusinessRules _subscriptionPlanBusinessRules;
+        private readonly ICurrentTenant _currentTenant;
 
         public UpdateSubscriptionPlanCommandHandler(
             IMapper mapper,
             ISubscriptionPlanRepository subscriptionPlanRepository,
-            SubscriptionPlanBusinessRules subscriptionPlanBusinessRules
+            SubscriptionPlanBusinessRules subscriptionPlanBusinessRules,
+            ICurrentTenant currentTenant
         )
         {
             _mapper = mapper;
             _subscriptionPlanRepository = subscriptionPlanRepository;
             _subscriptionPlanBusinessRules = subscriptionPlanBusinessRules;
+            _currentTenant = currentTenant;
         }
 
         public async Task<UpdatedSubscriptionPlanResponse> Handle(
@@ -61,6 +66,7 @@ public class UpdateSubscriptionPlanCommand
             );
             await _subscriptionPlanBusinessRules.SubscriptionPlanShouldExistWhenSelected(subscriptionPlan);
             subscriptionPlan = _mapper.Map(request, subscriptionPlan);
+            subscriptionPlan!.TenantId = _currentTenant.TenantId!.Value;
 
             await _subscriptionPlanRepository.UpdateAsync(subscriptionPlan!);
 

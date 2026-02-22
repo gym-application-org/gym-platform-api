@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/subscription-plans")]
 [ApiController]
 public class SubscriptionPlansController : BaseController
 {
@@ -21,15 +21,16 @@ public class SubscriptionPlansController : BaseController
         return Created(uri: "", response);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateSubscriptionPlanCommand updateSubscriptionPlanCommand)
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateSubscriptionPlanCommand updateSubscriptionPlanCommand)
     {
+        updateSubscriptionPlanCommand.Id = id;
         UpdatedSubscriptionPlanResponse response = await Mediator.Send(updateSubscriptionPlanCommand);
 
         return Ok(response);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
         DeletedSubscriptionPlanResponse response = await Mediator.Send(new DeleteSubscriptionPlanCommand { Id = id });
