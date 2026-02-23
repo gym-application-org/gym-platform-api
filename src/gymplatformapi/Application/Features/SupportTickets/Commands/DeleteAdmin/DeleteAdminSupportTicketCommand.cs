@@ -12,31 +12,31 @@ using Domain.Entities;
 using MediatR;
 using static Application.Features.SupportTickets.Constants.SupportTicketsOperationClaims;
 
-namespace Application.Features.SupportTickets.Commands.Delete;
+namespace Application.Features.SupportTickets.Commands.DeleteAdmin;
 
-public class DeleteSupportTicketCommand
-    : IRequest<DeletedSupportTicketResponse>,
+public class DeleteAdminSupportTicketCommand
+    : IRequest<DeletedAdminSupportTicketResponse>,
         ISecuredRequest,
         ICacheRemoverRequest,
         ILoggableRequest,
-        ITransactionalRequest,
-        ITenantRequest
+        ITransactionalRequest
 {
     public int Id { get; set; }
 
-    public string[] Roles => [GeneralOperationClaims.Owner];
+    public string[] Roles => [GeneralOperationClaims.Admin];
 
     public bool BypassCache { get; }
     public string? CacheKey { get; }
     public string[]? CacheGroupKey => ["GetSupportTickets"];
 
-    public class DeleteSupportTicketCommandHandler : IRequestHandler<DeleteSupportTicketCommand, DeletedSupportTicketResponse>
+    public class DeleteAdminSupportTicketCommandHandler
+        : IRequestHandler<DeleteAdminSupportTicketCommand, DeletedAdminSupportTicketResponse>
     {
         private readonly IMapper _mapper;
         private readonly ISupportTicketRepository _supportTicketRepository;
         private readonly SupportTicketBusinessRules _supportTicketBusinessRules;
 
-        public DeleteSupportTicketCommandHandler(
+        public DeleteAdminSupportTicketCommandHandler(
             IMapper mapper,
             ISupportTicketRepository supportTicketRepository,
             SupportTicketBusinessRules supportTicketBusinessRules
@@ -47,17 +47,21 @@ public class DeleteSupportTicketCommand
             _supportTicketBusinessRules = supportTicketBusinessRules;
         }
 
-        public async Task<DeletedSupportTicketResponse> Handle(DeleteSupportTicketCommand request, CancellationToken cancellationToken)
+        public async Task<DeletedAdminSupportTicketResponse> Handle(
+            DeleteAdminSupportTicketCommand request,
+            CancellationToken cancellationToken
+        )
         {
             SupportTicket? supportTicket = await _supportTicketRepository.GetAsync(
                 predicate: st => st.Id == request.Id,
+                withDeleted: true,
                 cancellationToken: cancellationToken
             );
             await _supportTicketBusinessRules.SupportTicketShouldExistWhenSelected(supportTicket);
 
             await _supportTicketRepository.DeleteAsync(supportTicket!);
 
-            DeletedSupportTicketResponse response = _mapper.Map<DeletedSupportTicketResponse>(supportTicket);
+            DeletedAdminSupportTicketResponse response = _mapper.Map<DeletedAdminSupportTicketResponse>(supportTicket);
             return response;
         }
     }

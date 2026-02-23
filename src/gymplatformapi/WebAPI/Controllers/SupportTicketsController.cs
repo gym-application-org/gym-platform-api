@@ -5,11 +5,12 @@ using Application.Features.SupportTickets.Queries.GetById;
 using Application.Features.SupportTickets.Queries.GetList;
 using Core.Application.Requests;
 using Core.Application.Responses;
+using Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/support-tickets")]
 [ApiController]
 public class SupportTicketsController : BaseController
 {
@@ -21,15 +22,16 @@ public class SupportTicketsController : BaseController
         return Created(uri: "", response);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateSupportTicketCommand updateSupportTicketCommand)
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateSupportTicketCommand updateSupportTicketCommand)
     {
+        updateSupportTicketCommand.Id = id;
         UpdatedSupportTicketResponse response = await Mediator.Send(updateSupportTicketCommand);
 
         return Ok(response);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
         DeletedSupportTicketResponse response = await Mediator.Send(new DeleteSupportTicketCommand { Id = id });
@@ -37,7 +39,7 @@ public class SupportTicketsController : BaseController
         return Ok(response);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         GetByIdSupportTicketResponse response = await Mediator.Send(new GetByIdSupportTicketQuery { Id = id });
@@ -45,9 +47,23 @@ public class SupportTicketsController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetList([FromQuery] PageRequest pageRequest)
+    public async Task<IActionResult> GetList(
+        [FromQuery] PageRequest pageRequest,
+        [FromQuery] DateTime? from,
+        DateTime? to,
+        TicketStatus? status,
+        TicketPriority? priority
+    )
     {
-        GetListSupportTicketQuery getListSupportTicketQuery = new() { PageRequest = pageRequest };
+        GetListSupportTicketQuery getListSupportTicketQuery =
+            new()
+            {
+                PageRequest = pageRequest,
+                From = from,
+                To = to,
+                Priority = priority,
+                Status = status
+            };
         GetListResponse<GetListSupportTicketListItemDto> response = await Mediator.Send(getListSupportTicketQuery);
         return Ok(response);
     }

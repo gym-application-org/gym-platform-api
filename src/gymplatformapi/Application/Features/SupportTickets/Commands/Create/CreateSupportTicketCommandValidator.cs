@@ -11,6 +11,5 @@ public class CreateSupportTicketCommandValidator : AbstractValidator<CreateSuppo
         RuleFor(c => c.Status).NotEmpty();
         RuleFor(c => c.Priority).NotEmpty();
         RuleFor(c => c.ClosedAt).NotEmpty();
-        RuleFor(c => c.CreatedByStaffId).NotEmpty();
     }
 }

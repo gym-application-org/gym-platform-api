@@ -3,17 +3,18 @@ using Application.Features.SupportTickets.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
+using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
 using static Application.Features.SupportTickets.Constants.SupportTicketsOperationClaims;
 
 namespace Application.Features.SupportTickets.Queries.GetById;
 
-public class GetByIdSupportTicketQuery : IRequest<GetByIdSupportTicketResponse>, ISecuredRequest
+public class GetByIdSupportTicketQuery : IRequest<GetByIdSupportTicketResponse>, ISecuredRequest, ITenantRequest
 {
     public int Id { get; set; }
 
-    public string[] Roles => [Admin, Read];
+    public string[] Roles => [GeneralOperationClaims.Owner];
 
     public class GetByIdSupportTicketQueryHandler : IRequestHandler<GetByIdSupportTicketQuery, GetByIdSupportTicketResponse>
     {
