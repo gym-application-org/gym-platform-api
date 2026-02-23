@@ -1,5 +1,4 @@
 using Application.Features.WorkoutAssignments.Constants;
-using Application.Features.WorkoutAssignments.Constants;
 using Application.Features.WorkoutAssignments.Rules;
 using Application.Services.Repositories;
 using AutoMapper;

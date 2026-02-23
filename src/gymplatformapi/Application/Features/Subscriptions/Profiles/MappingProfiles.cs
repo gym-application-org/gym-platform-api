@@ -3,6 +3,8 @@ using Application.Features.Subscriptions.Commands.Delete;
 using Application.Features.Subscriptions.Commands.Update;
 using Application.Features.Subscriptions.Queries.GetById;
 using Application.Features.Subscriptions.Queries.GetList;
+using Application.Features.Subscriptions.Queries.GetMy;
+using Application.Features.Subscriptions.Queries.GetMyList;
 using AutoMapper;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
@@ -21,7 +23,10 @@ public class MappingProfiles : Profile
         CreateMap<Subscription, DeleteSubscriptionCommand>().ReverseMap();
         CreateMap<Subscription, DeletedSubscriptionResponse>().ReverseMap();
         CreateMap<Subscription, GetByIdSubscriptionResponse>().ReverseMap();
+        CreateMap<Subscription, GetMyByIdSubscriptionResponse>().ReverseMap();
         CreateMap<Subscription, GetListSubscriptionListItemDto>().ReverseMap();
         CreateMap<IPaginate<Subscription>, GetListResponse<GetListSubscriptionListItemDto>>().ReverseMap();
+        CreateMap<Subscription, GetMyListSubscriptionListItemDto>().ReverseMap();
+        CreateMap<IPaginate<Subscription>, GetListResponse<GetMyListSubscriptionListItemDto>>().ReverseMap();
     }
 }

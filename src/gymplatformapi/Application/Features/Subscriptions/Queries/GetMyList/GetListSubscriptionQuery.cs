@@ -1,5 +1,8 @@
+using Application.Features.Subscriptions.Rules;
+using Application.Services.Members;
 using Application.Services.Repositories;
 using AutoMapper;
+using Core.Application.Abstractions.Security;
 using Core.Application.Pipelines.Authorization;
 using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
@@ -10,10 +13,10 @@ using Domain.Entities;
 using MediatR;
 using static Application.Features.Subscriptions.Constants.SubscriptionsOperationClaims;
 
-namespace Application.Features.Subscriptions.Queries.GetList;
+namespace Application.Features.Subscriptions.Queries.GetMyList;
 
-public class GetListSubscriptionQuery
-    : IRequest<GetListResponse<GetListSubscriptionListItemDto>>,
+public class GetMyListSubscriptionQuery
+    : IRequest<GetListResponse<GetMyListSubscriptionListItemDto>>,
         ISecuredRequest,
         ICachableRequest,
         ITenantRequest
@@ -22,46 +25,60 @@ public class GetListSubscriptionQuery
 
     public DateTime? From { get; set; }
     public DateTime? To { get; set; }
-    public Guid? MemberId { get; set; }
 
     public int? SubscriptionPlanId { get; set; }
 
-    public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
+    public string[] Roles => [GeneralOperationClaims.Member];
 
     public bool BypassCache { get; }
     public string? CacheKey => $"GetListSubscriptions({PageRequest.PageIndex},{PageRequest.PageSize})";
     public string? CacheGroupKey => "GetSubscriptions";
     public TimeSpan? SlidingExpiration { get; }
 
-    public class GetListSubscriptionQueryHandler
-        : IRequestHandler<GetListSubscriptionQuery, GetListResponse<GetListSubscriptionListItemDto>>
+    public class GetMyListSubscriptionQueryHandler
+        : IRequestHandler<GetMyListSubscriptionQuery, GetListResponse<GetMyListSubscriptionListItemDto>>
     {
         private readonly ISubscriptionRepository _subscriptionRepository;
         private readonly IMapper _mapper;
+        private readonly ICurrentUser _currentUser;
+        private readonly IMemberService _memberService;
+        private readonly SubscriptionBusinessRules _subscriptionBusinessRules;
 
-        public GetListSubscriptionQueryHandler(ISubscriptionRepository subscriptionRepository, IMapper mapper)
+        public GetMyListSubscriptionQueryHandler(
+            ISubscriptionRepository subscriptionRepository,
+            IMapper mapper,
+            ICurrentUser currentUser,
+            IMemberService memberService,
+            SubscriptionBusinessRules subscriptionBusinessRules
+        )
         {
             _subscriptionRepository = subscriptionRepository;
             _mapper = mapper;
+            _currentUser = currentUser;
+            _memberService = memberService;
+            _subscriptionBusinessRules = subscriptionBusinessRules;
         }
 
-        public async Task<GetListResponse<GetListSubscriptionListItemDto>> Handle(
-            GetListSubscriptionQuery request,
+        public async Task<GetListResponse<GetMyListSubscriptionListItemDto>> Handle(
+            GetMyListSubscriptionQuery request,
             CancellationToken cancellationToken
         )
         {
+            Member? member = await _memberService.GetAsync(x => x.UserId == _currentUser.UserId, cancellationToken: cancellationToken);
+            await _subscriptionBusinessRules.MemberShouldExistWhenSelected(member);
+
             IPaginate<Subscription> subscriptions = await _subscriptionRepository.GetListAsync(
                 predicate: x =>
-                    (!request.From.HasValue || x.StartDate >= request.From.Value)
+                    x.MemberId == member!.Id
+                    && (!request.From.HasValue || x.StartDate >= request.From.Value)
                     && (!request.To.HasValue || x.EndDate <= request.To.Value)
-                    && (!request.MemberId.HasValue || x.MemberId == request.MemberId.Value)
                     && (!request.SubscriptionPlanId.HasValue || x.SubscriptionPlanId == request.SubscriptionPlanId.Value),
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
                 cancellationToken: cancellationToken
             );
 
-            GetListResponse<GetListSubscriptionListItemDto> response = _mapper.Map<GetListResponse<GetListSubscriptionListItemDto>>(
+            GetListResponse<GetMyListSubscriptionListItemDto> response = _mapper.Map<GetListResponse<GetMyListSubscriptionListItemDto>>(
                 subscriptions
             );
             return response;
