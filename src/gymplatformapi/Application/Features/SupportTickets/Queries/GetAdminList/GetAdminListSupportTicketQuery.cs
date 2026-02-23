@@ -12,42 +12,41 @@ using Domain.Enums;
 using MediatR;
 using static Application.Features.SupportTickets.Constants.SupportTicketsOperationClaims;
 
-namespace Application.Features.SupportTickets.Queries.GetList;
+namespace Application.Features.SupportTickets.Queries.GetAdminList;
 
-public class GetListSupportTicketQuery
-    : IRequest<GetListResponse<GetListSupportTicketListItemDto>>,
+public class GetAdminListSupportTicketQuery
+    : IRequest<GetListResponse<GetAdminListSupportTicketListItemDto>>,
         ISecuredRequest,
-        ICachableRequest,
-        ITenantRequest
+        ICachableRequest
 {
     public PageRequest PageRequest { get; set; }
-
     public DateTime? From { get; set; }
     public DateTime? To { get; set; }
     public TicketStatus? Status { get; set; }
     public TicketPriority? Priority { get; set; }
+    public Guid? TenantId { get; set; }
 
-    public string[] Roles => [GeneralOperationClaims.Owner];
+    public string[] Roles => [GeneralOperationClaims.Admin];
 
     public bool BypassCache { get; }
     public string? CacheKey => $"GetListSupportTickets({PageRequest.PageIndex},{PageRequest.PageSize})";
     public string? CacheGroupKey => "GetSupportTickets";
     public TimeSpan? SlidingExpiration { get; }
 
-    public class GetListSupportTicketQueryHandler
-        : IRequestHandler<GetListSupportTicketQuery, GetListResponse<GetListSupportTicketListItemDto>>
+    public class GetAdminListSupportTicketQueryHandler
+        : IRequestHandler<GetAdminListSupportTicketQuery, GetListResponse<GetAdminListSupportTicketListItemDto>>
     {
         private readonly ISupportTicketRepository _supportTicketRepository;
         private readonly IMapper _mapper;
 
-        public GetListSupportTicketQueryHandler(ISupportTicketRepository supportTicketRepository, IMapper mapper)
+        public GetAdminListSupportTicketQueryHandler(ISupportTicketRepository supportTicketRepository, IMapper mapper)
         {
             _supportTicketRepository = supportTicketRepository;
             _mapper = mapper;
         }
 
-        public async Task<GetListResponse<GetListSupportTicketListItemDto>> Handle(
-            GetListSupportTicketQuery request,
+        public async Task<GetListResponse<GetAdminListSupportTicketListItemDto>> Handle(
+            GetAdminListSupportTicketQuery request,
             CancellationToken cancellationToken
         )
         {
@@ -56,15 +55,17 @@ public class GetListSupportTicketQuery
                     (!request.From.HasValue || x.CreatedDate >= request.From.Value)
                     && (!request.To.HasValue || (x.ClosedAt ?? DateTime.UtcNow) <= request.To.Value)
                     && (!request.Status.HasValue || x.Status == request.Status)
-                    && (!request.Priority.HasValue || x.Priority == request.Priority),
+                    && (!request.Priority.HasValue || x.Priority == request.Priority)
+                    && (!request.TenantId.HasValue || x.TenantId == request.TenantId),
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
-                cancellationToken: cancellationToken
+                cancellationToken: cancellationToken,
+                withDeleted: true
             );
 
-            GetListResponse<GetListSupportTicketListItemDto> response = _mapper.Map<GetListResponse<GetListSupportTicketListItemDto>>(
-                supportTickets
-            );
+            GetListResponse<GetAdminListSupportTicketListItemDto> response = _mapper.Map<
+                GetListResponse<GetAdminListSupportTicketListItemDto>
+            >(supportTickets);
             return response;
         }
     }

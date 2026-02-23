@@ -30,6 +30,12 @@ public class SupportTicketBusinessRules : BaseBusinessRules
             await throwBusinessException(SupportTicketsBusinessMessages.SupportTicketNotExists);
     }
 
+    public async Task StaffShouldExistWhenSelected(Staff? staff)
+    {
+        if (staff == null)
+            await throwBusinessException(SupportTicketsBusinessMessages.StaffNotExists);
+    }
+
     public async Task SupportTicketIdShouldExistWhenSelected(int id, CancellationToken cancellationToken)
     {
         SupportTicket? supportTicket = await _supportTicketRepository.GetAsync(

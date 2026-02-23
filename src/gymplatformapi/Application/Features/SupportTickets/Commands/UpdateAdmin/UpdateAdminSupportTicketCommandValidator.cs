@@ -1,10 +1,10 @@
 using FluentValidation;
 
-namespace Application.Features.SupportTickets.Commands.Update;
+namespace Application.Features.SupportTickets.Commands.UpdateAdmin;
 
-public class UpdateSupportTicketCommandValidator : AbstractValidator<UpdateSupportTicketCommand>
+public class UpdateAdminSupportTicketCommandValidator : AbstractValidator<UpdateAdminSupportTicketCommand>
 {
-    public UpdateSupportTicketCommandValidator()
+    public UpdateAdminSupportTicketCommandValidator()
     {
         RuleFor(c => c.Id).NotEmpty();
         RuleFor(c => c.Title).NotEmpty();

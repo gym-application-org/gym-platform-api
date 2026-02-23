@@ -6,6 +6,7 @@ using Core.Application.Pipelines.Authorization;
 using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
+using Core.Security.Constants;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Enums;
@@ -19,7 +20,8 @@ public class UpdateSupportTicketCommand
         ISecuredRequest,
         ICacheRemoverRequest,
         ILoggableRequest,
-        ITransactionalRequest
+        ITransactionalRequest,
+        ITenantRequest
 {
     public int Id { get; set; }
     public string Title { get; set; }
@@ -27,9 +29,8 @@ public class UpdateSupportTicketCommand
     public TicketStatus Status { get; set; }
     public TicketPriority Priority { get; set; }
     public DateTime? ClosedAt { get; set; }
-    public Guid CreatedByStaffId { get; set; }
 
-    public string[] Roles => [Admin, Write, SupportTicketsOperationClaims.Update];
+    public string[] Roles => [GeneralOperationClaims.Owner];
 
     public bool BypassCache { get; }
     public string? CacheKey { get; }

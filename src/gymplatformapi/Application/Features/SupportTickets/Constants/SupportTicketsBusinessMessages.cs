@@ -5,4 +5,6 @@ public static class SupportTicketsBusinessMessages
     public const string SectionName = "SupportTicket";
 
     public const string SupportTicketNotExists = "SupportTicketNotExists";
+
+    public const string StaffNotExists = "StaffNotExists";
 }
