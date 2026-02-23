@@ -3,13 +3,15 @@ using Application.Features.Subscriptions.Commands.Delete;
 using Application.Features.Subscriptions.Commands.Update;
 using Application.Features.Subscriptions.Queries.GetById;
 using Application.Features.Subscriptions.Queries.GetList;
+using Application.Features.Subscriptions.Queries.GetMy;
+using Application.Features.Subscriptions.Queries.GetMyList;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/subscriptions")]
 [ApiController]
 public class SubscriptionsController : BaseController
 {
@@ -21,15 +23,16 @@ public class SubscriptionsController : BaseController
         return Created(uri: "", response);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateSubscriptionCommand updateSubscriptionCommand)
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateSubscriptionCommand updateSubscriptionCommand)
     {
+        updateSubscriptionCommand.Id = id;
         UpdatedSubscriptionResponse response = await Mediator.Send(updateSubscriptionCommand);
 
         return Ok(response);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
         DeletedSubscriptionResponse response = await Mediator.Send(new DeleteSubscriptionCommand { Id = id });
@@ -45,10 +48,51 @@ public class SubscriptionsController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetList([FromQuery] PageRequest pageRequest)
+    public async Task<IActionResult> GetList(
+        [FromQuery] PageRequest pageRequest,
+        [FromQuery] DateTime? from,
+        [FromQuery] DateTime? to,
+        [FromQuery] int subscriptionPlanId,
+        [FromQuery] Guid? memberId
+    )
     {
-        GetListSubscriptionQuery getListSubscriptionQuery = new() { PageRequest = pageRequest };
+        GetListSubscriptionQuery getListSubscriptionQuery =
+            new()
+            {
+                PageRequest = pageRequest,
+                From = from,
+                To = to,
+                MemberId = memberId,
+                SubscriptionPlanId = subscriptionPlanId
+            };
         GetListResponse<GetListSubscriptionListItemDto> response = await Mediator.Send(getListSubscriptionQuery);
+        return Ok(response);
+    }
+
+    [HttpGet("me/{id}")]
+    public async Task<IActionResult> GetMeById([FromRoute] int id)
+    {
+        GetMyByIdSubscriptionResponse response = await Mediator.Send(new GetMyByIdSubscriptionQuery { Id = id });
+        return Ok(response);
+    }
+
+    [HttpGet("me")]
+    public async Task<IActionResult> GetMeList(
+        [FromQuery] PageRequest pageRequest,
+        [FromQuery] DateTime? from,
+        [FromQuery] DateTime? to,
+        [FromQuery] int subscriptionPlanId
+    )
+    {
+        GetMyListSubscriptionQuery getListSubscriptionQuery =
+            new()
+            {
+                PageRequest = pageRequest,
+                From = from,
+                To = to,
+                SubscriptionPlanId = subscriptionPlanId
+            };
+        GetListResponse<GetMyListSubscriptionListItemDto> response = await Mediator.Send(getListSubscriptionQuery);
         return Ok(response);
     }
 }

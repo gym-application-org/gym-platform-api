@@ -1,11 +1,15 @@
 using Application.Features.Subscriptions.Constants;
 using Application.Features.Subscriptions.Rules;
+using Application.Services.Members;
 using Application.Services.Repositories;
+using Application.Services.SubscriptionPlans;
 using AutoMapper;
+using Core.Application.Abstractions.Security;
 using Core.Application.Pipelines.Authorization;
 using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
+using Core.Security.Constants;
 using Domain.Entities;
 using Domain.Enums;
 using MediatR;
@@ -18,7 +22,8 @@ public class UpdateSubscriptionCommand
         ISecuredRequest,
         ICacheRemoverRequest,
         ILoggableRequest,
-        ITransactionalRequest
+        ITransactionalRequest,
+        ITenantRequest
 {
     public int Id { get; set; }
     public DateTime StartDate { get; set; }
@@ -33,7 +38,7 @@ public class UpdateSubscriptionCommand
     public Guid MemberId { get; set; }
     public int SubscriptionPlanId { get; set; }
 
-    public string[] Roles => [Admin, Write, SubscriptionsOperationClaims.Update];
+    public string[] Roles => [GeneralOperationClaims.Owner, GeneralOperationClaims.Staff];
 
     public bool BypassCache { get; }
     public string? CacheKey { get; }
@@ -44,20 +49,38 @@ public class UpdateSubscriptionCommand
         private readonly IMapper _mapper;
         private readonly ISubscriptionRepository _subscriptionRepository;
         private readonly SubscriptionBusinessRules _subscriptionBusinessRules;
+        private readonly ICurrentTenant _currentTenant;
+        private readonly IMemberService _memberService;
+        private readonly ISubscriptionPlanService _subscriptionPlanService;
 
         public UpdateSubscriptionCommandHandler(
             IMapper mapper,
             ISubscriptionRepository subscriptionRepository,
-            SubscriptionBusinessRules subscriptionBusinessRules
+            SubscriptionBusinessRules subscriptionBusinessRules,
+            ICurrentTenant currentTenant,
+            IMemberService memberService,
+            ISubscriptionPlanService subscriptionPlanService
         )
         {
             _mapper = mapper;
             _subscriptionRepository = subscriptionRepository;
             _subscriptionBusinessRules = subscriptionBusinessRules;
+            _currentTenant = currentTenant;
+            _memberService = memberService;
+            _subscriptionPlanService = subscriptionPlanService;
         }
 
         public async Task<UpdatedSubscriptionResponse> Handle(UpdateSubscriptionCommand request, CancellationToken cancellationToken)
         {
+            Member? member = await _memberService.GetAsync(x => x.Id == request.MemberId, cancellationToken: cancellationToken);
+            await _subscriptionBusinessRules.MemberShouldExistWhenSelected(member);
+
+            SubscriptionPlan? subscriptionPlan = await _subscriptionPlanService.GetAsync(
+                x => x.Id == request.SubscriptionPlanId,
+                cancellationToken: cancellationToken
+            );
+            await _subscriptionBusinessRules.SubscriptionPlanShouldExistWhenSelected(subscriptionPlan);
+
             Subscription? subscription = await _subscriptionRepository.GetAsync(
                 predicate: s => s.Id == request.Id,
                 cancellationToken: cancellationToken

@@ -7,6 +7,7 @@ using Core.Application.Pipelines.Authorization;
 using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
+using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
 using static Application.Features.Subscriptions.Constants.SubscriptionsOperationClaims;
@@ -18,11 +19,12 @@ public class DeleteSubscriptionCommand
         ISecuredRequest,
         ICacheRemoverRequest,
         ILoggableRequest,
-        ITransactionalRequest
+        ITransactionalRequest,
+        ITenantRequest
 {
     public int Id { get; set; }
 
-    public string[] Roles => [Admin, Write, SubscriptionsOperationClaims.Delete];
+    public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
 
     public bool BypassCache { get; }
     public string? CacheKey { get; }

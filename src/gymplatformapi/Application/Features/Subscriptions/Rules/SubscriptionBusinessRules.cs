@@ -30,6 +30,18 @@ public class SubscriptionBusinessRules : BaseBusinessRules
             await throwBusinessException(SubscriptionsBusinessMessages.SubscriptionNotExists);
     }
 
+    public async Task SubscriptionPlanShouldExistWhenSelected(SubscriptionPlan? subscriptionPlan)
+    {
+        if (subscriptionPlan == null)
+            await throwBusinessException(SubscriptionsBusinessMessages.SubscriptionPlanNotExists);
+    }
+
+    public async Task MemberShouldExistWhenSelected(Member? member)
+    {
+        if (member == null)
+            await throwBusinessException(SubscriptionsBusinessMessages.MemberNotExists);
+    }
+
     public async Task SubscriptionIdShouldExistWhenSelected(int id, CancellationToken cancellationToken)
     {
         Subscription? subscription = await _subscriptionRepository.GetAsync(
