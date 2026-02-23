@@ -30,6 +30,18 @@ public class TenantBusinessRules : BaseBusinessRules
             await throwBusinessException(TenantsBusinessMessages.TenantNotExists);
     }
 
+    public async Task MemberShouldBeActivated(Member member)
+    {
+        if (member.DeletedDate != null || member.Status != Domain.Enums.MemberStatus.Active)
+            await throwBusinessException(TenantsBusinessMessages.MemberNotActive);
+    }
+
+    public async Task StaffShouldBeActivated(Staff staff)
+    {
+        if (staff.DeletedDate != null || !staff.IsActive)
+            await throwBusinessException(TenantsBusinessMessages.StaffNotActive);
+    }
+
     public async Task TenantIdShouldExistWhenSelected(Guid id, CancellationToken cancellationToken)
     {
         Tenant? tenant = await _tenantRepository.GetAsync(
@@ -38,5 +50,10 @@ public class TenantBusinessRules : BaseBusinessRules
             cancellationToken: cancellationToken
         );
         await TenantShouldExistWhenSelected(tenant);
+    }
+
+    public async Task throwTenantMemberShouldExist()
+    {
+        await throwBusinessException(TenantsBusinessMessages.TenantMemberNotExists);
     }
 }

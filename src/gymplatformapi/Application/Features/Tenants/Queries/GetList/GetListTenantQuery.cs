@@ -6,6 +6,7 @@ using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
+using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
 using static Application.Features.Tenants.Constants.TenantsOperationClaims;
@@ -16,7 +17,7 @@ public class GetListTenantQuery : IRequest<GetListResponse<GetListTenantListItem
 {
     public PageRequest PageRequest { get; set; }
 
-    public string[] Roles => [Admin, Read];
+    public string[] Roles => [GeneralOperationClaims.Admin];
 
     public bool BypassCache { get; }
     public string? CacheKey => $"GetListTenants({PageRequest.PageIndex},{PageRequest.PageSize})";
@@ -39,6 +40,7 @@ public class GetListTenantQuery : IRequest<GetListResponse<GetListTenantListItem
             IPaginate<Tenant> tenants = await _tenantRepository.GetListAsync(
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
+                withDeleted: true,
                 cancellationToken: cancellationToken
             );
 
