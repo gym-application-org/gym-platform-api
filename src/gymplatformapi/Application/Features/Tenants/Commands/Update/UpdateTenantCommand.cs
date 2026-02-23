@@ -6,6 +6,7 @@ using Core.Application.Pipelines.Authorization;
 using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
+using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
 using static Application.Features.Tenants.Constants.TenantsOperationClaims;
@@ -23,7 +24,7 @@ public class UpdateTenantCommand
     public string Name { get; set; }
     public bool IsActive { get; set; }
 
-    public string[] Roles => [Admin, Write, TenantsOperationClaims.Update];
+    public string[] Roles => [GeneralOperationClaims.Admin];
 
     public bool BypassCache { get; }
     public string? CacheKey { get; }

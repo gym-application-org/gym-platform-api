@@ -3,6 +3,7 @@ using Application.Features.Tenants.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
+using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
 using static Application.Features.Tenants.Constants.TenantsOperationClaims;
@@ -13,7 +14,7 @@ public class GetByIdTenantQuery : IRequest<GetByIdTenantResponse>, ISecuredReque
 {
     public Guid Id { get; set; }
 
-    public string[] Roles => [Admin, Read];
+    public string[] Roles => [GeneralOperationClaims.Admin];
 
     public class GetByIdTenantQueryHandler : IRequestHandler<GetByIdTenantQuery, GetByIdTenantResponse>
     {
@@ -30,7 +31,11 @@ public class GetByIdTenantQuery : IRequest<GetByIdTenantResponse>, ISecuredReque
 
         public async Task<GetByIdTenantResponse> Handle(GetByIdTenantQuery request, CancellationToken cancellationToken)
         {
-            Tenant? tenant = await _tenantRepository.GetAsync(predicate: t => t.Id == request.Id, cancellationToken: cancellationToken);
+            Tenant? tenant = await _tenantRepository.GetAsync(
+                predicate: t => t.Id == request.Id,
+                withDeleted: true,
+                cancellationToken: cancellationToken
+            );
             await _tenantBusinessRules.TenantShouldExistWhenSelected(tenant);
 
             GetByIdTenantResponse response = _mapper.Map<GetByIdTenantResponse>(tenant);
