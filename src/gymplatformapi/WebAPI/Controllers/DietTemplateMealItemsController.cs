@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
 
+/*
 [Route("api/[controller]")]
 [ApiController]
 public class DietTemplateMealItemsController : BaseController
@@ -52,3 +53,4 @@ public class DietTemplateMealItemsController : BaseController
         return Ok(response);
     }
 }
+*/

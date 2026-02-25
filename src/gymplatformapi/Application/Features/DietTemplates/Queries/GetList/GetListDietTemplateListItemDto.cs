@@ -12,4 +12,5 @@ public class GetListDietTemplateListItemDto : IDto
     public int? CarbGramsTarget { get; set; }
     public int? FatGramsTarget { get; set; }
     public bool IsActive { get; set; }
+    public int DayCount { get; set; }
 }

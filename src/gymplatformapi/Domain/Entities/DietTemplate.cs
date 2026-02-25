@@ -19,7 +19,7 @@ public class DietTemplate : TenantEntity<int>
 
     public bool IsActive { get; set; }
 
-    public ICollection<DietTemplateDay> Days = new List<DietTemplateDay>();
+    public ICollection<DietTemplateDay> Days { get; set; } = new List<DietTemplateDay>();
 
     public DietTemplate() { }
 

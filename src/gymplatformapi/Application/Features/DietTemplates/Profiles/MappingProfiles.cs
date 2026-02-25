@@ -2,6 +2,7 @@ using Application.Features.DietTemplates.Commands.Create;
 using Application.Features.DietTemplates.Commands.Delete;
 using Application.Features.DietTemplates.Commands.Update;
 using Application.Features.DietTemplates.Queries.GetById;
+using Application.Features.DietTemplates.Queries.GetById.Dtos;
 using Application.Features.DietTemplates.Queries.GetList;
 using AutoMapper;
 using Core.Application.Responses;
@@ -20,8 +21,12 @@ public class MappingProfiles : Profile
         CreateMap<DietTemplate, UpdatedDietTemplateResponse>().ReverseMap();
         CreateMap<DietTemplate, DeleteDietTemplateCommand>().ReverseMap();
         CreateMap<DietTemplate, DeletedDietTemplateResponse>().ReverseMap();
-        CreateMap<DietTemplate, GetByIdDietTemplateResponse>().ReverseMap();
-        CreateMap<DietTemplate, GetListDietTemplateListItemDto>().ReverseMap();
-        CreateMap<IPaginate<DietTemplate>, GetListResponse<GetListDietTemplateListItemDto>>().ReverseMap();
+        CreateMap<DietTemplate, GetByIdDietTemplateResponse>();
+        CreateMap<DietTemplateDay, GetByIdDietTemplateDayDto>();
+        CreateMap<DietTemplateMeal, GetByIdDietTemplateMealDto>();
+        CreateMap<DietTemplateMealItem, GetByIdDietTemplateMealItemDto>();
+        CreateMap<DietTemplate, GetListDietTemplateListItemDto>()
+            .ForMember(dest => dest.DayCount, opt => opt.MapFrom(src => src.Days.Count))
+            .ReverseMap();
     }
 }
