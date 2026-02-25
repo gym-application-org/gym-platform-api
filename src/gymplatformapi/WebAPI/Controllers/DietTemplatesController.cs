@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/diet-templates")]
 [ApiController]
 public class DietTemplatesController : BaseController
 {
@@ -21,15 +21,16 @@ public class DietTemplatesController : BaseController
         return Created(uri: "", response);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateDietTemplateCommand updateDietTemplateCommand)
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateDietTemplateCommand updateDietTemplateCommand)
     {
+        updateDietTemplateCommand.Id = id;
         UpdatedDietTemplateResponse response = await Mediator.Send(updateDietTemplateCommand);
 
         return Ok(response);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
         DeletedDietTemplateResponse response = await Mediator.Send(new DeleteDietTemplateCommand { Id = id });

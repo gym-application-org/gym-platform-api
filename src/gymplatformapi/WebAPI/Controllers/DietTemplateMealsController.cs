@@ -9,10 +9,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
 
+
+/*
 [Route("api/[controller]")]
 [ApiController]
 public class DietTemplateMealsController : BaseController
 {
+
     [HttpPost]
     public async Task<IActionResult> Add([FromBody] CreateDietTemplateMealCommand createDietTemplateMealCommand)
     {
@@ -52,3 +55,4 @@ public class DietTemplateMealsController : BaseController
         return Ok(response);
     }
 }
+*/

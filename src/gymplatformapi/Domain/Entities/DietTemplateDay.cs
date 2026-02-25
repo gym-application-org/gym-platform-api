@@ -13,7 +13,7 @@ public class DietTemplateDay : TenantEntity<int>
     public string Title { get; set; } = default!;
     public string? Notes { get; set; }
 
-    public ICollection<DietTemplateMeal> Meals = new List<DietTemplateMeal>();
+    public ICollection<DietTemplateMeal> Meals { get; set; } = new List<DietTemplateMeal>();
 
     public int DietTemplateId { get; set; }
     public virtual DietTemplate DietTemplate { get; set; } = null!;

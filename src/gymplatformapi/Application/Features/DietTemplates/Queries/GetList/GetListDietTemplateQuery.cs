@@ -6,17 +6,22 @@ using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
+using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
 using static Application.Features.DietTemplates.Constants.DietTemplatesOperationClaims;
 
 namespace Application.Features.DietTemplates.Queries.GetList;
 
-public class GetListDietTemplateQuery : IRequest<GetListResponse<GetListDietTemplateListItemDto>>, ISecuredRequest, ICachableRequest
+public class GetListDietTemplateQuery
+    : IRequest<GetListResponse<GetListDietTemplateListItemDto>>,
+        ISecuredRequest,
+        ICachableRequest,
+        ITenantRequest
 {
     public PageRequest PageRequest { get; set; }
 
-    public string[] Roles => [Admin, Read];
+    public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
 
     public bool BypassCache { get; }
     public string? CacheKey => $"GetListDietTemplates({PageRequest.PageIndex},{PageRequest.PageSize})";
