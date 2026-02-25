@@ -3,17 +3,18 @@ using Application.Features.DietAssignments.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
+using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
 using static Application.Features.DietAssignments.Constants.DietAssignmentsOperationClaims;
 
 namespace Application.Features.DietAssignments.Queries.GetById;
 
-public class GetByIdDietAssignmentQuery : IRequest<GetByIdDietAssignmentResponse>, ISecuredRequest
+public class GetByIdDietAssignmentQuery : IRequest<GetByIdDietAssignmentResponse>, ISecuredRequest, ITenantRequest
 {
     public int Id { get; set; }
 
-    public string[] Roles => [Admin, Read];
+    public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
 
     public class GetByIdDietAssignmentQueryHandler : IRequestHandler<GetByIdDietAssignmentQuery, GetByIdDietAssignmentResponse>
     {

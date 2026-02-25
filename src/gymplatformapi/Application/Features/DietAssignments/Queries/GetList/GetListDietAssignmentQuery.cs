@@ -6,17 +6,27 @@ using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
+using Core.Security.Constants;
 using Domain.Entities;
+using Domain.Enums;
 using MediatR;
 using static Application.Features.DietAssignments.Constants.DietAssignmentsOperationClaims;
 
 namespace Application.Features.DietAssignments.Queries.GetList;
 
-public class GetListDietAssignmentQuery : IRequest<GetListResponse<GetListDietAssignmentListItemDto>>, ISecuredRequest, ICachableRequest
+public class GetListDietAssignmentQuery
+    : IRequest<GetListResponse<GetListDietAssignmentListItemDto>>,
+        ISecuredRequest,
+        ICachableRequest,
+        ITenantRequest
 {
     public PageRequest PageRequest { get; set; }
 
-    public string[] Roles => [Admin, Read];
+    public DateTime? From { get; set; }
+    public DateTime? To { get; set; }
+    public AssignmentStatus? Status { get; set; }
+
+    public string[] Roles => [GeneralOperationClaims.Owner, GeneralOperationClaims.Staff];
 
     public bool BypassCache { get; }
     public string? CacheKey => $"GetListDietAssignments({PageRequest.PageIndex},{PageRequest.PageSize})";
@@ -41,6 +51,11 @@ public class GetListDietAssignmentQuery : IRequest<GetListResponse<GetListDietAs
         )
         {
             IPaginate<DietAssignment> dietAssignments = await _dietAssignmentRepository.GetListAsync(
+                predicate: x =>
+                    (!request.From.HasValue || x.StartDate >= request.From)
+                    && (!request.To.HasValue || x.EndDate.HasValue ? x.EndDate <= request.To : false)
+                    && (!request.Status.HasValue || x.Status == request.Status),
+                orderBy: x => x.OrderByDescending(x => x.CreatedDate),
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
                 cancellationToken: cancellationToken

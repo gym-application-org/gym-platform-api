@@ -30,6 +30,31 @@ public class DietAssignmentBusinessRules : BaseBusinessRules
             await throwBusinessException(DietAssignmentsBusinessMessages.DietAssignmentNotExists);
     }
 
+    public async Task MemberShouldExistWhenSelected(Member? member)
+    {
+        if (member == null)
+            await throwBusinessException(DietAssignmentsBusinessMessages.MemberNotExists);
+    }
+
+    public async Task DietTemplateShouldExistWhenSelected(DietTemplate? dietTemplate)
+    {
+        if (dietTemplate == null)
+            await throwBusinessException(DietAssignmentsBusinessMessages.DietTemplateNotExists);
+    }
+
+    public async Task AllMembersShouldExistInCurrentTenant(ICollection<Guid> requestedMemberIds, IList<Member>? foundMembers)
+    {
+        if (foundMembers is null)
+            await throwBusinessException(DietAssignmentsBusinessMessages.MemberNotExists);
+
+        HashSet<Guid> requestedSet = requestedMemberIds.Distinct().ToHashSet();
+
+        HashSet<Guid> foundSet = foundMembers.Select(x => x.Id).ToHashSet();
+
+        if (!requestedSet.SetEquals(foundSet))
+            await throwBusinessException(DietAssignmentsBusinessMessages.MemberNotExists);
+    }
+
     public async Task DietAssignmentIdShouldExistWhenSelected(int id, CancellationToken cancellationToken)
     {
         DietAssignment? dietAssignment = await _dietAssignmentRepository.GetAsync(
