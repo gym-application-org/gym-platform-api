@@ -15,10 +15,10 @@ using Domain.Enums;
 using MediatR;
 using static Application.Features.DietAssignments.Constants.DietAssignmentsOperationClaims;
 
-namespace Application.Features.DietAssignments.Commands.Create;
+namespace Application.Features.DietAssignments.Commands.CreateBulk;
 
-public class CreateDietAssignmentCommand
-    : IRequest<CreatedDietAssignmentResponse>,
+public class CreateBulkDietAssignmentCommand
+    : IRequest<CreatedBulkDietAssignmentResponse>,
         ISecuredRequest,
         ICacheRemoverRequest,
         ILoggableRequest,
@@ -28,7 +28,7 @@ public class CreateDietAssignmentCommand
     public DateTime StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public AssignmentStatus Status { get; set; }
-    public Guid MemberId { get; set; }
+    public ICollection<Guid> MemberIds { get; set; } = new List<Guid>();
     public int DietTemplateId { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
@@ -37,7 +37,7 @@ public class CreateDietAssignmentCommand
     public string? CacheKey { get; }
     public string[]? CacheGroupKey => ["GetDietAssignments"];
 
-    public class CreateDietAssignmentCommandHandler : IRequestHandler<CreateDietAssignmentCommand, CreatedDietAssignmentResponse>
+    public class CreateDietAssignmentCommandHandler : IRequestHandler<CreateBulkDietAssignmentCommand, CreatedBulkDietAssignmentResponse>
     {
         private readonly IMapper _mapper;
         private readonly IDietAssignmentRepository _dietAssignmentRepository;
@@ -63,10 +63,26 @@ public class CreateDietAssignmentCommand
             _dietTemplateService = dietTemplateService;
         }
 
-        public async Task<CreatedDietAssignmentResponse> Handle(CreateDietAssignmentCommand request, CancellationToken cancellationToken)
+        public async Task<CreatedBulkDietAssignmentResponse> Handle(
+            CreateBulkDietAssignmentCommand request,
+            CancellationToken cancellationToken
+        )
         {
-            Member? member = await _memberService.GetAsync(x => x.Id == request.MemberId, cancellationToken: cancellationToken);
-            await _dietAssignmentBusinessRules.MemberShouldExistWhenSelected(member);
+            Guid tenantId = _currentTenant.TenantId!.Value;
+
+            List<Guid> distinctMemberIds = request.MemberIds.Distinct().ToList();
+
+            var members = await _memberService.GetListAsync(
+                predicate: x => distinctMemberIds.Contains(x.Id),
+                index: 0,
+                size: distinctMemberIds.Count,
+                cancellationToken: cancellationToken
+            );
+
+            await _dietAssignmentBusinessRules.AllMembersShouldExistInCurrentTenant(
+                requestedMemberIds: distinctMemberIds,
+                foundMembers: members?.Items
+            );
 
             DietTemplate? dietTemplate = await _dietTemplateService.GetAsync(
                 x => x.Id == request.DietTemplateId,
@@ -74,13 +90,33 @@ public class CreateDietAssignmentCommand
             );
             await _dietAssignmentBusinessRules.DietTemplateShouldExistWhenSelected(dietTemplate);
 
-            DietAssignment dietAssignment = _mapper.Map<DietAssignment>(request);
-            dietAssignment.TenantId = _currentTenant.TenantId!.Value;
+            List<DietAssignment> assignments = new();
 
-            await _dietAssignmentRepository.AddAsync(dietAssignment);
+            foreach (Member member in members!.Items)
+            {
+                DietAssignment dietAssignment =
+                    new(
+                        tenantId: tenantId,
+                        memberId: member.Id,
+                        dietTemplateId: request.DietTemplateId,
+                        startDate: request.StartDate,
+                        endDate: request.EndDate
+                    )
+                    {
+                        Status = request.Status
+                    };
 
-            CreatedDietAssignmentResponse response = _mapper.Map<CreatedDietAssignmentResponse>(dietAssignment);
-            return response;
+                assignments.Add(dietAssignment);
+            }
+
+            await _dietAssignmentRepository.AddRangeAsync(assignments);
+
+            return new CreatedBulkDietAssignmentResponse
+            {
+                DietTemplateId = request.DietTemplateId,
+                CreatedCount = assignments.Count,
+                AssignmentIds = assignments.Select(x => x.Id).ToList()
+            };
         }
     }
 }

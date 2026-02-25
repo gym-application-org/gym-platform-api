@@ -11,7 +11,6 @@ public class UpdateDietAssignmentCommandValidator : AbstractValidator<UpdateDiet
         RuleFor(c => c.EndDate).NotEmpty();
         RuleFor(c => c.Status).NotEmpty();
         RuleFor(c => c.MemberId).NotEmpty();
-        RuleFor(c => c.Member).NotEmpty();
         RuleFor(c => c.DietTemplateId).NotEmpty();
     }
 }

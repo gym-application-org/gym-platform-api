@@ -11,6 +11,5 @@ public class GetByIdDietAssignmentResponse : IResponse
     public DateTime? EndDate { get; set; }
     public AssignmentStatus Status { get; set; }
     public Guid MemberId { get; set; }
-    public Member Member { get; set; }
     public int DietTemplateId { get; set; }
 }
