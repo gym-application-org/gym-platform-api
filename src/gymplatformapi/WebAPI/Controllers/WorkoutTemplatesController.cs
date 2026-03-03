@@ -21,15 +21,16 @@ public class WorkoutTemplatesController : BaseController
         return Created(uri: "", response);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateWorkoutTemplateCommand updateWorkoutTemplateCommand)
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateWorkoutTemplateCommand updateWorkoutTemplateCommand)
     {
+        updateWorkoutTemplateCommand.Id = id;
         UpdatedWorkoutTemplateResponse response = await Mediator.Send(updateWorkoutTemplateCommand);
 
         return Ok(response);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
         DeletedWorkoutTemplateResponse response = await Mediator.Send(new DeleteWorkoutTemplateCommand { Id = id });
@@ -37,7 +38,7 @@ public class WorkoutTemplatesController : BaseController
         return Ok(response);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         GetByIdWorkoutTemplateResponse response = await Mediator.Send(new GetByIdWorkoutTemplateQuery { Id = id });

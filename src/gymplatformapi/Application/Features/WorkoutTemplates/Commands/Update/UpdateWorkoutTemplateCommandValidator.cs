@@ -1,3 +1,4 @@
+using Application.Features.WorkoutTemplates.Commands.Create;
 using FluentValidation;
 
 namespace Application.Features.WorkoutTemplates.Commands.Update;
@@ -6,10 +7,16 @@ public class UpdateWorkoutTemplateCommandValidator : AbstractValidator<UpdateWor
 {
     public UpdateWorkoutTemplateCommandValidator()
     {
-        RuleFor(c => c.Id).NotEmpty();
-        RuleFor(c => c.Name).NotEmpty();
-        RuleFor(c => c.Description).NotEmpty();
-        RuleFor(c => c.Level).NotEmpty();
-        RuleFor(c => c.IsActive).NotEmpty();
+        RuleFor(c => c.Id).GreaterThan(0);
+
+        RuleFor(c => c.Name).NotEmpty().MaximumLength(200);
+
+        RuleFor(c => c.Description).MaximumLength(1000);
+
+        RuleFor(c => c.Level).IsInEnum();
+
+        RuleFor(c => c.Days).NotNull();
+
+        RuleForEach(c => c.Days).SetValidator(new UpdateWorkoutTemplateDayDtoValidator());
     }
 }

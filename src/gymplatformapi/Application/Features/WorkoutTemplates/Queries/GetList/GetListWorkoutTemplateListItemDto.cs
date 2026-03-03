@@ -10,4 +10,5 @@ public class GetListWorkoutTemplateListItemDto : IDto
     public string? Description { get; set; }
     public DifficultyLevel Level { get; set; }
     public bool IsActive { get; set; }
+    public int DayCount { get; set; }
 }

@@ -6,17 +6,22 @@ using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
+using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
 using static Application.Features.WorkoutTemplates.Constants.WorkoutTemplatesOperationClaims;
 
 namespace Application.Features.WorkoutTemplates.Queries.GetList;
 
-public class GetListWorkoutTemplateQuery : IRequest<GetListResponse<GetListWorkoutTemplateListItemDto>>, ISecuredRequest, ICachableRequest
+public class GetListWorkoutTemplateQuery
+    : IRequest<GetListResponse<GetListWorkoutTemplateListItemDto>>,
+        ISecuredRequest,
+        ICachableRequest,
+        ITenantRequest
 {
     public PageRequest PageRequest { get; set; }
 
-    public string[] Roles => [Admin, Read];
+    public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
 
     public bool BypassCache { get; }
     public string? CacheKey => $"GetListWorkoutTemplates({PageRequest.PageIndex},{PageRequest.PageSize})";
