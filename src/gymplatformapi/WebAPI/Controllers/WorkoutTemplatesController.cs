@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/workout-templates")]
 [ApiController]
 public class WorkoutTemplatesController : BaseController
 {
