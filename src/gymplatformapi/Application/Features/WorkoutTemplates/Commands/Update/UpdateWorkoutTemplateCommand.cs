@@ -102,7 +102,7 @@ public class UpdateWorkoutTemplateCommand
                             tempo: exerciseDto.Tempo,
                             note: exerciseDto.Note
                         );
-                     
+
                     day.Exercises.Add(exercise);
                 }
 
