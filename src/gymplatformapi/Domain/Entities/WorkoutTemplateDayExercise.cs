@@ -29,7 +29,7 @@ public class WorkoutTemplateDayExercise : TenantEntity<int>
     public WorkoutTemplateDayExercise(
         Guid tenantId,
         int workoutTemplateDayId,
-        int exerciseId,
+        int? exerciseId,
         int order,
         int sets,
         string reps,

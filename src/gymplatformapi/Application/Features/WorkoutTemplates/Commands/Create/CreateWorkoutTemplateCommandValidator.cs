@@ -6,9 +6,14 @@ public class CreateWorkoutTemplateCommandValidator : AbstractValidator<CreateWor
 {
     public CreateWorkoutTemplateCommandValidator()
     {
-        RuleFor(c => c.Name).NotEmpty();
-        RuleFor(c => c.Description).NotEmpty();
-        RuleFor(c => c.Level).NotEmpty();
-        RuleFor(c => c.IsActive).NotEmpty();
+        RuleFor(c => c.Name).NotEmpty().MaximumLength(200);
+
+        RuleFor(c => c.Description).MaximumLength(1000);
+
+        RuleFor(c => c.Level).IsInEnum();
+
+        RuleFor(c => c.Days).NotNull();
+
+        RuleForEach(c => c.Days).SetValidator(new CreateWorkoutTemplateDayDtoValidator());
     }
 }

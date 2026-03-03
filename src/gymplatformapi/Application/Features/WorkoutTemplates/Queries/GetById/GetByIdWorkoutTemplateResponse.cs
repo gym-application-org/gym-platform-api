@@ -1,3 +1,4 @@
+using Application.Features.WorkoutTemplates.Queries.GetById.Dtos;
 using Core.Application.Responses;
 using Domain.Enums;
 
@@ -10,4 +11,6 @@ public class GetByIdWorkoutTemplateResponse : IResponse
     public string? Description { get; set; }
     public DifficultyLevel Level { get; set; }
     public bool IsActive { get; set; }
+
+    public ICollection<GetByIdWorkoutTemplateDayDto> DayDtos { get; set; } = new List<GetByIdWorkoutTemplateDayDto>();
 }

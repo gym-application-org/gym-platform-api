@@ -3,17 +3,19 @@ using Application.Features.WorkoutTemplates.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
+using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using static Application.Features.WorkoutTemplates.Constants.WorkoutTemplatesOperationClaims;
 
 namespace Application.Features.WorkoutTemplates.Queries.GetById;
 
-public class GetByIdWorkoutTemplateQuery : IRequest<GetByIdWorkoutTemplateResponse>, ISecuredRequest
+public class GetByIdWorkoutTemplateQuery : IRequest<GetByIdWorkoutTemplateResponse>, ISecuredRequest, ITenantRequest
 {
     public int Id { get; set; }
 
-    public string[] Roles => [Admin, Read];
+    public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
 
     public class GetByIdWorkoutTemplateQueryHandler : IRequestHandler<GetByIdWorkoutTemplateQuery, GetByIdWorkoutTemplateResponse>
     {
@@ -35,6 +37,7 @@ public class GetByIdWorkoutTemplateQuery : IRequest<GetByIdWorkoutTemplateRespon
         public async Task<GetByIdWorkoutTemplateResponse> Handle(GetByIdWorkoutTemplateQuery request, CancellationToken cancellationToken)
         {
             WorkoutTemplate? workoutTemplate = await _workoutTemplateRepository.GetAsync(
+                include: q => q.Include(q => q.Days).ThenInclude(d => d.Exercises),
                 predicate: wt => wt.Id == request.Id,
                 cancellationToken: cancellationToken
             );
