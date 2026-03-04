@@ -1,3 +1,4 @@
+using Application.Features.DietAssignments.Constants;
 using Application.Features.WorkoutAssignments.Constants;
 using Application.Services.Repositories;
 using Core.Application.Rules;
@@ -33,6 +34,18 @@ public class WorkoutAssignmentBusinessRules : BaseBusinessRules
             await throwBusinessException(WorkoutAssignmentsBusinessMessages.WorkoutAssignmentNotExists);
     }
 
+    public async Task MemberShouldExistWhenSelected(Member? member)
+    {
+        if (member == null)
+            await throwBusinessException(WorkoutAssignmentsBusinessMessages.MemberNotExists);
+    }
+
+    public async Task WorkoutTemplateShouldExistWhenSelected(WorkoutTemplate? workoutTemplate)
+    {
+        if (workoutTemplate == null)
+            await throwBusinessException(WorkoutAssignmentsBusinessMessages.WorkoutTemplateNotExists);
+    }
+
     public async Task WorkoutAssignmentIdShouldExistWhenSelected(int id, CancellationToken cancellationToken)
     {
         WorkoutAssignment? workoutAssignment = await _workoutAssignmentRepository.GetAsync(
@@ -41,5 +54,18 @@ public class WorkoutAssignmentBusinessRules : BaseBusinessRules
             cancellationToken: cancellationToken
         );
         await WorkoutAssignmentShouldExistWhenSelected(workoutAssignment);
+    }
+
+    public async Task AllMembersShouldExistInCurrentTenant(ICollection<Guid> requestedMemberIds, IList<Member>? foundMembers)
+    {
+        if (foundMembers is null)
+            await throwBusinessException(DietAssignmentsBusinessMessages.MemberNotExists);
+
+        HashSet<Guid> requestedSet = requestedMemberIds.Distinct().ToHashSet();
+
+        HashSet<Guid> foundSet = foundMembers.Select(x => x.Id).ToHashSet();
+
+        if (!requestedSet.SetEquals(foundSet))
+            await throwBusinessException(DietAssignmentsBusinessMessages.MemberNotExists);
     }
 }

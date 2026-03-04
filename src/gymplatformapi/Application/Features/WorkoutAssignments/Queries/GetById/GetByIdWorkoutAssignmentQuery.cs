@@ -3,17 +3,18 @@ using Application.Features.WorkoutAssignments.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
+using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
 using static Application.Features.WorkoutAssignments.Constants.WorkoutAssignmentsOperationClaims;
 
 namespace Application.Features.WorkoutAssignments.Queries.GetById;
 
-public class GetByIdWorkoutAssignmentQuery : IRequest<GetByIdWorkoutAssignmentResponse>, ISecuredRequest
+public class GetByIdWorkoutAssignmentQuery : IRequest<GetByIdWorkoutAssignmentResponse>, ISecuredRequest, ITenantRequest
 {
     public int Id { get; set; }
 
-    public string[] Roles => [Admin, Read];
+    public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
 
     public class GetByIdWorkoutAssignmentQueryHandler : IRequestHandler<GetByIdWorkoutAssignmentQuery, GetByIdWorkoutAssignmentResponse>
     {

@@ -1,6 +1,8 @@
 using Application.Features.WorkoutAssignments.Constants;
 using Application.Features.WorkoutAssignments.Rules;
+using Application.Services.Members;
 using Application.Services.Repositories;
+using Application.Services.WorkoutTemplates;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
 using Core.Application.Pipelines.Caching;
@@ -38,16 +40,22 @@ public class UpdateWorkoutAssignmentCommand
         private readonly IMapper _mapper;
         private readonly IWorkoutAssignmentRepository _workoutAssignmentRepository;
         private readonly WorkoutAssignmentBusinessRules _workoutAssignmentBusinessRules;
+        private readonly IMemberService _memberService;
+        private readonly IWorkoutTemplateService _workoutTemplateService;
 
         public UpdateWorkoutAssignmentCommandHandler(
             IMapper mapper,
             IWorkoutAssignmentRepository workoutAssignmentRepository,
-            WorkoutAssignmentBusinessRules workoutAssignmentBusinessRules
+            WorkoutAssignmentBusinessRules workoutAssignmentBusinessRules,
+            IMemberService memberService,
+            IWorkoutTemplateService workoutTemplateService
         )
         {
             _mapper = mapper;
             _workoutAssignmentRepository = workoutAssignmentRepository;
             _workoutAssignmentBusinessRules = workoutAssignmentBusinessRules;
+            _memberService = memberService;
+            _workoutTemplateService = workoutTemplateService;
         }
 
         public async Task<UpdatedWorkoutAssignmentResponse> Handle(
@@ -55,6 +63,15 @@ public class UpdateWorkoutAssignmentCommand
             CancellationToken cancellationToken
         )
         {
+            Member? member = await _memberService.GetAsync(x => x.Id == request.MemberId, cancellationToken: cancellationToken);
+            await _workoutAssignmentBusinessRules.MemberShouldExistWhenSelected(member);
+
+            WorkoutTemplate? workoutTemplate = await _workoutTemplateService.GetAsync(
+                predicate: x => x.Id == request.WorkoutTemplateId,
+                cancellationToken: cancellationToken
+            );
+            await _workoutAssignmentBusinessRules.WorkoutTemplateShouldExistWhenSelected(workoutTemplate);
+
             WorkoutAssignment? workoutAssignment = await _workoutAssignmentRepository.GetAsync(
                 predicate: wa => wa.Id == request.Id,
                 cancellationToken: cancellationToken

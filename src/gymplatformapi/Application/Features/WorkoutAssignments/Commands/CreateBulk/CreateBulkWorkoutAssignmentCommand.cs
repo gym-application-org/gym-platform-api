@@ -1,7 +1,4 @@
-using Application.Features.DietAssignments.Rules;
-using Application.Features.WorkoutAssignments.Constants;
 using Application.Features.WorkoutAssignments.Rules;
-using Application.Services.DietTemplates;
 using Application.Services.Members;
 using Application.Services.Repositories;
 using Application.Services.WorkoutTemplates;
@@ -15,12 +12,11 @@ using Core.Security.Constants;
 using Domain.Entities;
 using Domain.Enums;
 using MediatR;
-using static Application.Features.WorkoutAssignments.Constants.WorkoutAssignmentsOperationClaims;
 
-namespace Application.Features.WorkoutAssignments.Commands.Create;
+namespace Application.Features.WorkoutAssignments.Commands.CreateBulk;
 
-public class CreateWorkoutAssignmentCommand
-    : IRequest<CreatedWorkoutAssignmentResponse>,
+public class CreateBulkWorkoutAssignmentCommand
+    : IRequest<CreatedBulkWorkoutAssignmentResponse>,
         ISecuredRequest,
         ICacheRemoverRequest,
         ILoggableRequest,
@@ -30,8 +26,8 @@ public class CreateWorkoutAssignmentCommand
     public DateTime StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public AssignmentStatus Status { get; set; }
-    public Guid MemberId { get; set; }
     public int WorkoutTemplateId { get; set; }
+    public ICollection<Guid> MemberIds { get; set; } = new List<Guid>();
 
     public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
 
@@ -39,7 +35,8 @@ public class CreateWorkoutAssignmentCommand
     public string? CacheKey { get; }
     public string[]? CacheGroupKey => ["GetWorkoutAssignments"];
 
-    public class CreateWorkoutAssignmentCommandHandler : IRequestHandler<CreateWorkoutAssignmentCommand, CreatedWorkoutAssignmentResponse>
+    public class CreateBulkWorkoutAssignmentCommandHandler
+        : IRequestHandler<CreateBulkWorkoutAssignmentCommand, CreatedBulkWorkoutAssignmentResponse>
     {
         private readonly IMapper _mapper;
         private readonly IWorkoutAssignmentRepository _workoutAssignmentRepository;
@@ -48,7 +45,7 @@ public class CreateWorkoutAssignmentCommand
         private readonly IMemberService _memberService;
         private readonly IWorkoutTemplateService _workoutTemplateService;
 
-        public CreateWorkoutAssignmentCommandHandler(
+        public CreateBulkWorkoutAssignmentCommandHandler(
             IMapper mapper,
             IWorkoutAssignmentRepository workoutAssignmentRepository,
             WorkoutAssignmentBusinessRules workoutAssignmentBusinessRules,
@@ -65,13 +62,25 @@ public class CreateWorkoutAssignmentCommand
             _workoutTemplateService = workoutTemplateService;
         }
 
-        public async Task<CreatedWorkoutAssignmentResponse> Handle(
-            CreateWorkoutAssignmentCommand request,
+        public async Task<CreatedBulkWorkoutAssignmentResponse> Handle(
+            CreateBulkWorkoutAssignmentCommand request,
             CancellationToken cancellationToken
         )
         {
-            Member? member = await _memberService.GetAsync(x => x.Id == request.MemberId, cancellationToken: cancellationToken);
-            await _workoutAssignmentBusinessRules.MemberShouldExistWhenSelected(member);
+            Guid tenantId = _currentTenant.TenantId!.Value;
+            List<Guid> distinctMemberIds = request.MemberIds.Distinct().ToList();
+
+            var members = await _memberService.GetListAsync(
+                predicate: x => distinctMemberIds.Contains(x.Id),
+                index: 0,
+                size: distinctMemberIds.Count,
+                cancellationToken: cancellationToken
+            );
+
+            await _workoutAssignmentBusinessRules.AllMembersShouldExistInCurrentTenant(
+                requestedMemberIds: distinctMemberIds,
+                foundMembers: members?.Items
+            );
 
             WorkoutTemplate? workoutTemplate = await _workoutTemplateService.GetAsync(
                 x => x.Id == request.WorkoutTemplateId,
@@ -79,13 +88,33 @@ public class CreateWorkoutAssignmentCommand
             );
             await _workoutAssignmentBusinessRules.WorkoutTemplateShouldExistWhenSelected(workoutTemplate);
 
-            WorkoutAssignment workoutAssignment = _mapper.Map<WorkoutAssignment>(request);
-            workoutAssignment.TenantId = _currentTenant.TenantId!.Value;
+            List<WorkoutAssignment> assignments = new();
 
-            await _workoutAssignmentRepository.AddAsync(workoutAssignment);
+            foreach (Member member in members!.Items)
+            {
+                WorkoutAssignment dietAssignment =
+                    new(
+                        tenantId: tenantId,
+                        memberId: member.Id,
+                        workoutTemplateId: request.WorkoutTemplateId,
+                        startDate: request.StartDate,
+                        endDate: request.EndDate
+                    )
+                    {
+                        Status = request.Status
+                    };
 
-            CreatedWorkoutAssignmentResponse response = _mapper.Map<CreatedWorkoutAssignmentResponse>(workoutAssignment);
-            return response;
+                assignments.Add(dietAssignment);
+            }
+
+            await _workoutAssignmentRepository.AddRangeAsync(assignments);
+
+            return new CreatedBulkWorkoutAssignmentResponse
+            {
+                WorkoutTemplateId = request.WorkoutTemplateId,
+                CreatedCount = assignments.Count,
+                AssignmentIds = assignments.Select(x => x.Id).ToList()
+            };
         }
     }
 }

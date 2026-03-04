@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Features.WorkoutTemplates.Commands.Create.Dtos;
+namespace Application.Features.WorkoutAssignments.Queries.GetMyWorkoutById;
 
-public class WorkoutTemplateDayExerciseDto
+public class MyWorkoutTemplateDayExerciseDto
 {
     public int Order { get; set; }
 
