@@ -29,7 +29,7 @@ public class CreateWorkoutTemplateCommand
     public DifficultyLevel Level { get; set; }
     public bool IsActive { get; set; }
 
-    public ICollection<CreateWorkoutTemplateDayDto> Days { get; set; } = new List<CreateWorkoutTemplateDayDto>();
+    public ICollection<WorkoutTemplateDayDto> Days { get; set; } = new List<WorkoutTemplateDayDto>();
 
     public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
 

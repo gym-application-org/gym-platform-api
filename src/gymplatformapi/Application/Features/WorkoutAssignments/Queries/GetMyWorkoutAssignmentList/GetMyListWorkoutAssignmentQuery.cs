@@ -1,6 +1,9 @@
 using Application.Features.WorkoutAssignments.Constants;
+using Application.Features.WorkoutAssignments.Rules;
+using Application.Services.Members;
 using Application.Services.Repositories;
 using AutoMapper;
+using Core.Application.Abstractions.Security;
 using Core.Application.Pipelines.Authorization;
 using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
@@ -12,10 +15,10 @@ using Domain.Enums;
 using MediatR;
 using static Application.Features.WorkoutAssignments.Constants.WorkoutAssignmentsOperationClaims;
 
-namespace Application.Features.WorkoutAssignments.Queries.GetList;
+namespace Application.Features.WorkoutAssignments.Queries.GetMyWorkoutAssignmentList;
 
-public class GetListWorkoutAssignmentQuery
-    : IRequest<GetListResponse<GetListWorkoutAssignmentListItemDto>>,
+public class GetMyListWorkoutAssignmentQuery
+    : IRequest<GetListResponse<GetMyListWorkoutAssignmentListItemDto>>,
         ISecuredRequest,
         ICachableRequest
 {
@@ -33,26 +36,42 @@ public class GetListWorkoutAssignmentQuery
     public string? CacheGroupKey => "GetWorkoutAssignments";
     public TimeSpan? SlidingExpiration { get; }
 
-    public class GetListWorkoutAssignmentQueryHandler
-        : IRequestHandler<GetListWorkoutAssignmentQuery, GetListResponse<GetListWorkoutAssignmentListItemDto>>
+    public class GetMyListWorkoutAssignmentQueryHandler
+        : IRequestHandler<GetMyListWorkoutAssignmentQuery, GetListResponse<GetMyListWorkoutAssignmentListItemDto>>
     {
         private readonly IWorkoutAssignmentRepository _workoutAssignmentRepository;
         private readonly IMapper _mapper;
+        private readonly ICurrentUser _currentUser;
+        private readonly IMemberService _memberService;
+        private readonly WorkoutAssignmentBusinessRules _workoutAssignmentBusinessRules;
 
-        public GetListWorkoutAssignmentQueryHandler(IWorkoutAssignmentRepository workoutAssignmentRepository, IMapper mapper)
+        public GetMyListWorkoutAssignmentQueryHandler(
+            IWorkoutAssignmentRepository workoutAssignmentRepository,
+            IMapper mapper,
+            ICurrentUser currentUser,
+            IMemberService memberService,
+            WorkoutAssignmentBusinessRules workoutAssignmentBusinessRules
+        )
         {
             _workoutAssignmentRepository = workoutAssignmentRepository;
             _mapper = mapper;
+            _currentUser = currentUser;
+            _memberService = memberService;
+            _workoutAssignmentBusinessRules = workoutAssignmentBusinessRules;
         }
 
-        public async Task<GetListResponse<GetListWorkoutAssignmentListItemDto>> Handle(
-            GetListWorkoutAssignmentQuery request,
+        public async Task<GetListResponse<GetMyListWorkoutAssignmentListItemDto>> Handle(
+            GetMyListWorkoutAssignmentQuery request,
             CancellationToken cancellationToken
         )
         {
+            Member? member = await _memberService.GetAsync(x => x.UserId == _currentUser.UserId!, cancellationToken: cancellationToken);
+            await _workoutAssignmentBusinessRules.MemberShouldExistWhenSelected(member);
+
             IPaginate<WorkoutAssignment> workoutAssignments = await _workoutAssignmentRepository.GetListAsync(
                 predicate: x =>
-                    (!request.From.HasValue || request.From.Value <= x.StartDate)
+                    x.MemberId == member!.Id
+                    && (!request.From.HasValue || request.From.Value <= x.StartDate)
                     && (!request.To.HasValue || request.To.Value >= x.EndDate)
                     && (!request.Status.HasValue || request.Status.Value == x.Status),
                 index: request.PageRequest.PageIndex,
@@ -60,8 +79,8 @@ public class GetListWorkoutAssignmentQuery
                 cancellationToken: cancellationToken
             );
 
-            GetListResponse<GetListWorkoutAssignmentListItemDto> response = _mapper.Map<
-                GetListResponse<GetListWorkoutAssignmentListItemDto>
+            GetListResponse<GetMyListWorkoutAssignmentListItemDto> response = _mapper.Map<
+                GetListResponse<GetMyListWorkoutAssignmentListItemDto>
             >(workoutAssignments);
             return response;
         }

@@ -12,5 +12,5 @@ public class GetByIdWorkoutTemplateResponse : IResponse
     public DifficultyLevel Level { get; set; }
     public bool IsActive { get; set; }
 
-    public ICollection<GetByIdWorkoutTemplateDayDto> DayDtos { get; set; } = new List<GetByIdWorkoutTemplateDayDto>();
+    public ICollection<GetByIdWorkoutTemplateDayDto> Days { get; set; } = new List<GetByIdWorkoutTemplateDayDto>();
 }

@@ -6,6 +6,7 @@ using Core.Application.Pipelines.Authorization;
 using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
+using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
 using static Application.Features.WorkoutAssignments.Constants.WorkoutAssignmentsOperationClaims;
@@ -17,11 +18,12 @@ public class DeleteWorkoutAssignmentCommand
         ISecuredRequest,
         ICacheRemoverRequest,
         ILoggableRequest,
-        ITransactionalRequest
+        ITransactionalRequest,
+        ITenantRequest
 {
     public int Id { get; set; }
 
-    public string[] Roles => [Admin, Write, WorkoutAssignmentsOperationClaims.Delete];
+    public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
 
     public bool BypassCache { get; }
     public string? CacheKey { get; }

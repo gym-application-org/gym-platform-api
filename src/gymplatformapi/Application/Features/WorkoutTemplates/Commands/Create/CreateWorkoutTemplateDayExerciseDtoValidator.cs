@@ -8,7 +8,7 @@ using FluentValidation;
 
 namespace Application.Features.WorkoutTemplates.Commands.Create;
 
-public class CreateWorkoutTemplateDayExerciseDtoValidator : AbstractValidator<CreateWorkoutTemplateDayExerciseDto>
+public class CreateWorkoutTemplateDayExerciseDtoValidator : AbstractValidator<WorkoutTemplateDayExerciseDto>
 {
     public CreateWorkoutTemplateDayExerciseDtoValidator()
     {
