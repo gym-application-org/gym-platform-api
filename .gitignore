@@ -400,3 +400,7 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Env creds.
+src/gymplatformapi/WebAPI/appsettings.Development.json
+**/appsettings.Development.json

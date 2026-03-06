@@ -10,6 +10,9 @@ using Application.Services.DietTemplateMeals;
 using Application.Services.DietTemplates;
 using Application.Services.Exercises;
 using Application.Services.Gates;
+using Application.Services.MailServices.AuthMails;
+using Application.Services.MailServices.EmailTemplates;
+using Application.Services.MailServices.UserOnboardingMails;
 using Application.Services.Members;
 using Application.Services.ProgressEntries;
 using Application.Services.Staffs;
@@ -91,6 +94,10 @@ public static class ApplicationServiceRegistration
         services.AddScoped<IWorkoutTemplateService, WorkoutTemplateManager>();
         services.AddScoped<IWorkoutTemplateDayService, WorkoutTemplateDayManager>();
         services.AddScoped<IWorkoutTemplateDayExerciseService, WorkoutTemplateDayExerciseManager>();
+
+        services.AddScoped<IUserOnboardingMailService, UserOnboardingMailManager>();
+        services.AddScoped<IAuthMailService, AuthMailManager>();
+        services.AddScoped<IMailTemplateService, MailTemplateManager>();
         return services;
     }
 
