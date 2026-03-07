@@ -42,6 +42,7 @@ public static class PersistenceServiceRegistration
         services.AddScoped<IWorkoutTemplateRepository, WorkoutTemplateRepository>();
         services.AddScoped<IWorkoutTemplateDayRepository, WorkoutTemplateDayRepository>();
         services.AddScoped<IWorkoutTemplateDayExerciseRepository, WorkoutTemplateDayExerciseRepository>();
+        services.AddScoped<IEmailOtpRepository, EmailOtpRepository>();
         return services;
     }
 }
