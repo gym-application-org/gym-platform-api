@@ -21,4 +21,21 @@ public static class HashingHelper
 
         return computedHash.SequenceEqual(passwordHash);
     }
+
+    public static void CreateOtpHash(string otp, string userId, out byte[] otpHash, out byte[] otpSalt)
+    {
+        using HMACSHA512 hmac = new();
+
+        otpSalt = hmac.Key;
+        otpHash = hmac.ComputeHash(Encoding.UTF8.GetBytes($"{otp}:x:{userId}"));
+    }
+
+    public static bool VerifyOtpHash(string otp, string userId, byte[] otpHash, byte[] otpSalt)
+    {
+        using HMACSHA512 hmac = new(otpSalt);
+
+        byte[] computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes($"{otp}:x:{userId}"));
+
+        return computedHash.SequenceEqual(otpHash);
+    }
 }

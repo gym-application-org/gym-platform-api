@@ -13,6 +13,7 @@ public class EmailOtp : Entity<Guid>
 {
     public string Email { get; set; }
     public string CodeHash { get; set; }
+    public string CodeHashSalt { get; set; }
     public OtpPurpose Purpose { get; set; }
     public DateTime ExpiresAt { get; set; }
     public DateTime? UsedDate { get; set; }

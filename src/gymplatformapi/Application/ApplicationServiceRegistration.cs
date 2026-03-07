@@ -8,6 +8,7 @@ using Application.Services.DietTemplateDays;
 using Application.Services.DietTemplateMealItems;
 using Application.Services.DietTemplateMeals;
 using Application.Services.DietTemplates;
+using Application.Services.EmailOtps;
 using Application.Services.Exercises;
 using Application.Services.Gates;
 using Application.Services.MailServices.AuthMails;
@@ -98,6 +99,7 @@ public static class ApplicationServiceRegistration
         services.AddScoped<IUserOnboardingMailService, UserOnboardingMailManager>();
         services.AddScoped<IAuthMailService, AuthMailManager>();
         services.AddScoped<IMailTemplateService, MailTemplateManager>();
+        services.AddScoped<IEmailOtpService, EmailOtpManager>();
         return services;
     }
 
