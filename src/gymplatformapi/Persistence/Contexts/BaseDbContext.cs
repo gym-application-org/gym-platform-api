@@ -35,6 +35,7 @@ public class BaseDbContext : DbContext
     public DbSet<WorkoutTemplateDay> WorkoutTemplateDays { get; set; }
     public DbSet<WorkoutTemplateDayExercise> WorkoutTemplateDayExercises { get; set; }
     public DbSet<EmailOtp> EmailOtps { get; set; }
+    public DbSet<UserActionToken> UserActionTokens { get; set; }
 
     public BaseDbContext(DbContextOptions dbContextOptions, IConfiguration configuration)
         : base(dbContextOptions)
