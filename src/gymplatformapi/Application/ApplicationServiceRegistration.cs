@@ -22,6 +22,7 @@ using Application.Services.Subscriptions;
 using Application.Services.SupportTickets;
 using Application.Services.TenantMembershipService;
 using Application.Services.Tenants;
+using Application.Services.UserActionTokens;
 using Application.Services.UsersService;
 using Application.Services.WorkoutAssignments;
 using Application.Services.WorkoutTemplateDayExercises;
@@ -100,6 +101,7 @@ public static class ApplicationServiceRegistration
         services.AddScoped<IAuthMailService, AuthMailManager>();
         services.AddScoped<IMailTemplateService, MailTemplateManager>();
         services.AddScoped<IEmailOtpService, EmailOtpManager>();
+        services.AddScoped<IUserActionTokenService, UserActionTokenManager>();
         return services;
     }
 
