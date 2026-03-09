@@ -14,4 +14,10 @@ public static class AuthMessages
     public const string InvalidRefreshToken = "InvalidRefreshToken";
     public const string UserMailAlreadyExists = "UserMailAlreadyExists";
     public const string PasswordDontMatch = "PasswordDontMatch";
+    public const string UserActionTokenNotExists = "UserActionTokenNotExists";
+    public const string UserActionTokenRevoked = "UserActionTokenRevoked";
+    public const string UserActionTokenUsed = "UserActionTokenUsed";
+    public const string UserActionTokenExpired = "UserActionTokenExpired";
+    public const string MemberShouldBeExists = "MemberShouldBeExists";
+    public const string StaffShouldBeExists = "StaffShouldBeExists";
 }

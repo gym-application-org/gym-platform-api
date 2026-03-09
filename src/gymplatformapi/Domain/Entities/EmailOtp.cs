@@ -12,8 +12,8 @@ namespace Domain.Entities;
 public class EmailOtp : Entity<Guid>
 {
     public string Email { get; set; }
-    public string CodeHash { get; set; }
-    public string CodeHashSalt { get; set; }
+    public byte[] CodeHash { get; set; }
+    public byte[] CodeHashSalt { get; set; }
     public OtpPurpose Purpose { get; set; }
     public DateTime ExpiresAt { get; set; }
     public DateTime? UsedDate { get; set; }
@@ -28,13 +28,12 @@ public class EmailOtp : Entity<Guid>
     public EmailOtp()
     {
         Email = string.Empty;
-        CodeHash = string.Empty;
     }
 
     public EmailOtp(
         Guid id,
         string email,
-        string codeHash,
+        byte[] codeHash,
         OtpPurpose purpose,
         DateTime expiresAt,
         DateTime? usedDate,

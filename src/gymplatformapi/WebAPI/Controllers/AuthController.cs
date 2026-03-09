@@ -1,4 +1,5 @@
-﻿using Application.Features.Auth.Commands.EnableEmailAuthenticator;
+﻿using Application.Features.Auth.Commands.ActivateInvitedUser;
+using Application.Features.Auth.Commands.EnableEmailAuthenticator;
 using Application.Features.Auth.Commands.EnableOtpAuthenticator;
 using Application.Features.Auth.Commands.Login;
 using Application.Features.Auth.Commands.RefreshToken;
@@ -6,6 +7,7 @@ using Application.Features.Auth.Commands.Register;
 using Application.Features.Auth.Commands.RevokeToken;
 using Application.Features.Auth.Commands.VerifyEmailAuthenticator;
 using Application.Features.Auth.Commands.VerifyOtpAuthenticator;
+using Application.Features.Auth.Queries.VerifyActionToken;
 using Core.Application.Dtos;
 using Core.Security.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -99,6 +101,20 @@ public class AuthController : BaseController
 
         await Mediator.Send(verifyEmailAuthenticatorCommand);
         return Ok();
+    }
+
+    [HttpPost("activate")]
+    public async Task<IActionResult> ActivateUser([FromBody] ActivateInvitedUserCommand activateInvitedUserCommand)
+    {
+        await Mediator.Send(activateInvitedUserCommand);
+        return Ok();
+    }
+
+    [HttpPost("verify-token")]
+    public async Task<IActionResult> VerifyToken([FromBody] VerifyActionTokenQuery verifyActionTokenQuery)
+    {
+        VerifyActionTokenQueryResponse response = await Mediator.Send(verifyActionTokenQuery);
+        return Ok(response);
     }
 
     private string getRefreshTokenFromCookies() =>

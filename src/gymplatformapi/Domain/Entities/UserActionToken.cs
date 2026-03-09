@@ -11,7 +11,7 @@ namespace Domain.Entities;
 
 public class UserActionToken : Entity<Guid>
 {
-    public Guid UserId { get; set; }
+    public int UserId { get; set; }
     public Guid? TenantId { get; set; }
 
     public string Email { get; set; } = null!;
@@ -20,7 +20,7 @@ public class UserActionToken : Entity<Guid>
     public UserActionTargetType? TargetType { get; set; }
     public Guid? TargetEntityId { get; set; }
 
-    public string TokenHash { get; set; } = null!;
+    public byte[] TokenHash { get; set; } = null!;
 
     public DateTime ExpiresAt { get; set; }
     public DateTime? UsedAt { get; set; }

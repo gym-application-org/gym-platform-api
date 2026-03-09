@@ -1,3 +1,4 @@
+using System.Linq.Dynamic.Core.Tokenizer;
 using Application.Features.Auth.Constants;
 using Application.Services.Repositories;
 using Core.Application.Rules;
@@ -6,6 +7,7 @@ using Core.Localization.Abstraction;
 using Core.Security.Entities;
 using Core.Security.Enums;
 using Core.Security.Hashing;
+using Domain.Entities;
 
 namespace Application.Features.Auth.Rules;
 
@@ -87,5 +89,53 @@ public class AuthBusinessRules : BaseBusinessRules
         await UserShouldBeExistsWhenSelected(user);
         if (!HashingHelper.VerifyPasswordHash(password, user!.PasswordHash, user.PasswordSalt))
             await throwBusinessException(AuthMessages.PasswordDontMatch);
+    }
+
+    public async Task ActionTokenShouldBeExist(UserActionToken? token)
+    {
+        if (token == null)
+        {
+            await throwBusinessException(AuthMessages.UserActionTokenNotExists);
+        }
+    }
+
+    public async Task ActionTokenShouldNotBeRevoked(UserActionToken token)
+    {
+        if (token.RevokedAt == null || !token.RevokedAt.HasValue)
+        {
+            await throwBusinessException(AuthMessages.UserActionTokenRevoked);
+        }
+    }
+
+    public async Task ActionTokenShouldNotBeUsed(UserActionToken token)
+    {
+        if (token.UsedAt == null || !token.UsedAt.HasValue)
+        {
+            await throwBusinessException(AuthMessages.UserActionTokenUsed);
+        }
+    }
+
+    public async Task ActionTokenShouldNotBeExpired(UserActionToken token)
+    {
+        if (token.ExpiresAt >= DateTime.UtcNow)
+        {
+            await throwBusinessException(AuthMessages.UserActionTokenExpired);
+        }
+    }
+
+    public async Task MemberShouldBeExistWhenSelected(Member? member)
+    {
+        if (member == null)
+        {
+            await throwBusinessException(AuthMessages.MemberShouldBeExists);
+        }
+    }
+
+    public async Task StaffShouldBeExistWhenSelected(Staff? staff)
+    {
+        if (staff == null)
+        {
+            await throwBusinessException(AuthMessages.StaffShouldBeExists);
+        }
     }
 }
