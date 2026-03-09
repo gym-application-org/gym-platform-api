@@ -33,7 +33,13 @@ public class VerifyActionTokenQuery : IRequest<VerifyActionTokenQueryResponse>
                 x => x.TokenHash == tokenHash,
                 cancellationToken: cancellationToken
             );
-            if (token == null || token.RevokedAt.HasValue || token.UsedAt.HasValue || token.DeletedDate.HasValue)
+            if (
+                token == null
+                || token.RevokedAt.HasValue
+                || token.UsedAt.HasValue
+                || token.DeletedDate.HasValue
+                || token.ExpiresAt >= DateTime.UtcNow
+            )
             {
                 return new VerifyActionTokenQueryResponse() { Status = "invalid" };
             }
