@@ -5,7 +5,6 @@ using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Abstractions.Security;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
@@ -16,11 +15,7 @@ using static Application.Features.ProgressEntries.Constants.ProgressEntriesOpera
 
 namespace Application.Features.ProgressEntries.Queries.GetList;
 
-public class GetListProgressEntryQuery
-    : IRequest<GetListResponse<GetListProgressEntryListItemDto>>,
-        ISecuredRequest,
-        ICachableRequest,
-        ITenantRequest
+public class GetListProgressEntryQuery : IRequest<GetListResponse<GetListProgressEntryListItemDto>>, ISecuredRequest, ITenantRequest
 {
     public PageRequest PageRequest { get; set; }
 
@@ -28,11 +23,6 @@ public class GetListProgressEntryQuery
     public DateTime? To { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Member];
-
-    public bool BypassCache { get; }
-    public string? CacheKey => $"GetListProgressEntries({PageRequest.PageIndex},{PageRequest.PageSize})";
-    public string? CacheGroupKey => "GetProgressEntries";
-    public TimeSpan? SlidingExpiration { get; }
 
     public class GetListProgressEntryQueryHandler
         : IRequestHandler<GetListProgressEntryQuery, GetListResponse<GetListProgressEntryListItemDto>>

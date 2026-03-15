@@ -13,7 +13,6 @@ using Application.Services.UsersService;
 using AutoMapper;
 using Core.Application.Abstractions.Security;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -29,7 +28,6 @@ namespace Application.Features.Tenants.Commands.Create;
 public class CreateWithOwnerTenantCommand
     : IRequest<CreatedTenantWithOwnerResponse>,
         ISecuredRequest,
-        ICacheRemoverRequest,
         ILoggableRequest,
         ITransactionalRequest
 {
@@ -41,10 +39,6 @@ public class CreateWithOwnerTenantCommand
     public string Phone { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Admin];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetTenants"];
 
     public class CreateTenantCommandHandler : IRequestHandler<CreateWithOwnerTenantCommand, CreatedTenantWithOwnerResponse>
     {

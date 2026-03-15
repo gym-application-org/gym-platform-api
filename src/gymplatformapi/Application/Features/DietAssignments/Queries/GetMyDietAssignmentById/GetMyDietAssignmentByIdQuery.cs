@@ -6,7 +6,6 @@ using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Abstractions.Security;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
@@ -19,16 +18,11 @@ using static Application.Features.DietAssignments.Constants.DietAssignmentsOpera
 
 namespace Application.Features.DietAssignments.Queries.GetMyDietAssignmentById;
 
-public class GetMyDietAssignmentByIdQuery : IRequest<GetMyDietAssignmentByIdResponse>, ISecuredRequest, ICachableRequest, ITenantRequest
+public class GetMyDietAssignmentByIdQuery : IRequest<GetMyDietAssignmentByIdResponse>, ISecuredRequest, ITenantRequest
 {
     public int Id { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Member];
-
-    public bool BypassCache { get; }
-    public string? CacheKey => $"GetListDietAssignments()";
-    public string? CacheGroupKey => "GetDietAssignments";
-    public TimeSpan? SlidingExpiration { get; }
 
     public class GetMyDietAssignmentByIdQueryHandler : IRequestHandler<GetMyDietAssignmentByIdQuery, GetMyDietAssignmentByIdResponse>
     {

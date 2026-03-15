@@ -2,7 +2,6 @@ using Application.Features.WorkoutAssignments.Constants;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
@@ -14,10 +13,7 @@ using static Application.Features.WorkoutAssignments.Constants.WorkoutAssignment
 
 namespace Application.Features.WorkoutAssignments.Queries.GetList;
 
-public class GetListWorkoutAssignmentQuery
-    : IRequest<GetListResponse<GetListWorkoutAssignmentListItemDto>>,
-        ISecuredRequest,
-        ICachableRequest
+public class GetListWorkoutAssignmentQuery : IRequest<GetListResponse<GetListWorkoutAssignmentListItemDto>>, ISecuredRequest
 {
     public PageRequest PageRequest { get; set; }
 
@@ -27,11 +23,6 @@ public class GetListWorkoutAssignmentQuery
     public AssignmentStatus? Status { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Owner, GeneralOperationClaims.Staff];
-
-    public bool BypassCache { get; }
-    public string? CacheKey => $"GetListWorkoutAssignments({PageRequest.PageIndex},{PageRequest.PageSize})";
-    public string? CacheGroupKey => "GetWorkoutAssignments";
-    public TimeSpan? SlidingExpiration { get; }
 
     public class GetListWorkoutAssignmentQueryHandler
         : IRequestHandler<GetListWorkoutAssignmentQuery, GetListResponse<GetListWorkoutAssignmentListItemDto>>

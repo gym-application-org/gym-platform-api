@@ -2,7 +2,6 @@ using Application.Features.WorkoutTemplateDays.Constants;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
@@ -12,19 +11,11 @@ using static Application.Features.WorkoutTemplateDays.Constants.WorkoutTemplateD
 
 namespace Application.Features.WorkoutTemplateDays.Queries.GetList;
 
-public class GetListWorkoutTemplateDayQuery
-    : IRequest<GetListResponse<GetListWorkoutTemplateDayListItemDto>>,
-        ISecuredRequest,
-        ICachableRequest
+public class GetListWorkoutTemplateDayQuery : IRequest<GetListResponse<GetListWorkoutTemplateDayListItemDto>>, ISecuredRequest
 {
     public PageRequest PageRequest { get; set; }
 
     public string[] Roles => [Admin, Read];
-
-    public bool BypassCache { get; }
-    public string? CacheKey => $"GetListWorkoutTemplateDays({PageRequest.PageIndex},{PageRequest.PageSize})";
-    public string? CacheGroupKey => "GetWorkoutTemplateDays";
-    public TimeSpan? SlidingExpiration { get; }
 
     public class GetListWorkoutTemplateDayQueryHandler
         : IRequestHandler<GetListWorkoutTemplateDayQuery, GetListResponse<GetListWorkoutTemplateDayListItemDto>>

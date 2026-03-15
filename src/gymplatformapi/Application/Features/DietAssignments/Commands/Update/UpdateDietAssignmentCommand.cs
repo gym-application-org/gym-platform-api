@@ -6,7 +6,6 @@ using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Abstractions.Security;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -17,12 +16,7 @@ using static Application.Features.DietAssignments.Constants.DietAssignmentsOpera
 
 namespace Application.Features.DietAssignments.Commands.Update;
 
-public class UpdateDietAssignmentCommand
-    : IRequest<UpdatedDietAssignmentResponse>,
-        ISecuredRequest,
-        ICacheRemoverRequest,
-        ILoggableRequest,
-        ITransactionalRequest
+public class UpdateDietAssignmentCommand : IRequest<UpdatedDietAssignmentResponse>, ISecuredRequest, ILoggableRequest, ITransactionalRequest
 {
     public int Id { get; set; }
     public DateTime StartDate { get; set; }
@@ -32,10 +26,6 @@ public class UpdateDietAssignmentCommand
     public int DietTemplateId { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetDietAssignments"];
 
     public class UpdateDietAssignmentCommandHandler : IRequestHandler<UpdateDietAssignmentCommand, UpdatedDietAssignmentResponse>
     {

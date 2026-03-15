@@ -4,7 +4,6 @@ using Application.Features.Exercises.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -14,20 +13,11 @@ using static Application.Features.Exercises.Constants.ExercisesOperationClaims;
 
 namespace Application.Features.Exercises.Commands.Delete;
 
-public class DeleteExerciseCommand
-    : IRequest<DeletedExerciseResponse>,
-        ISecuredRequest,
-        ICacheRemoverRequest,
-        ILoggableRequest,
-        ITransactionalRequest
+public class DeleteExerciseCommand : IRequest<DeletedExerciseResponse>, ISecuredRequest, ILoggableRequest, ITransactionalRequest
 {
     public int Id { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Admin];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetExercises"];
 
     public class DeleteExerciseCommandHandler : IRequestHandler<DeleteExerciseCommand, DeletedExerciseResponse>
     {

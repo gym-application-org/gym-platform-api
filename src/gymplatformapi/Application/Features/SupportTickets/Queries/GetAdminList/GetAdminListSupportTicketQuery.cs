@@ -2,7 +2,6 @@ using Application.Features.SupportTickets.Constants;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
@@ -14,10 +13,7 @@ using static Application.Features.SupportTickets.Constants.SupportTicketsOperati
 
 namespace Application.Features.SupportTickets.Queries.GetAdminList;
 
-public class GetAdminListSupportTicketQuery
-    : IRequest<GetListResponse<GetAdminListSupportTicketListItemDto>>,
-        ISecuredRequest,
-        ICachableRequest
+public class GetAdminListSupportTicketQuery : IRequest<GetListResponse<GetAdminListSupportTicketListItemDto>>, ISecuredRequest
 {
     public PageRequest PageRequest { get; set; }
     public DateTime? From { get; set; }
@@ -27,11 +23,6 @@ public class GetAdminListSupportTicketQuery
     public Guid? TenantId { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Admin];
-
-    public bool BypassCache { get; }
-    public string? CacheKey => $"GetListSupportTickets({PageRequest.PageIndex},{PageRequest.PageSize})";
-    public string? CacheGroupKey => "GetSupportTickets";
-    public TimeSpan? SlidingExpiration { get; }
 
     public class GetAdminListSupportTicketQueryHandler
         : IRequestHandler<GetAdminListSupportTicketQuery, GetListResponse<GetAdminListSupportTicketListItemDto>>

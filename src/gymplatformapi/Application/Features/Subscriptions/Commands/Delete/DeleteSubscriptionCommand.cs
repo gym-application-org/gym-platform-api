@@ -4,7 +4,6 @@ using Application.Features.Subscriptions.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -17,7 +16,6 @@ namespace Application.Features.Subscriptions.Commands.Delete;
 public class DeleteSubscriptionCommand
     : IRequest<DeletedSubscriptionResponse>,
         ISecuredRequest,
-        ICacheRemoverRequest,
         ILoggableRequest,
         ITransactionalRequest,
         ITenantRequest
@@ -25,10 +23,6 @@ public class DeleteSubscriptionCommand
     public int Id { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetSubscriptions"];
 
     public class DeleteSubscriptionCommandHandler : IRequestHandler<DeleteSubscriptionCommand, DeletedSubscriptionResponse>
     {

@@ -4,7 +4,6 @@ using Application.Features.SupportTickets.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -17,17 +16,12 @@ namespace Application.Features.SupportTickets.Commands.DeleteAdmin;
 public class DeleteAdminSupportTicketCommand
     : IRequest<DeletedAdminSupportTicketResponse>,
         ISecuredRequest,
-        ICacheRemoverRequest,
         ILoggableRequest,
         ITransactionalRequest
 {
     public int Id { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Admin];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetSupportTickets"];
 
     public class DeleteAdminSupportTicketCommandHandler
         : IRequestHandler<DeleteAdminSupportTicketCommand, DeletedAdminSupportTicketResponse>

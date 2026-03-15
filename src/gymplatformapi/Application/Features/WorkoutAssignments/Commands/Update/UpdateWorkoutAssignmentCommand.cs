@@ -5,7 +5,6 @@ using Application.Services.Repositories;
 using Application.Services.WorkoutTemplates;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Domain.Entities;
@@ -18,7 +17,6 @@ namespace Application.Features.WorkoutAssignments.Commands.Update;
 public class UpdateWorkoutAssignmentCommand
     : IRequest<UpdatedWorkoutAssignmentResponse>,
         ISecuredRequest,
-        ICacheRemoverRequest,
         ILoggableRequest,
         ITransactionalRequest
 {
@@ -30,10 +28,6 @@ public class UpdateWorkoutAssignmentCommand
     public int WorkoutTemplateId { get; set; }
 
     public string[] Roles => [Admin, Write, WorkoutAssignmentsOperationClaims.Update];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetWorkoutAssignments"];
 
     public class UpdateWorkoutAssignmentCommandHandler : IRequestHandler<UpdateWorkoutAssignmentCommand, UpdatedWorkoutAssignmentResponse>
     {

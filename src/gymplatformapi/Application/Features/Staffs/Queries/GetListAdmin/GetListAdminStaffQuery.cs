@@ -2,7 +2,6 @@ using Application.Features.Staffs.Constants;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
@@ -13,18 +12,13 @@ using static Application.Features.Staffs.Constants.StaffsOperationClaims;
 
 namespace Application.Features.Staffs.Queries.GetListAdmin;
 
-public class GetListAdminStaffQuery : IRequest<GetListResponse<GetListAdminStaffListItemDto>>, ISecuredRequest, ICachableRequest
+public class GetListAdminStaffQuery : IRequest<GetListResponse<GetListAdminStaffListItemDto>>, ISecuredRequest
 {
     public PageRequest PageRequest { get; set; }
 
     public Guid? TenantId { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Admin];
-
-    public bool BypassCache { get; }
-    public string? CacheKey => $"GetListStaffs({PageRequest.PageIndex},{PageRequest.PageSize})";
-    public string? CacheGroupKey => "GetStaffs";
-    public TimeSpan? SlidingExpiration { get; }
 
     public class GetListStaffQueryHandler : IRequestHandler<GetListAdminStaffQuery, GetListResponse<GetListAdminStaffListItemDto>>
     {

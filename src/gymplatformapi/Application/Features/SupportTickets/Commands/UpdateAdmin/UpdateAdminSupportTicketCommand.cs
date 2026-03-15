@@ -3,7 +3,6 @@ using Application.Features.SupportTickets.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -18,7 +17,6 @@ namespace Application.Features.SupportTickets.Commands.UpdateAdmin;
 public class UpdateAdminSupportTicketCommand
     : IRequest<UpdatedAdminSupportTicketResponse>,
         ISecuredRequest,
-        ICacheRemoverRequest,
         ILoggableRequest,
         ITransactionalRequest
 {
@@ -30,10 +28,6 @@ public class UpdateAdminSupportTicketCommand
     public DateTime? ClosedAt { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Admin];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetSupportTickets"];
 
     public class UpdateAdminSupportTicketCommandHandler
         : IRequestHandler<UpdateAdminSupportTicketCommand, UpdatedAdminSupportTicketResponse>

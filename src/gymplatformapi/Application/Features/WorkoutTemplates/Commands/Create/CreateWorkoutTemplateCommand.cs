@@ -5,7 +5,6 @@ using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Abstractions.Security;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -19,7 +18,6 @@ namespace Application.Features.WorkoutTemplates.Commands.Create;
 public class CreateWorkoutTemplateCommand
     : IRequest<CreatedWorkoutTemplateResponse>,
         ISecuredRequest,
-        ICacheRemoverRequest,
         ILoggableRequest,
         ITransactionalRequest,
         ITenantRequest
@@ -32,10 +30,6 @@ public class CreateWorkoutTemplateCommand
     public ICollection<WorkoutTemplateDayDto> Days { get; set; } = new List<WorkoutTemplateDayDto>();
 
     public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetWorkoutTemplates"];
 
     public class CreateWorkoutTemplateCommandHandler : IRequestHandler<CreateWorkoutTemplateCommand, CreatedWorkoutTemplateResponse>
     {

@@ -2,7 +2,6 @@ using Application.Features.DietAssignments.Constants;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
@@ -14,11 +13,7 @@ using static Application.Features.DietAssignments.Constants.DietAssignmentsOpera
 
 namespace Application.Features.DietAssignments.Queries.GetList;
 
-public class GetListDietAssignmentQuery
-    : IRequest<GetListResponse<GetListDietAssignmentListItemDto>>,
-        ISecuredRequest,
-        ICachableRequest,
-        ITenantRequest
+public class GetListDietAssignmentQuery : IRequest<GetListResponse<GetListDietAssignmentListItemDto>>, ISecuredRequest, ITenantRequest
 {
     public PageRequest PageRequest { get; set; }
 
@@ -27,11 +22,6 @@ public class GetListDietAssignmentQuery
     public AssignmentStatus? Status { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Owner, GeneralOperationClaims.Staff];
-
-    public bool BypassCache { get; }
-    public string? CacheKey => $"GetListDietAssignments({PageRequest.PageIndex},{PageRequest.PageSize})";
-    public string? CacheGroupKey => "GetDietAssignments";
-    public TimeSpan? SlidingExpiration { get; }
 
     public class GetListDietAssignmentQueryHandler
         : IRequestHandler<GetListDietAssignmentQuery, GetListResponse<GetListDietAssignmentListItemDto>>

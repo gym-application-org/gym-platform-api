@@ -4,7 +4,6 @@ using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Abstractions.Security;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -17,7 +16,6 @@ namespace Application.Features.SubscriptionPlans.Commands.Update;
 public class UpdateSubscriptionPlanCommand
     : IRequest<UpdatedSubscriptionPlanResponse>,
         ISecuredRequest,
-        ICacheRemoverRequest,
         ILoggableRequest,
         ITransactionalRequest
 {
@@ -30,10 +28,6 @@ public class UpdateSubscriptionPlanCommand
     public bool IsActive { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Owner, GeneralOperationClaims.Staff];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetSubscriptionPlans"];
 
     public class UpdateSubscriptionPlanCommandHandler : IRequestHandler<UpdateSubscriptionPlanCommand, UpdatedSubscriptionPlanResponse>
     {

@@ -5,7 +5,6 @@ using Application.Services.Staffs;
 using AutoMapper;
 using Core.Application.Abstractions.Security;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -20,7 +19,6 @@ namespace Application.Features.SupportTickets.Commands.Create;
 public class CreateSupportTicketCommand
     : IRequest<CreatedSupportTicketResponse>,
         ISecuredRequest,
-        ICacheRemoverRequest,
         ILoggableRequest,
         ITransactionalRequest,
         ITenantRequest
@@ -32,10 +30,6 @@ public class CreateSupportTicketCommand
     public DateTime? ClosedAt { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Owner];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetSupportTickets"];
 
     public class CreateSupportTicketCommandHandler : IRequestHandler<CreateSupportTicketCommand, CreatedSupportTicketResponse>
     {

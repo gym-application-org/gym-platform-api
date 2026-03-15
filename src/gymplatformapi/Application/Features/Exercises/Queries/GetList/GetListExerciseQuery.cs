@@ -2,7 +2,6 @@ using Application.Features.Exercises.Constants;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
@@ -13,17 +12,12 @@ using static Application.Features.Exercises.Constants.ExercisesOperationClaims;
 
 namespace Application.Features.Exercises.Queries.GetList;
 
-public class GetListExerciseQuery : IRequest<GetListResponse<GetListExerciseListItemDto>>, ISecuredRequest, ICachableRequest
+public class GetListExerciseQuery : IRequest<GetListResponse<GetListExerciseListItemDto>>, ISecuredRequest
 {
     public PageRequest PageRequest { get; set; }
 
     public string[] Roles =>
         [GeneralOperationClaims.Admin, GeneralOperationClaims.Owner, GeneralOperationClaims.Staff, GeneralOperationClaims.Member];
-
-    public bool BypassCache { get; }
-    public string? CacheKey => $"GetListExercises({PageRequest.PageIndex},{PageRequest.PageSize})";
-    public string? CacheGroupKey => "GetExercises";
-    public TimeSpan? SlidingExpiration { get; }
 
     public class GetListExerciseQueryHandler : IRequestHandler<GetListExerciseQuery, GetListResponse<GetListExerciseListItemDto>>
     {

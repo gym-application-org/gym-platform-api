@@ -4,7 +4,6 @@ using Application.Features.Gates.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -14,20 +13,11 @@ using static Application.Features.Gates.Constants.GatesOperationClaims;
 
 namespace Application.Features.Gates.Commands.Delete;
 
-public class DeleteGateCommand
-    : IRequest<DeletedGateResponse>,
-        ISecuredRequest,
-        ICacheRemoverRequest,
-        ILoggableRequest,
-        ITransactionalRequest
+public class DeleteGateCommand : IRequest<DeletedGateResponse>, ISecuredRequest, ILoggableRequest, ITransactionalRequest
 {
     public int Id { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Admin];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetGates"];
 
     public class DeleteGateCommandHandler : IRequestHandler<DeleteGateCommand, DeletedGateResponse>
     {

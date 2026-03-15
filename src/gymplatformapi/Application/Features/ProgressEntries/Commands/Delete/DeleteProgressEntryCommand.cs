@@ -6,7 +6,6 @@ using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Abstractions.Security;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -19,7 +18,6 @@ namespace Application.Features.ProgressEntries.Commands.Delete;
 public class DeleteProgressEntryCommand
     : IRequest<DeletedProgressEntryResponse>,
         ISecuredRequest,
-        ICacheRemoverRequest,
         ILoggableRequest,
         ITransactionalRequest,
         ITenantRequest
@@ -27,10 +25,6 @@ public class DeleteProgressEntryCommand
     public int Id { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Member];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetProgressEntries"];
 
     public class DeleteProgressEntryCommandHandler : IRequestHandler<DeleteProgressEntryCommand, DeletedProgressEntryResponse>
     {
