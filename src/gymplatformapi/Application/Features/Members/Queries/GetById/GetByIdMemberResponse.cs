@@ -11,5 +11,4 @@ public class GetByIdMemberResponse : IResponse
     public string? Phone { get; set; }
     public string? Email { get; set; }
     public MemberStatus Status { get; set; }
-    public int UserId { get; set; }
 }

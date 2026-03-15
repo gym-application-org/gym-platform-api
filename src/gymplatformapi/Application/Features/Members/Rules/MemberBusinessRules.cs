@@ -1,8 +1,10 @@
 using Application.Features.Members.Constants;
+using Application.Features.Staffs.Constants;
 using Application.Services.Repositories;
 using Core.Application.Rules;
 using Core.CrossCuttingConcerns.Exceptions.Types;
 using Core.Localization.Abstraction;
+using Core.Security.Entities;
 using Domain.Entities;
 
 namespace Application.Features.Members.Rules;
@@ -38,5 +40,17 @@ public class MemberBusinessRules : BaseBusinessRules
             cancellationToken: cancellationToken
         );
         await MemberShouldExistWhenSelected(member);
+    }
+
+    public async Task TenantShouldExistWhenSelected(Tenant? tenant)
+    {
+        if (tenant == null)
+            await throwBusinessException(StaffsBusinessMessages.TenantNotExists);
+    }
+
+    public async Task OperationClaimShouldExistWhenSelected(OperationClaim? operationClaim)
+    {
+        if (operationClaim == null)
+            await throwBusinessException(StaffsBusinessMessages.OperationClaimNotExists);
     }
 }

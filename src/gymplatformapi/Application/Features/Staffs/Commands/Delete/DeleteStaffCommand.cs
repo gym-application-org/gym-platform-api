@@ -2,11 +2,14 @@ using Application.Features.Staffs.Constants;
 using Application.Features.Staffs.Constants;
 using Application.Features.Staffs.Rules;
 using Application.Services.Repositories;
+using Application.Services.UsersService;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
 using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
+using Core.Security.Constants;
+using Core.Security.Entities;
 using Domain.Entities;
 using MediatR;
 using static Application.Features.Staffs.Constants.StaffsOperationClaims;
@@ -18,11 +21,12 @@ public class DeleteStaffCommand
         ISecuredRequest,
         ICacheRemoverRequest,
         ILoggableRequest,
-        ITransactionalRequest
+        ITransactionalRequest,
+        ITenantRequest
 {
     public Guid Id { get; set; }
 
-    public string[] Roles => [Admin, Write, StaffsOperationClaims.Delete];
+    public string[] Roles => [GeneralOperationClaims.Owner];
 
     public bool BypassCache { get; }
     public string? CacheKey { get; }
@@ -33,10 +37,17 @@ public class DeleteStaffCommand
         private readonly IMapper _mapper;
         private readonly IStaffRepository _staffRepository;
         private readonly StaffBusinessRules _staffBusinessRules;
+        private readonly IUserService _userService;
 
-        public DeleteStaffCommandHandler(IMapper mapper, IStaffRepository staffRepository, StaffBusinessRules staffBusinessRules)
+        public DeleteStaffCommandHandler(
+            IMapper mapper,
+            IUserService userService,
+            IStaffRepository staffRepository,
+            StaffBusinessRules staffBusinessRules
+        )
         {
             _mapper = mapper;
+            _userService = userService;
             _staffRepository = staffRepository;
             _staffBusinessRules = staffBusinessRules;
         }
@@ -46,7 +57,10 @@ public class DeleteStaffCommand
             Staff? staff = await _staffRepository.GetAsync(predicate: s => s.Id == request.Id, cancellationToken: cancellationToken);
             await _staffBusinessRules.StaffShouldExistWhenSelected(staff);
 
+            User? user = await _userService.GetAsync(predicate: x => x.Id == staff!.UserId, cancellationToken: cancellationToken);
+
             await _staffRepository.DeleteAsync(staff!);
+            await _userService.DeleteAsync(user!);
 
             DeletedStaffResponse response = _mapper.Map<DeletedStaffResponse>(staff);
             return response;

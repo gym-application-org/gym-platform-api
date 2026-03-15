@@ -6,6 +6,7 @@ using Core.Application.Pipelines.Authorization;
 using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
+using Core.Security.Constants;
 using Domain.Entities;
 using Domain.Enums;
 using MediatR;
@@ -18,7 +19,8 @@ public class UpdateMemberCommand
         ISecuredRequest,
         ICacheRemoverRequest,
         ILoggableRequest,
-        ITransactionalRequest
+        ITransactionalRequest,
+        ITenantRequest
 {
     public Guid Id { get; set; }
     public string FirstName { get; set; }
@@ -26,9 +28,8 @@ public class UpdateMemberCommand
     public string? Phone { get; set; }
     public string? Email { get; set; }
     public MemberStatus Status { get; set; }
-    public int UserId { get; set; }
 
-    public string[] Roles => [Admin, Write, MembersOperationClaims.Update];
+    public string[] Roles => [GeneralOperationClaims.Owner, GeneralOperationClaims.Staff];
 
     public bool BypassCache { get; }
     public string? CacheKey { get; }

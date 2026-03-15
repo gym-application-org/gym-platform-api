@@ -11,20 +11,22 @@ using Domain.Entities;
 using MediatR;
 using static Application.Features.Staffs.Constants.StaffsOperationClaims;
 
-namespace Application.Features.Staffs.Queries.GetList;
+namespace Application.Features.Staffs.Queries.GetListAdmin;
 
-public class GetListStaffQuery : IRequest<GetListResponse<GetListStaffListItemDto>>, ISecuredRequest, ICachableRequest, ITenantRequest
+public class GetListAdminStaffQuery : IRequest<GetListResponse<GetListAdminStaffListItemDto>>, ISecuredRequest, ICachableRequest
 {
     public PageRequest PageRequest { get; set; }
 
-    public string[] Roles => [GeneralOperationClaims.Owner];
+    public Guid? TenantId { get; set; }
+
+    public string[] Roles => [GeneralOperationClaims.Admin];
 
     public bool BypassCache { get; }
     public string? CacheKey => $"GetListStaffs({PageRequest.PageIndex},{PageRequest.PageSize})";
     public string? CacheGroupKey => "GetStaffs";
     public TimeSpan? SlidingExpiration { get; }
 
-    public class GetListStaffQueryHandler : IRequestHandler<GetListStaffQuery, GetListResponse<GetListStaffListItemDto>>
+    public class GetListStaffQueryHandler : IRequestHandler<GetListAdminStaffQuery, GetListResponse<GetListAdminStaffListItemDto>>
     {
         private readonly IStaffRepository _staffRepository;
         private readonly IMapper _mapper;
@@ -35,16 +37,20 @@ public class GetListStaffQuery : IRequest<GetListResponse<GetListStaffListItemDt
             _mapper = mapper;
         }
 
-        public async Task<GetListResponse<GetListStaffListItemDto>> Handle(GetListStaffQuery request, CancellationToken cancellationToken)
+        public async Task<GetListResponse<GetListAdminStaffListItemDto>> Handle(
+            GetListAdminStaffQuery request,
+            CancellationToken cancellationToken
+        )
         {
             IPaginate<Staff> staffs = await _staffRepository.GetListAsync(
+                predicate: x => (!request.TenantId.HasValue || request.TenantId == x.TenantId),
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
                 withDeleted: true,
                 cancellationToken: cancellationToken
             );
 
-            GetListResponse<GetListStaffListItemDto> response = _mapper.Map<GetListResponse<GetListStaffListItemDto>>(staffs);
+            GetListResponse<GetListAdminStaffListItemDto> response = _mapper.Map<GetListResponse<GetListAdminStaffListItemDto>>(staffs);
             return response;
         }
     }

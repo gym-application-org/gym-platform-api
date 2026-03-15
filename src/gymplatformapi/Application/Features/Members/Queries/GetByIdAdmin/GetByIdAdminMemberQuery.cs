@@ -8,15 +8,15 @@ using Domain.Entities;
 using MediatR;
 using static Application.Features.Members.Constants.MembersOperationClaims;
 
-namespace Application.Features.Members.Queries.GetById;
+namespace Application.Features.Members.Queries.GetByIdAdmin;
 
-public class GetByIdMemberQuery : IRequest<GetByIdMemberResponse>, ISecuredRequest, ITenantRequest
+public class GetByIdAdminMemberQuery : IRequest<GetByIdAdminMemberResponse>, ISecuredRequest
 {
     public Guid Id { get; set; }
 
-    public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
+    public string[] Roles => [GeneralOperationClaims.Admin];
 
-    public class GetByIdMemberQueryHandler : IRequestHandler<GetByIdMemberQuery, GetByIdMemberResponse>
+    public class GetByIdMemberQueryHandler : IRequestHandler<GetByIdAdminMemberQuery, GetByIdAdminMemberResponse>
     {
         private readonly IMapper _mapper;
         private readonly IMemberRepository _memberRepository;
@@ -29,12 +29,16 @@ public class GetByIdMemberQuery : IRequest<GetByIdMemberResponse>, ISecuredReque
             _memberBusinessRules = memberBusinessRules;
         }
 
-        public async Task<GetByIdMemberResponse> Handle(GetByIdMemberQuery request, CancellationToken cancellationToken)
+        public async Task<GetByIdAdminMemberResponse> Handle(GetByIdAdminMemberQuery request, CancellationToken cancellationToken)
         {
-            Member? member = await _memberRepository.GetAsync(predicate: m => m.Id == request.Id, cancellationToken: cancellationToken);
+            Member? member = await _memberRepository.GetAsync(
+                predicate: m => m.Id == request.Id,
+                withDeleted: true,
+                cancellationToken: cancellationToken
+            );
             await _memberBusinessRules.MemberShouldExistWhenSelected(member);
 
-            GetByIdMemberResponse response = _mapper.Map<GetByIdMemberResponse>(member);
+            GetByIdAdminMemberResponse response = _mapper.Map<GetByIdAdminMemberResponse>(member);
             return response;
         }
     }

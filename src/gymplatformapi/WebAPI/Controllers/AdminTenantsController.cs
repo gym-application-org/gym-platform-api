@@ -14,9 +14,9 @@ namespace WebAPI.Controllers;
 public class AdminTenantsController : BaseController
 {
     [HttpPost]
-    public async Task<IActionResult> Add([FromBody] CreateTenantCommand createTenantCommand)
+    public async Task<IActionResult> Add([FromBody] CreateWithOwnerTenantCommand createTenantCommand)
     {
-        CreatedTenantResponse response = await Mediator.Send(createTenantCommand);
+        CreatedTenantWithOwnerResponse response = await Mediator.Send(createTenantCommand);
 
         return Created(uri: "", response);
     }
@@ -29,7 +29,7 @@ public class AdminTenantsController : BaseController
         return Ok(response);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
         DeletedTenantResponse response = await Mediator.Send(new DeleteTenantCommand { Id = id });
@@ -37,7 +37,7 @@ public class AdminTenantsController : BaseController
         return Ok(response);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
         GetByIdTenantResponse response = await Mediator.Send(new GetByIdTenantQuery { Id = id });

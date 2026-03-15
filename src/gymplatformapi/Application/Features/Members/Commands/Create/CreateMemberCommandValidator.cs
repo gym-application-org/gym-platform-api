@@ -10,7 +10,5 @@ public class CreateMemberCommandValidator : AbstractValidator<CreateMemberComman
         RuleFor(c => c.LastName).NotEmpty();
         RuleFor(c => c.Phone).NotEmpty();
         RuleFor(c => c.Email).NotEmpty();
-        RuleFor(c => c.Status).NotEmpty();
-        RuleFor(c => c.UserId).NotEmpty();
     }
 }

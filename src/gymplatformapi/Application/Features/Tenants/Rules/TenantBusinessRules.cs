@@ -1,8 +1,10 @@
+using Application.Features.Staffs.Constants;
 using Application.Features.Tenants.Constants;
 using Application.Services.Repositories;
 using Core.Application.Rules;
 using Core.CrossCuttingConcerns.Exceptions.Types;
 using Core.Localization.Abstraction;
+using Core.Security.Entities;
 using Domain.Entities;
 
 namespace Application.Features.Tenants.Rules;
@@ -40,6 +42,12 @@ public class TenantBusinessRules : BaseBusinessRules
     {
         if (staff.DeletedDate != null || !staff.IsActive)
             await throwBusinessException(TenantsBusinessMessages.StaffNotActive);
+    }
+
+    public async Task OperationClaimShouldExistWhenSelected(OperationClaim? operationClaim)
+    {
+        if (operationClaim == null)
+            await throwBusinessException(TenantsBusinessMessages.OperationClaimNotExists);
     }
 
     public async Task TenantIdShouldExistWhenSelected(Guid id, CancellationToken cancellationToken)

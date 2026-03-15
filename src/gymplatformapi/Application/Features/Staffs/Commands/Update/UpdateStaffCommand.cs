@@ -6,6 +6,7 @@ using Core.Application.Pipelines.Authorization;
 using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
+using Core.Security.Constants;
 using Domain.Entities;
 using Domain.Enums;
 using MediatR;
@@ -18,17 +19,16 @@ public class UpdateStaffCommand
         ISecuredRequest,
         ICacheRemoverRequest,
         ILoggableRequest,
-        ITransactionalRequest
+        ITransactionalRequest,
+        ITenantRequest
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
     public string? Phone { get; set; }
     public string? Email { get; set; }
-    public StaffRole Role { get; set; }
     public bool IsActive { get; set; }
-    public int UserId { get; set; }
 
-    public string[] Roles => [Admin, Write, StaffsOperationClaims.Update];
+    public string[] Roles => [GeneralOperationClaims.Owner];
 
     public bool BypassCache { get; }
     public string? CacheKey { get; }

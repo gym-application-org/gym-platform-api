@@ -1,8 +1,7 @@
 using Application.Constants;
-using Application.Features.Staffs.Constants;
 using Application.Features.Staffs.Rules;
-using Application.Features.Tenants.Commands.Create;
 using Application.Features.Tenants.Constants;
+using Application.Features.Tenants.Rules;
 using Application.Services.MailServices.UserOnboardingMails;
 using Application.Services.OperationClaims;
 using Application.Services.Repositories;
@@ -22,84 +21,79 @@ using Core.Security.Entities;
 using Core.Security.Hashing;
 using Core.Security.UserActionToken;
 using Domain.Entities;
-using Domain.Enums;
 using MediatR;
-using static Application.Features.Staffs.Constants.StaffsOperationClaims;
+using static Application.Features.Tenants.Constants.TenantsOperationClaims;
 
-namespace Application.Features.Staffs.Commands.Create;
+namespace Application.Features.Tenants.Commands.Create;
 
-public class CreateStaffCommand
-    : IRequest<CreatedStaffResponse>,
+public class CreateWithOwnerTenantCommand
+    : IRequest<CreatedTenantWithOwnerResponse>,
         ISecuredRequest,
         ICacheRemoverRequest,
         ILoggableRequest,
-        ITransactionalRequest,
-        ITenantRequest
+        ITransactionalRequest
 {
-    public string Name { get; set; }
-    public string? Phone { get; set; }
-    public string? Email { get; set; }
+    public string TenantName { get; set; }
+    public bool TenantIsActive { get; set; }
+    public string TenantSubdomain { get; set; }
+    public string OwnerName { get; set; }
+    public string Email { get; set; }
+    public string Phone { get; set; }
 
-    public string[] Roles => [GeneralOperationClaims.Owner];
+    public string[] Roles => [GeneralOperationClaims.Admin];
 
     public bool BypassCache { get; }
     public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetStaffs"];
+    public string[]? CacheGroupKey => ["GetTenants"];
 
-    public class CreateStaffCommandHandler : IRequestHandler<CreateStaffCommand, CreatedStaffResponse>
+    public class CreateTenantCommandHandler : IRequestHandler<CreateWithOwnerTenantCommand, CreatedTenantWithOwnerResponse>
     {
         private readonly IMapper _mapper;
-        private readonly IStaffRepository _staffRepository;
-        private readonly StaffBusinessRules _staffBusinessRules;
+        private readonly ITenantRepository _tenantRepository;
+        private readonly TenantBusinessRules _tenantBusinessRules;
         private readonly IUserService _userService;
+        private readonly ITenantService _tenantService;
         private readonly IStaffService _staffService;
         private readonly IUserActionTokenService _userActionTokenService;
         private readonly IUserOnboardingMailService _userOnboardingMailService;
         private readonly ICurrentUser _currentUser;
         private readonly IUserActionTokenHelper _userActionTokenHelper;
-        private readonly ICurrentTenant _currentTenant;
-        private readonly ITenantService _tenantService;
-        private readonly IUserOperationClaimService _userOperationClaimService;
         private readonly IOperationClaimService _operationClaimService;
+        private readonly IUserOperationClaimService _userOperationClaimService;
 
-        public CreateStaffCommandHandler(
+        public CreateTenantCommandHandler(
             IMapper mapper,
-            IStaffRepository staffRepository,
-            StaffBusinessRules staffBusinessRules,
-            ICurrentTenant currentTenant,
+            ITenantRepository tenantRepository,
+            TenantBusinessRules tenantBusinessRules,
             IUserService userService,
-            ICurrentUser currentUser,
+            ITenantService tenantService,
+            IStaffService staffService,
             IUserActionTokenService userActionTokenService,
             IUserOnboardingMailService userOnboardingMailService,
+            ICurrentUser currentUser,
             IUserActionTokenHelper userActionTokenHelper,
-            IStaffService staffService,
-            ITenantService tenantService,
-            IUserOperationClaimService userOperationClaimService,
-            IOperationClaimService operationClaimService
+            IOperationClaimService operationClaimService,
+            IUserOperationClaimService userOperationClaimService
         )
         {
             _mapper = mapper;
-            _staffRepository = staffRepository;
-            _staffService = staffService;
-            _staffBusinessRules = staffBusinessRules;
-            _currentTenant = currentTenant;
+            _tenantRepository = tenantRepository;
+            _tenantBusinessRules = tenantBusinessRules;
             _userService = userService;
-            _userActionTokenHelper = userActionTokenHelper;
+            _tenantService = tenantService;
+            _staffService = staffService;
+            _currentUser = currentUser;
             _userActionTokenService = userActionTokenService;
             _userOnboardingMailService = userOnboardingMailService;
-            _currentUser = currentUser;
-            _tenantService = tenantService;
-            _userOperationClaimService = userOperationClaimService;
+            _userActionTokenHelper = userActionTokenHelper;
             _operationClaimService = operationClaimService;
+            _userOperationClaimService = userOperationClaimService;
         }
 
-        public async Task<CreatedStaffResponse> Handle(CreateStaffCommand request, CancellationToken cancellationToken)
+        public async Task<CreatedTenantWithOwnerResponse> Handle(CreateWithOwnerTenantCommand request, CancellationToken cancellationToken)
         {
-            Guid tenantId = _currentTenant.TenantId!.Value;
-            int userId = _currentUser.UserId;
-
-            Tenant? tenant = await _tenantService.GetAsync(x => x.Id == tenantId, cancellationToken: cancellationToken);
-            await _staffBusinessRules.TenantShouldExistWhenSelected(tenant);
+            Tenant tenant = _mapper.Map<Tenant>(request);
+            tenant = await _tenantService.AddAsync(tenant);
 
             User user = _mapper.Map<User>(request);
             user.Status = false;
@@ -107,19 +101,19 @@ public class CreateStaffCommand
             user = await _userService.AddAsync(user);
 
             OperationClaim? claim = await _operationClaimService.GetAsync(
-                x => x.Name.Equals(GeneralOperationClaims.Staff),
+                x => x.Name.Equals(GeneralOperationClaims.Owner),
                 cancellationToken: cancellationToken
             );
-            await _staffBusinessRules.OperationClaimShouldExistWhenSelected(claim);
+            await _tenantBusinessRules.OperationClaimShouldExistWhenSelected(claim);
 
-            UserOperationClaim userClaim = new UserOperationClaim(userId, claim!.Id);
+            UserOperationClaim userClaim = new UserOperationClaim(user.Id, claim!.Id);
             await _userOperationClaimService.AddAsync(userClaim);
 
             Staff staff = _mapper.Map<Staff>(request);
-            staff.Role = Domain.Enums.StaffRole.Staff;
+            staff.Role = Domain.Enums.StaffRole.Owner;
             staff.IsActive = false;
             staff.UserId = user.Id;
-            staff.TenantId = tenantId;
+            staff.TenantId = tenant.Id;
             staff = await _staffService.AddAsync(staff);
 
             string token = _userActionTokenHelper.CreateActionToken();
@@ -128,30 +122,30 @@ public class CreateStaffCommand
             DateTime utcNow = DateTime.UtcNow;
             UserActionToken userActionToken = new UserActionToken()
             {
-                CreatedByUserId = userId,
+                CreatedByUserId = _currentUser.UserId,
                 UserId = user.Id,
                 CreatedDate = utcNow,
                 ExpiresAt = utcNow.Add(ExpirationTimes.ActivationLinkExpiration),
                 Email = user.Email,
                 Purpose = Domain.Enums.UserActionPurpose.AccountActivation,
                 TargetEntityId = staff.Id,
-                TargetType = Domain.Enums.UserActionTargetType.Staff,
-                TenantId = tenantId,
+                TargetType = Domain.Enums.UserActionTargetType.Owner,
+                TenantId = tenant.Id,
                 TokenHash = tokenHash
             };
             await _userActionTokenService.AddAsync(userActionToken);
 
             string activationLink = $"{LinkEndpoints.ActivationLinkEndpoint}?token={token}&email={user.Email}";
-            await _userOnboardingMailService.SendStaffInviteAsync(
+            await _userOnboardingMailService.SendOwnerInviteAsync(
                 user.Email,
                 staff.Name,
-                tenant!.Name,
+                tenant.Name,
                 tenant.Subdomain,
                 activationLink,
                 cancellationToken
             );
 
-            CreatedStaffResponse response = _mapper.Map<CreatedStaffResponse>(staff);
+            CreatedTenantWithOwnerResponse response = _mapper.Map<CreatedTenantWithOwnerResponse>(tenant);
             return response;
         }
     }

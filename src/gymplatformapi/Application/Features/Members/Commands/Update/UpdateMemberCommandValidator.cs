@@ -12,6 +12,5 @@ public class UpdateMemberCommandValidator : AbstractValidator<UpdateMemberComman
         RuleFor(c => c.Phone).NotEmpty();
         RuleFor(c => c.Email).NotEmpty();
         RuleFor(c => c.Status).NotEmpty();
-        RuleFor(c => c.UserId).NotEmpty();
     }
 }
