@@ -2,7 +2,6 @@ using Application.Features.AttendanceLogs.Constants;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
@@ -17,7 +16,6 @@ namespace Application.Features.AttendanceLogs.Queries.GetByMemberList;
 public class GetByMemberListAttendanceLogQuery
     : IRequest<GetListResponse<GetByMemberListAttendanceLogListItemDto>>,
         ISecuredRequest,
-        ICachableRequest,
         ITenantRequest
 {
     public PageRequest PageRequest { get; set; }
@@ -28,19 +26,6 @@ public class GetByMemberListAttendanceLogQuery
     public DateTime? To { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
-
-    public bool BypassCache { get; }
-    public string? CacheKey =>
-        $"GetByMemberAttendanceLogs("
-        + $"{PageRequest.PageIndex},"
-        + $"{PageRequest.PageSize},"
-        + $"{MemberId},"
-        + $"{GateId},"
-        + $"{Result},"
-        + $"{From},"
-        + $"{To})";
-    public string? CacheGroupKey => "GetByMemberAttendanceLogs";
-    public TimeSpan? SlidingExpiration { get; }
 
     public class GetByMemberListAttendanceLogQueryHandler
         : IRequestHandler<GetByMemberListAttendanceLogQuery, GetListResponse<GetByMemberListAttendanceLogListItemDto>>

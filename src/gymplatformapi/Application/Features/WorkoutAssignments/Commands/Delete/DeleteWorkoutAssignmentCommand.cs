@@ -3,7 +3,6 @@ using Application.Features.WorkoutAssignments.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -16,7 +15,6 @@ namespace Application.Features.WorkoutAssignments.Commands.Delete;
 public class DeleteWorkoutAssignmentCommand
     : IRequest<DeletedWorkoutAssignmentResponse>,
         ISecuredRequest,
-        ICacheRemoverRequest,
         ILoggableRequest,
         ITransactionalRequest,
         ITenantRequest
@@ -24,10 +22,6 @@ public class DeleteWorkoutAssignmentCommand
     public int Id { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetWorkoutAssignments"];
 
     public class DeleteWorkoutAssignmentCommandHandler : IRequestHandler<DeleteWorkoutAssignmentCommand, DeletedWorkoutAssignmentResponse>
     {

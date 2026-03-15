@@ -2,7 +2,6 @@ using Application.Features.SupportTickets.Constants;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
@@ -14,11 +13,7 @@ using static Application.Features.SupportTickets.Constants.SupportTicketsOperati
 
 namespace Application.Features.SupportTickets.Queries.GetList;
 
-public class GetListSupportTicketQuery
-    : IRequest<GetListResponse<GetListSupportTicketListItemDto>>,
-        ISecuredRequest,
-        ICachableRequest,
-        ITenantRequest
+public class GetListSupportTicketQuery : IRequest<GetListResponse<GetListSupportTicketListItemDto>>, ISecuredRequest, ITenantRequest
 {
     public PageRequest PageRequest { get; set; }
 
@@ -28,11 +23,6 @@ public class GetListSupportTicketQuery
     public TicketPriority? Priority { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Owner];
-
-    public bool BypassCache { get; }
-    public string? CacheKey => $"GetListSupportTickets({PageRequest.PageIndex},{PageRequest.PageSize})";
-    public string? CacheGroupKey => "GetSupportTickets";
-    public TimeSpan? SlidingExpiration { get; }
 
     public class GetListSupportTicketQueryHandler
         : IRequestHandler<GetListSupportTicketQuery, GetListResponse<GetListSupportTicketListItemDto>>

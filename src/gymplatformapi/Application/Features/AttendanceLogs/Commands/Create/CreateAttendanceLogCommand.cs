@@ -5,7 +5,6 @@ using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Abstractions.Security;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -19,7 +18,6 @@ namespace Application.Features.AttendanceLogs.Commands.Create;
 public class CreateAttendanceLogCommand
     : IRequest<CreatedAttendanceLogResponse>,
         ISecuredRequest,
-        ICacheRemoverRequest,
         ILoggableRequest,
         ITransactionalRequest,
         ITenantRequest
@@ -29,10 +27,6 @@ public class CreateAttendanceLogCommand
     public int GateId { get; set; }
 
     public string[] Roles => [Admin, Write, AttendanceLogsOperationClaims.Create, GeneralOperationClaims.Member];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetAttendanceLogs"];
 
     public class CreateAttendanceLogCommandHandler : IRequestHandler<CreateAttendanceLogCommand, CreatedAttendanceLogResponse>
     {

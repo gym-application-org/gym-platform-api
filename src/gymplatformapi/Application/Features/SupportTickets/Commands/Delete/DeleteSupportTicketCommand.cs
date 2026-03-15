@@ -4,7 +4,6 @@ using Application.Features.SupportTickets.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -17,7 +16,6 @@ namespace Application.Features.SupportTickets.Commands.Delete;
 public class DeleteSupportTicketCommand
     : IRequest<DeletedSupportTicketResponse>,
         ISecuredRequest,
-        ICacheRemoverRequest,
         ILoggableRequest,
         ITransactionalRequest,
         ITenantRequest
@@ -25,10 +23,6 @@ public class DeleteSupportTicketCommand
     public int Id { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Owner];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetSupportTickets"];
 
     public class DeleteSupportTicketCommandHandler : IRequestHandler<DeleteSupportTicketCommand, DeletedSupportTicketResponse>
     {

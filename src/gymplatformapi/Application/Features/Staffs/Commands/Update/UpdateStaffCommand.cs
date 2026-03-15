@@ -3,7 +3,6 @@ using Application.Features.Staffs.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -14,13 +13,7 @@ using static Application.Features.Staffs.Constants.StaffsOperationClaims;
 
 namespace Application.Features.Staffs.Commands.Update;
 
-public class UpdateStaffCommand
-    : IRequest<UpdatedStaffResponse>,
-        ISecuredRequest,
-        ICacheRemoverRequest,
-        ILoggableRequest,
-        ITransactionalRequest,
-        ITenantRequest
+public class UpdateStaffCommand : IRequest<UpdatedStaffResponse>, ISecuredRequest, ILoggableRequest, ITransactionalRequest, ITenantRequest
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
@@ -29,10 +22,6 @@ public class UpdateStaffCommand
     public bool IsActive { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Owner];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetStaffs"];
 
     public class UpdateStaffCommandHandler : IRequestHandler<UpdateStaffCommand, UpdatedStaffResponse>
     {

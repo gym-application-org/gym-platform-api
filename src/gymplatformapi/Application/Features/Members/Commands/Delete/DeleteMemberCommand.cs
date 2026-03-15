@@ -6,7 +6,6 @@ using Application.Services.Repositories;
 using Application.Services.UsersService;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -17,21 +16,11 @@ using static Application.Features.Members.Constants.MembersOperationClaims;
 
 namespace Application.Features.Members.Commands.Delete;
 
-public class DeleteMemberCommand
-    : IRequest<DeletedMemberResponse>,
-        ISecuredRequest,
-        ICacheRemoverRequest,
-        ILoggableRequest,
-        ITransactionalRequest,
-        ITenantRequest
+public class DeleteMemberCommand : IRequest<DeletedMemberResponse>, ISecuredRequest, ILoggableRequest, ITransactionalRequest, ITenantRequest
 {
     public Guid Id { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetMembers"];
 
     public class DeleteMemberCommandHandler : IRequestHandler<DeleteMemberCommand, DeletedMemberResponse>
     {

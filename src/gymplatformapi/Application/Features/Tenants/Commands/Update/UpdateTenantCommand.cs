@@ -3,7 +3,6 @@ using Application.Features.Tenants.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -13,22 +12,13 @@ using static Application.Features.Tenants.Constants.TenantsOperationClaims;
 
 namespace Application.Features.Tenants.Commands.Update;
 
-public class UpdateTenantCommand
-    : IRequest<UpdatedTenantResponse>,
-        ISecuredRequest,
-        ICacheRemoverRequest,
-        ILoggableRequest,
-        ITransactionalRequest
+public class UpdateTenantCommand : IRequest<UpdatedTenantResponse>, ISecuredRequest, ILoggableRequest, ITransactionalRequest
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
     public bool IsActive { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Admin];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetTenants"];
 
     public class UpdateTenantCommandHandler : IRequestHandler<UpdateTenantCommand, UpdatedTenantResponse>
     {

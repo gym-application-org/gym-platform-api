@@ -2,7 +2,6 @@ using Application.Features.WorkoutTemplateDayExercises.Constants;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
@@ -14,17 +13,11 @@ namespace Application.Features.WorkoutTemplateDayExercises.Queries.GetList;
 
 public class GetListWorkoutTemplateDayExerciseQuery
     : IRequest<GetListResponse<GetListWorkoutTemplateDayExerciseListItemDto>>,
-        ISecuredRequest,
-        ICachableRequest
+        ISecuredRequest
 {
     public PageRequest PageRequest { get; set; }
 
     public string[] Roles => [Admin, Read];
-
-    public bool BypassCache { get; }
-    public string? CacheKey => $"GetListWorkoutTemplateDayExercises({PageRequest.PageIndex},{PageRequest.PageSize})";
-    public string? CacheGroupKey => "GetWorkoutTemplateDayExercises";
-    public TimeSpan? SlidingExpiration { get; }
 
     public class GetListWorkoutTemplateDayExerciseQueryHandler
         : IRequestHandler<GetListWorkoutTemplateDayExerciseQuery, GetListResponse<GetListWorkoutTemplateDayExerciseListItemDto>>

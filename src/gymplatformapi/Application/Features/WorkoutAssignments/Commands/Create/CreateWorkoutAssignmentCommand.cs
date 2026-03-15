@@ -8,7 +8,6 @@ using Application.Services.WorkoutTemplates;
 using AutoMapper;
 using Core.Application.Abstractions.Security;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -22,7 +21,6 @@ namespace Application.Features.WorkoutAssignments.Commands.Create;
 public class CreateWorkoutAssignmentCommand
     : IRequest<CreatedWorkoutAssignmentResponse>,
         ISecuredRequest,
-        ICacheRemoverRequest,
         ILoggableRequest,
         ITransactionalRequest,
         ITenantRequest
@@ -34,10 +32,6 @@ public class CreateWorkoutAssignmentCommand
     public int WorkoutTemplateId { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetWorkoutAssignments"];
 
     public class CreateWorkoutAssignmentCommandHandler : IRequestHandler<CreateWorkoutAssignmentCommand, CreatedWorkoutAssignmentResponse>
     {

@@ -3,7 +3,6 @@ using Application.Features.WorkoutTemplateDayExercises.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Domain.Entities;
@@ -15,7 +14,6 @@ namespace Application.Features.WorkoutTemplateDayExercises.Commands.Update;
 public class UpdateWorkoutTemplateDayExerciseCommand
     : IRequest<UpdatedWorkoutTemplateDayExerciseResponse>,
         ISecuredRequest,
-        ICacheRemoverRequest,
         ILoggableRequest,
         ITransactionalRequest
 {
@@ -31,10 +29,6 @@ public class UpdateWorkoutTemplateDayExerciseCommand
     public int? ExerciseId { get; set; }
 
     public string[] Roles => [Admin, Write, WorkoutTemplateDayExercisesOperationClaims.Update];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetWorkoutTemplateDayExercises"];
 
     public class UpdateWorkoutTemplateDayExerciseCommandHandler
         : IRequestHandler<UpdateWorkoutTemplateDayExerciseCommand, UpdatedWorkoutTemplateDayExerciseResponse>

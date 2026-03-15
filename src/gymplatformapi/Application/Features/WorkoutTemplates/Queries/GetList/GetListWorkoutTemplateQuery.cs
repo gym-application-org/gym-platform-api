@@ -2,7 +2,6 @@ using Application.Features.WorkoutTemplates.Constants;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
@@ -13,20 +12,11 @@ using static Application.Features.WorkoutTemplates.Constants.WorkoutTemplatesOpe
 
 namespace Application.Features.WorkoutTemplates.Queries.GetList;
 
-public class GetListWorkoutTemplateQuery
-    : IRequest<GetListResponse<GetListWorkoutTemplateListItemDto>>,
-        ISecuredRequest,
-        ICachableRequest,
-        ITenantRequest
+public class GetListWorkoutTemplateQuery : IRequest<GetListResponse<GetListWorkoutTemplateListItemDto>>, ISecuredRequest, ITenantRequest
 {
     public PageRequest PageRequest { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
-
-    public bool BypassCache { get; }
-    public string? CacheKey => $"GetListWorkoutTemplates({PageRequest.PageIndex},{PageRequest.PageSize})";
-    public string? CacheGroupKey => "GetWorkoutTemplates";
-    public TimeSpan? SlidingExpiration { get; }
 
     public class GetListWorkoutTemplateQueryHandler
         : IRequestHandler<GetListWorkoutTemplateQuery, GetListResponse<GetListWorkoutTemplateListItemDto>>

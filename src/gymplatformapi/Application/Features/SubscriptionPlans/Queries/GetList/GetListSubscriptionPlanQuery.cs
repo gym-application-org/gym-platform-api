@@ -2,7 +2,6 @@ using Application.Features.SubscriptionPlans.Constants;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
@@ -13,20 +12,11 @@ using static Application.Features.SubscriptionPlans.Constants.SubscriptionPlansO
 
 namespace Application.Features.SubscriptionPlans.Queries.GetList;
 
-public class GetListSubscriptionPlanQuery
-    : IRequest<GetListResponse<GetListSubscriptionPlanListItemDto>>,
-        ISecuredRequest,
-        ICachableRequest,
-        ITenantRequest
+public class GetListSubscriptionPlanQuery : IRequest<GetListResponse<GetListSubscriptionPlanListItemDto>>, ISecuredRequest, ITenantRequest
 {
     public PageRequest PageRequest { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Owner, GeneralOperationClaims.Staff, GeneralOperationClaims.Member];
-
-    public bool BypassCache { get; }
-    public string? CacheKey => $"GetListSubscriptionPlans({PageRequest.PageIndex},{PageRequest.PageSize})";
-    public string? CacheGroupKey => "GetSubscriptionPlans";
-    public TimeSpan? SlidingExpiration { get; }
 
     public class GetListSubscriptionPlanQueryHandler
         : IRequestHandler<GetListSubscriptionPlanQuery, GetListResponse<GetListSubscriptionPlanListItemDto>>

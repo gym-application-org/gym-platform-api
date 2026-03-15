@@ -3,7 +3,6 @@ using Application.Features.Members.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -14,13 +13,7 @@ using static Application.Features.Members.Constants.MembersOperationClaims;
 
 namespace Application.Features.Members.Commands.Update;
 
-public class UpdateMemberCommand
-    : IRequest<UpdatedMemberResponse>,
-        ISecuredRequest,
-        ICacheRemoverRequest,
-        ILoggableRequest,
-        ITransactionalRequest,
-        ITenantRequest
+public class UpdateMemberCommand : IRequest<UpdatedMemberResponse>, ISecuredRequest, ILoggableRequest, ITransactionalRequest, ITenantRequest
 {
     public Guid Id { get; set; }
     public string FirstName { get; set; }
@@ -30,10 +23,6 @@ public class UpdateMemberCommand
     public MemberStatus Status { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Owner, GeneralOperationClaims.Staff];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetMembers"];
 
     public class UpdateMemberCommandHandler : IRequestHandler<UpdateMemberCommand, UpdatedMemberResponse>
     {

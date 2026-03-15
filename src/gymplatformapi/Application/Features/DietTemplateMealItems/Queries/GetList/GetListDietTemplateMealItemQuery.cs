@@ -2,7 +2,6 @@ using Application.Features.DietTemplateMealItems.Constants;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
@@ -12,19 +11,11 @@ using static Application.Features.DietTemplateMealItems.Constants.DietTemplateMe
 
 namespace Application.Features.DietTemplateMealItems.Queries.GetList;
 
-public class GetListDietTemplateMealItemQuery
-    : IRequest<GetListResponse<GetListDietTemplateMealItemListItemDto>>,
-        ISecuredRequest,
-        ICachableRequest
+public class GetListDietTemplateMealItemQuery : IRequest<GetListResponse<GetListDietTemplateMealItemListItemDto>>, ISecuredRequest
 {
     public PageRequest PageRequest { get; set; }
 
     public string[] Roles => [Admin, Read];
-
-    public bool BypassCache { get; }
-    public string? CacheKey => $"GetListDietTemplateMealItems({PageRequest.PageIndex},{PageRequest.PageSize})";
-    public string? CacheGroupKey => "GetDietTemplateMealItems";
-    public TimeSpan? SlidingExpiration { get; }
 
     public class GetListDietTemplateMealItemQueryHandler
         : IRequestHandler<GetListDietTemplateMealItemQuery, GetListResponse<GetListDietTemplateMealItemListItemDto>>

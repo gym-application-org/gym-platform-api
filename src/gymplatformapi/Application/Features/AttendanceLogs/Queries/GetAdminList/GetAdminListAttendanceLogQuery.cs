@@ -3,7 +3,6 @@ using System.Linq;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
@@ -14,10 +13,7 @@ using MediatR;
 
 namespace Application.Features.AttendanceLogs.Queries.GetAdminList;
 
-public class GetAdminListAttendanceLogQuery
-    : IRequest<GetListResponse<GetAdminListAttendanceLogListItemDto>>,
-        ISecuredRequest,
-        ICachableRequest
+public class GetAdminListAttendanceLogQuery : IRequest<GetListResponse<GetAdminListAttendanceLogListItemDto>>, ISecuredRequest
 {
     public PageRequest PageRequest { get; set; } = default!;
     public Guid? TenantId { get; set; }
@@ -27,23 +23,7 @@ public class GetAdminListAttendanceLogQuery
     public DateTime? From { get; set; }
     public DateTime? To { get; set; }
 
-    // Platform admin only
     public string[] Roles => [GeneralOperationClaims.Admin];
-
-    public bool BypassCache { get; }
-    public string? CacheKey =>
-        $"GetAdminListAttendanceLogs("
-        + $"{PageRequest.PageIndex},"
-        + $"{PageRequest.PageSize},"
-        + $"{TenantId},"
-        + $"{MemberId},"
-        + $"{GateId},"
-        + $"{Result},"
-        + $"{From},"
-        + $"{To})";
-
-    public string? CacheGroupKey => "GetAdminAttendanceLogs";
-    public TimeSpan? SlidingExpiration => TimeSpan.FromMinutes(5);
 
     public class GetAdminListAttendanceLogQueryHandler
         : IRequestHandler<GetAdminListAttendanceLogQuery, GetListResponse<GetAdminListAttendanceLogListItemDto>>

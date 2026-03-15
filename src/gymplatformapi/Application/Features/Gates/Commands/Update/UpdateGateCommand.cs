@@ -3,7 +3,6 @@ using Application.Features.Gates.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -13,12 +12,7 @@ using static Application.Features.Gates.Constants.GatesOperationClaims;
 
 namespace Application.Features.Gates.Commands.Update;
 
-public class UpdateGateCommand
-    : IRequest<UpdatedGateResponse>,
-        ISecuredRequest,
-        ICacheRemoverRequest,
-        ILoggableRequest,
-        ITransactionalRequest
+public class UpdateGateCommand : IRequest<UpdatedGateResponse>, ISecuredRequest, ILoggableRequest, ITransactionalRequest
 {
     public int Id { get; set; }
 
@@ -28,10 +22,6 @@ public class UpdateGateCommand
     public bool IsActive { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Admin];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetGates"];
 
     public class UpdateGateCommandHandler : IRequestHandler<UpdateGateCommand, UpdatedGateResponse>
     {

@@ -14,7 +14,6 @@ using Application.Services.UsersService;
 using AutoMapper;
 using Core.Application.Abstractions.Security;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -28,23 +27,13 @@ using static Application.Features.Staffs.Constants.StaffsOperationClaims;
 
 namespace Application.Features.Staffs.Commands.Create;
 
-public class CreateStaffCommand
-    : IRequest<CreatedStaffResponse>,
-        ISecuredRequest,
-        ICacheRemoverRequest,
-        ILoggableRequest,
-        ITransactionalRequest,
-        ITenantRequest
+public class CreateStaffCommand : IRequest<CreatedStaffResponse>, ISecuredRequest, ILoggableRequest, ITransactionalRequest, ITenantRequest
 {
     public string Name { get; set; }
     public string? Phone { get; set; }
     public string? Email { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Owner];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetStaffs"];
 
     public class CreateStaffCommandHandler : IRequestHandler<CreateStaffCommand, CreatedStaffResponse>
     {

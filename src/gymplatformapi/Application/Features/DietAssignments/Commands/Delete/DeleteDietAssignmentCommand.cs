@@ -4,7 +4,6 @@ using Application.Features.DietAssignments.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -17,7 +16,6 @@ namespace Application.Features.DietAssignments.Commands.Delete;
 public class DeleteDietAssignmentCommand
     : IRequest<DeletedDietAssignmentResponse>,
         ISecuredRequest,
-        ICacheRemoverRequest,
         ILoggableRequest,
         ITransactionalRequest,
         ITenantRequest
@@ -25,10 +23,6 @@ public class DeleteDietAssignmentCommand
     public int Id { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Owner, GeneralOperationClaims.Staff];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetDietAssignments"];
 
     public class DeleteDietAssignmentCommandHandler : IRequestHandler<DeleteDietAssignmentCommand, DeletedDietAssignmentResponse>
     {

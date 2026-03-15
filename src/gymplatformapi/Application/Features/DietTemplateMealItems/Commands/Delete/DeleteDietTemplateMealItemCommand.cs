@@ -4,7 +4,6 @@ using Application.Features.DietTemplateMealItems.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Domain.Entities;
@@ -16,17 +15,12 @@ namespace Application.Features.DietTemplateMealItems.Commands.Delete;
 public class DeleteDietTemplateMealItemCommand
     : IRequest<DeletedDietTemplateMealItemResponse>,
         ISecuredRequest,
-        ICacheRemoverRequest,
         ILoggableRequest,
         ITransactionalRequest
 {
     public int Id { get; set; }
 
     public string[] Roles => [Admin, Write, DietTemplateMealItemsOperationClaims.Delete];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetDietTemplateMealItems"];
 
     public class DeleteDietTemplateMealItemCommandHandler
         : IRequestHandler<DeleteDietTemplateMealItemCommand, DeletedDietTemplateMealItemResponse>

@@ -5,7 +5,6 @@ using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Abstractions.Security;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -18,7 +17,6 @@ namespace Application.Features.ProgressEntries.Commands.Create;
 public class CreateProgressEntryCommand
     : IRequest<CreatedProgressEntryResponse>,
         ISecuredRequest,
-        ICacheRemoverRequest,
         ILoggableRequest,
         ITransactionalRequest,
         ITenantRequest
@@ -35,10 +33,6 @@ public class CreateProgressEntryCommand
     public string? Note { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Member];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetProgressEntries"];
 
     public class CreateProgressEntryCommandHandler : IRequestHandler<CreateProgressEntryCommand, CreatedProgressEntryResponse>
     {

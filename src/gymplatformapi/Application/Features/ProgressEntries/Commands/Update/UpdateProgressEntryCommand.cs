@@ -5,7 +5,6 @@ using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Abstractions.Security;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -15,12 +14,7 @@ using static Application.Features.ProgressEntries.Constants.ProgressEntriesOpera
 
 namespace Application.Features.ProgressEntries.Commands.Update;
 
-public class UpdateProgressEntryCommand
-    : IRequest<UpdatedProgressEntryResponse>,
-        ISecuredRequest,
-        ICacheRemoverRequest,
-        ILoggableRequest,
-        ITransactionalRequest
+public class UpdateProgressEntryCommand : IRequest<UpdatedProgressEntryResponse>, ISecuredRequest, ILoggableRequest, ITransactionalRequest
 {
     public int Id { get; set; }
     public DateTime Date { get; set; }
@@ -35,10 +29,6 @@ public class UpdateProgressEntryCommand
     public string? Note { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Member];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetProgressEntries"];
 
     public class UpdateProgressEntryCommandHandler : IRequestHandler<UpdateProgressEntryCommand, UpdatedProgressEntryResponse>
     {

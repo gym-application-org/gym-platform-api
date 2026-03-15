@@ -3,7 +3,6 @@ using Application.Features.Exercises.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Security.Constants;
@@ -14,12 +13,7 @@ using static Application.Features.Exercises.Constants.ExercisesOperationClaims;
 
 namespace Application.Features.Exercises.Commands.Create;
 
-public class CreateExerciseCommand
-    : IRequest<CreatedExerciseResponse>,
-        ISecuredRequest,
-        ICacheRemoverRequest,
-        ILoggableRequest,
-        ITransactionalRequest
+public class CreateExerciseCommand : IRequest<CreatedExerciseResponse>, ISecuredRequest, ILoggableRequest, ITransactionalRequest
 {
     public string Name { get; set; }
     public string? Description { get; set; }
@@ -31,10 +25,6 @@ public class CreateExerciseCommand
     public bool IsActive { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Admin];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetExercises"];
 
     public class CreateExerciseCommandHandler : IRequestHandler<CreateExerciseCommand, CreatedExerciseResponse>
     {

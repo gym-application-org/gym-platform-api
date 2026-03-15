@@ -2,7 +2,6 @@ using Application.Features.Members.Constants;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
@@ -14,18 +13,13 @@ using static Application.Features.Members.Constants.MembersOperationClaims;
 
 namespace Application.Features.Members.Queries.GetList;
 
-public class GetListMemberQuery : IRequest<GetListResponse<GetListMemberListItemDto>>, ISecuredRequest, ICachableRequest, ITenantRequest
+public class GetListMemberQuery : IRequest<GetListResponse<GetListMemberListItemDto>>, ISecuredRequest, ITenantRequest
 {
     public PageRequest PageRequest { get; set; }
 
     public MemberStatus? Status { get; set; }
 
     public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
-
-    public bool BypassCache { get; }
-    public string? CacheKey => $"GetListMembers({PageRequest.PageIndex},{PageRequest.PageSize})";
-    public string? CacheGroupKey => "GetMembers";
-    public TimeSpan? SlidingExpiration { get; }
 
     public class GetListMemberQueryHandler : IRequestHandler<GetListMemberQuery, GetListResponse<GetListMemberListItemDto>>
     {

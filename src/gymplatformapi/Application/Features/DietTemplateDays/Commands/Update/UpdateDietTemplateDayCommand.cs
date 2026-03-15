@@ -3,7 +3,6 @@ using Application.Features.DietTemplateDays.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Domain.Entities;
@@ -15,7 +14,6 @@ namespace Application.Features.DietTemplateDays.Commands.Update;
 public class UpdateDietTemplateDayCommand
     : IRequest<UpdatedDietTemplateDayResponse>,
         ISecuredRequest,
-        ICacheRemoverRequest,
         ILoggableRequest,
         ITransactionalRequest
 {
@@ -26,10 +24,6 @@ public class UpdateDietTemplateDayCommand
     public int DietTemplateId { get; set; }
 
     public string[] Roles => [Admin, Write, DietTemplateDaysOperationClaims.Update];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetDietTemplateDays"];
 
     public class UpdateDietTemplateDayCommandHandler : IRequestHandler<UpdateDietTemplateDayCommand, UpdatedDietTemplateDayResponse>
     {

@@ -4,7 +4,6 @@ using Application.Features.WorkoutTemplateDays.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Authorization;
-using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Domain.Entities;
@@ -16,17 +15,12 @@ namespace Application.Features.WorkoutTemplateDays.Commands.Delete;
 public class DeleteWorkoutTemplateDayCommand
     : IRequest<DeletedWorkoutTemplateDayResponse>,
         ISecuredRequest,
-        ICacheRemoverRequest,
         ILoggableRequest,
         ITransactionalRequest
 {
     public int Id { get; set; }
 
     public string[] Roles => [Admin, Write, WorkoutTemplateDaysOperationClaims.Delete];
-
-    public bool BypassCache { get; }
-    public string? CacheKey { get; }
-    public string[]? CacheGroupKey => ["GetWorkoutTemplateDays"];
 
     public class DeleteWorkoutTemplateDayCommandHandler
         : IRequestHandler<DeleteWorkoutTemplateDayCommand, DeletedWorkoutTemplateDayResponse>
