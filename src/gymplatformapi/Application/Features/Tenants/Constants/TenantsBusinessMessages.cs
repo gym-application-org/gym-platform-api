@@ -8,6 +8,8 @@ public static class TenantsBusinessMessages
 
     public const string TenantMemberNotExists = "TenantMemberNotExists";
 
+    public const string OperationClaimNotExists = "OperationClaimNotExists";
+
     public const string MemberNotActive = "MemberNotActive";
 
     public const string StaffNotActive = "StaffNotActive";

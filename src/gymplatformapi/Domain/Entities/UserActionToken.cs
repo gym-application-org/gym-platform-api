@@ -28,7 +28,7 @@ public class UserActionToken : Entity<Guid>
 
     public Guid? ReplacedByInvitationId { get; set; }
 
-    public Guid? CreatedByUserId { get; set; }
+    public int? CreatedByUserId { get; set; }
     public string? MetadataJson { get; set; }
 
     public virtual User User { get; set; } = null!;

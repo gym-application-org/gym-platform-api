@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/staffs")]
 [ApiController]
 public class StaffsController : BaseController
 {
@@ -21,15 +21,16 @@ public class StaffsController : BaseController
         return Created(uri: "", response);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateStaffCommand updateStaffCommand)
+    [HttpPut("{id:Guid}")]
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateStaffCommand updateStaffCommand)
     {
+        updateStaffCommand.Id = id;
         UpdatedStaffResponse response = await Mediator.Send(updateStaffCommand);
 
         return Ok(response);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:Guid}")]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
         DeletedStaffResponse response = await Mediator.Send(new DeleteStaffCommand { Id = id });
@@ -37,7 +38,7 @@ public class StaffsController : BaseController
         return Ok(response);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:Guid}")]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
         GetByIdStaffResponse response = await Mediator.Send(new GetByIdStaffQuery { Id = id });

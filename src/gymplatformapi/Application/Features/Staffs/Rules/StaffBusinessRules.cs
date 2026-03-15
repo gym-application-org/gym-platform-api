@@ -3,6 +3,7 @@ using Application.Services.Repositories;
 using Core.Application.Rules;
 using Core.CrossCuttingConcerns.Exceptions.Types;
 using Core.Localization.Abstraction;
+using Core.Security.Entities;
 using Domain.Entities;
 
 namespace Application.Features.Staffs.Rules;
@@ -28,6 +29,18 @@ public class StaffBusinessRules : BaseBusinessRules
     {
         if (staff == null)
             await throwBusinessException(StaffsBusinessMessages.StaffNotExists);
+    }
+
+    public async Task TenantShouldExistWhenSelected(Tenant? tenant)
+    {
+        if (tenant == null)
+            await throwBusinessException(StaffsBusinessMessages.TenantNotExists);
+    }
+
+    public async Task OperationClaimShouldExistWhenSelected(OperationClaim? operationClaim)
+    {
+        if (operationClaim == null)
+            await throwBusinessException(StaffsBusinessMessages.OperationClaimNotExists);
     }
 
     public async Task StaffIdShouldExistWhenSelected(Guid id, CancellationToken cancellationToken)

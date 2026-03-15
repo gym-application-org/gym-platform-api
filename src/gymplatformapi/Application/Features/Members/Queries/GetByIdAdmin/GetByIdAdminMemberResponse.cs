@@ -1,9 +1,9 @@
 using Core.Application.Responses;
 using Domain.Enums;
 
-namespace Application.Features.Members.Commands.Update;
+namespace Application.Features.Members.Queries.GetByIdAdmin;
 
-public class UpdatedMemberResponse : IResponse
+public class GetByIdAdminMemberResponse : IResponse
 {
     public Guid Id { get; set; }
     public string FirstName { get; set; }
@@ -11,4 +11,5 @@ public class UpdatedMemberResponse : IResponse
     public string? Phone { get; set; }
     public string? Email { get; set; }
     public MemberStatus Status { get; set; }
+    public int UserId { get; set; }
 }

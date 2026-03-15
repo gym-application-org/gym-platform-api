@@ -5,11 +5,12 @@ using Application.Features.Members.Queries.GetById;
 using Application.Features.Members.Queries.GetList;
 using Core.Application.Requests;
 using Core.Application.Responses;
+using Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/members")]
 [ApiController]
 public class MembersController : BaseController
 {
@@ -21,15 +22,15 @@ public class MembersController : BaseController
         return Created(uri: "", response);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateMemberCommand updateMemberCommand)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateMemberCommand updateMemberCommand)
     {
         UpdatedMemberResponse response = await Mediator.Send(updateMemberCommand);
 
         return Ok(response);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
         DeletedMemberResponse response = await Mediator.Send(new DeleteMemberCommand { Id = id });
@@ -37,7 +38,7 @@ public class MembersController : BaseController
         return Ok(response);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:Guid}")]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
         GetByIdMemberResponse response = await Mediator.Send(new GetByIdMemberQuery { Id = id });
@@ -45,9 +46,9 @@ public class MembersController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetList([FromQuery] PageRequest pageRequest)
+    public async Task<IActionResult> GetList([FromQuery] PageRequest pageRequest, [FromQuery] MemberStatus? status)
     {
-        GetListMemberQuery getListMemberQuery = new() { PageRequest = pageRequest };
+        GetListMemberQuery getListMemberQuery = new() { PageRequest = pageRequest, Status = status };
         GetListResponse<GetListMemberListItemDto> response = await Mediator.Send(getListMemberQuery);
         return Ok(response);
     }

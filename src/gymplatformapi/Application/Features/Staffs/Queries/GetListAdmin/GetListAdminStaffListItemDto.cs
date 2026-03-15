@@ -1,9 +1,9 @@
-using Core.Application.Responses;
+using Core.Application.Dtos;
 using Domain.Enums;
 
-namespace Application.Features.Staffs.Queries.GetById;
+namespace Application.Features.Staffs.Queries.GetListAdmin;
 
-public class GetByIdStaffResponse : IResponse
+public class GetListAdminStaffListItemDto : IDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
@@ -11,4 +11,5 @@ public class GetByIdStaffResponse : IResponse
     public string? Email { get; set; }
     public StaffRole Role { get; set; }
     public bool IsActive { get; set; }
+    public int UserId { get; set; }
 }

@@ -11,5 +11,4 @@ public class GetListStaffListItemDto : IDto
     public string? Email { get; set; }
     public StaffRole Role { get; set; }
     public bool IsActive { get; set; }
-    public int UserId { get; set; }
 }

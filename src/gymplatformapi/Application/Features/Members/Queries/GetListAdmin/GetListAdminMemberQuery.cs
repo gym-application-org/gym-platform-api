@@ -12,22 +12,24 @@ using Domain.Enums;
 using MediatR;
 using static Application.Features.Members.Constants.MembersOperationClaims;
 
-namespace Application.Features.Members.Queries.GetList;
+namespace Application.Features.Members.Queries.GetListAdmin;
 
-public class GetListMemberQuery : IRequest<GetListResponse<GetListMemberListItemDto>>, ISecuredRequest, ICachableRequest, ITenantRequest
+public class GetListAdminMemberQuery : IRequest<GetListResponse<GetListAdminMemberListItemDto>>, ISecuredRequest, ICachableRequest
 {
     public PageRequest PageRequest { get; set; }
 
     public MemberStatus? Status { get; set; }
 
-    public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
+    public Guid? TenantId { get; set; }
+
+    public string[] Roles => [GeneralOperationClaims.Admin];
 
     public bool BypassCache { get; }
     public string? CacheKey => $"GetListMembers({PageRequest.PageIndex},{PageRequest.PageSize})";
     public string? CacheGroupKey => "GetMembers";
     public TimeSpan? SlidingExpiration { get; }
 
-    public class GetListMemberQueryHandler : IRequestHandler<GetListMemberQuery, GetListResponse<GetListMemberListItemDto>>
+    public class GetListMemberQueryHandler : IRequestHandler<GetListAdminMemberQuery, GetListResponse<GetListAdminMemberListItemDto>>
     {
         private readonly IMemberRepository _memberRepository;
         private readonly IMapper _mapper;
@@ -38,16 +40,22 @@ public class GetListMemberQuery : IRequest<GetListResponse<GetListMemberListItem
             _mapper = mapper;
         }
 
-        public async Task<GetListResponse<GetListMemberListItemDto>> Handle(GetListMemberQuery request, CancellationToken cancellationToken)
+        public async Task<GetListResponse<GetListAdminMemberListItemDto>> Handle(
+            GetListAdminMemberQuery request,
+            CancellationToken cancellationToken
+        )
         {
             IPaginate<Member> members = await _memberRepository.GetListAsync(
-                predicate: x => (!request.Status.HasValue || request.Status == x.Status),
+                predicate: x =>
+                    (!request.Status.HasValue || request.Status == x.Status)
+                    && (!request.TenantId.HasValue || request.TenantId == x.TenantId),
+                withDeleted: true,
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
                 cancellationToken: cancellationToken
             );
 
-            GetListResponse<GetListMemberListItemDto> response = _mapper.Map<GetListResponse<GetListMemberListItemDto>>(members);
+            GetListResponse<GetListAdminMemberListItemDto> response = _mapper.Map<GetListResponse<GetListAdminMemberListItemDto>>(members);
             return response;
         }
     }

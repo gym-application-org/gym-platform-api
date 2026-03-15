@@ -10,6 +10,7 @@ namespace Domain.Entities;
 public class Tenant : Entity<Guid>
 {
     public string Name { get; set; } = default!;
+    public string Subdomain { get; set; } = default!;
     public bool IsActive { get; set; }
 
     public Tenant() { }
