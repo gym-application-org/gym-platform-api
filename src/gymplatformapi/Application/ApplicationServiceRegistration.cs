@@ -15,6 +15,7 @@ using Application.Services.MailServices.AuthMails;
 using Application.Services.MailServices.EmailTemplates;
 using Application.Services.MailServices.UserOnboardingMails;
 using Application.Services.Members;
+using Application.Services.OperationClaims;
 using Application.Services.ProgressEntries;
 using Application.Services.Staffs;
 using Application.Services.SubscriptionPlans;
@@ -23,6 +24,7 @@ using Application.Services.SupportTickets;
 using Application.Services.TenantMembershipService;
 using Application.Services.Tenants;
 using Application.Services.UserActionTokens;
+using Application.Services.UserOperationClaims;
 using Application.Services.UsersService;
 using Application.Services.WorkoutAssignments;
 using Application.Services.WorkoutTemplateDayExercises;
@@ -102,6 +104,10 @@ public static class ApplicationServiceRegistration
         services.AddScoped<IMailTemplateService, MailTemplateManager>();
         services.AddScoped<IEmailOtpService, EmailOtpManager>();
         services.AddScoped<IUserActionTokenService, UserActionTokenManager>();
+
+        services.AddScoped<IOperationClaimService, OperationClaimManager>();
+        services.AddScoped<IUserOperationClaimService, UserOperationClaimManager>();
+
         return services;
     }
 
