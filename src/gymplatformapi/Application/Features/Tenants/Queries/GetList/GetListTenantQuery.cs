@@ -34,7 +34,7 @@ public class GetListTenantQuery : IRequest<GetListResponse<GetListTenantListItem
             IPaginate<Tenant> tenants = await _tenantRepository.GetListAsync(
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
-                withDeleted: true,
+                ignoreQueryFilters: true,
                 cancellationToken: cancellationToken
             );
 

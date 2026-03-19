@@ -11,6 +11,7 @@ public interface IWorkoutTemplateService
         Expression<Func<WorkoutTemplate, bool>> predicate,
         Func<IQueryable<WorkoutTemplate>, IIncludableQueryable<WorkoutTemplate, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );
@@ -21,6 +22,7 @@ public interface IWorkoutTemplateService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );

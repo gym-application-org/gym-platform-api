@@ -22,6 +22,7 @@ public class SupportTicketManager : ISupportTicketService
         Expression<Func<SupportTicket, bool>> predicate,
         Func<IQueryable<SupportTicket>, IIncludableQueryable<SupportTicket, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -30,6 +31,7 @@ public class SupportTicketManager : ISupportTicketService
             predicate,
             include,
             withDeleted,
+            ignoreQueryFilters,
             enableTracking,
             cancellationToken
         );
@@ -43,6 +45,7 @@ public class SupportTicketManager : ISupportTicketService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -54,6 +57,7 @@ public class SupportTicketManager : ISupportTicketService
             index,
             size,
             withDeleted,
+            ignoreQueryFilters,
             enableTracking,
             cancellationToken
         );

@@ -22,6 +22,7 @@ public class AttendanceLogManager : IAttendanceLogService
         Expression<Func<AttendanceLog, bool>> predicate,
         Func<IQueryable<AttendanceLog>, IIncludableQueryable<AttendanceLog, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -30,6 +31,7 @@ public class AttendanceLogManager : IAttendanceLogService
             predicate,
             include,
             withDeleted,
+            ignoreQueryFilters,
             enableTracking,
             cancellationToken
         );
@@ -43,6 +45,7 @@ public class AttendanceLogManager : IAttendanceLogService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -54,6 +57,7 @@ public class AttendanceLogManager : IAttendanceLogService
             index,
             size,
             withDeleted,
+            ignoreQueryFilters,
             enableTracking,
             cancellationToken
         );

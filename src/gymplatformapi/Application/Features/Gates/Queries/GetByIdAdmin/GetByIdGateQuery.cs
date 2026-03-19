@@ -32,7 +32,7 @@ public class GetByIdGateQuery : IRequest<GetByIdGateResponse>, ISecuredRequest
         {
             Gate? gate = await _gateRepository.GetAsync(
                 predicate: g => g.Id == request.Id,
-                withDeleted: true,
+                ignoreQueryFilters: true,
                 cancellationToken: cancellationToken
             );
             await _gateBusinessRules.GateShouldExistWhenSelected(gate);

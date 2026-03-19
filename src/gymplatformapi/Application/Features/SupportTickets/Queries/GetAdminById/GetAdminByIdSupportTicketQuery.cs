@@ -41,7 +41,7 @@ public class GetAdminByIdSupportTicketQuery : IRequest<GetAdminByIdSupportTicket
             SupportTicket? supportTicket = await _supportTicketRepository.GetAsync(
                 predicate: st => st.Id == request.Id,
                 cancellationToken: cancellationToken,
-                withDeleted: true
+                ignoreQueryFilters: true
             );
             await _supportTicketBusinessRules.SupportTicketShouldExistWhenSelected(supportTicket);
 

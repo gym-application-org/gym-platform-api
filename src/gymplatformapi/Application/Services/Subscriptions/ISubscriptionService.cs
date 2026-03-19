@@ -11,6 +11,7 @@ public interface ISubscriptionService
         Expression<Func<Subscription, bool>> predicate,
         Func<IQueryable<Subscription>, IIncludableQueryable<Subscription, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );
@@ -21,6 +22,7 @@ public interface ISubscriptionService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );

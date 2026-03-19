@@ -40,7 +40,7 @@ public class GetListAdminStaffQuery : IRequest<GetListResponse<GetListAdminStaff
                 predicate: x => (!request.TenantId.HasValue || request.TenantId == x.TenantId),
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
-                withDeleted: true,
+                ignoreQueryFilters: true,
                 cancellationToken: cancellationToken
             );
 

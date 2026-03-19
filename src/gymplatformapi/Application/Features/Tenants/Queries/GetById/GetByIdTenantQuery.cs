@@ -33,7 +33,7 @@ public class GetByIdTenantQuery : IRequest<GetByIdTenantResponse>, ISecuredReque
         {
             Tenant? tenant = await _tenantRepository.GetAsync(
                 predicate: t => t.Id == request.Id,
-                withDeleted: true,
+                ignoreQueryFilters: true,
                 cancellationToken: cancellationToken
             );
             await _tenantBusinessRules.TenantShouldExistWhenSelected(tenant);

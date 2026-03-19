@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Linq.Expressions;
 using System.Reflection;
 using Core.Persistence.Dynamic;
@@ -80,6 +80,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -89,7 +90,13 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
             queryable = queryable.AsNoTracking();
         if (include != null)
             queryable = include(queryable);
-        if (withDeleted)
+        if (ignoreQueryFilters)
+            queryable = queryable.IgnoreQueryFilters();
+
+        if (ignoreQueryFilters && !withDeleted)
+            queryable = queryable.Where(e => !e.DeletedDate.HasValue);
+
+        if (!ignoreQueryFilters && withDeleted)
             queryable = queryable.IgnoreQueryFilters();
         if (predicate != null)
             queryable = queryable.Where(predicate);
@@ -102,6 +109,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
         Expression<Func<TEntity, bool>> predicate,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -111,7 +119,13 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
             queryable = queryable.AsNoTracking();
         if (include != null)
             queryable = include(queryable);
-        if (withDeleted)
+        if (ignoreQueryFilters)
+            queryable = queryable.IgnoreQueryFilters();
+
+        if (ignoreQueryFilters && !withDeleted)
+            queryable = queryable.Where(e => !e.DeletedDate.HasValue);
+
+        if (!ignoreQueryFilters && withDeleted)
             queryable = queryable.IgnoreQueryFilters();
         return await queryable.FirstOrDefaultAsync(predicate, cancellationToken);
     }
@@ -123,6 +137,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -132,7 +147,13 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
             queryable = queryable.AsNoTracking();
         if (include != null)
             queryable = include(queryable);
-        if (withDeleted)
+        if (ignoreQueryFilters)
+            queryable = queryable.IgnoreQueryFilters();
+
+        if (ignoreQueryFilters && !withDeleted)
+            queryable = queryable.Where(e => !e.DeletedDate.HasValue);
+
+        if (!ignoreQueryFilters && withDeleted)
             queryable = queryable.IgnoreQueryFilters();
         if (predicate != null)
             queryable = queryable.Where(predicate);
@@ -142,6 +163,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
     public async Task<bool> AnyAsync(
         Expression<Func<TEntity, bool>>? predicate = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -149,7 +171,13 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
         IQueryable<TEntity> queryable = Query();
         if (!enableTracking)
             queryable = queryable.AsNoTracking();
-        if (withDeleted)
+        if (ignoreQueryFilters)
+            queryable = queryable.IgnoreQueryFilters();
+
+        if (ignoreQueryFilters && !withDeleted)
+            queryable = queryable.Where(e => !e.DeletedDate.HasValue);
+
+        if (!ignoreQueryFilters && withDeleted)
             queryable = queryable.IgnoreQueryFilters();
         if (predicate != null)
             queryable = queryable.Where(predicate);
@@ -208,6 +236,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
         Expression<Func<TEntity, bool>> predicate,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true
     )
     {
@@ -216,7 +245,13 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
             queryable = queryable.AsNoTracking();
         if (include != null)
             queryable = include(queryable);
-        if (withDeleted)
+        if (ignoreQueryFilters)
+            queryable = queryable.IgnoreQueryFilters();
+
+        if (ignoreQueryFilters && !withDeleted)
+            queryable = queryable.Where(e => !e.DeletedDate.HasValue);
+
+        if (!ignoreQueryFilters && withDeleted)
             queryable = queryable.IgnoreQueryFilters();
         return queryable.FirstOrDefault(predicate);
     }
@@ -228,6 +263,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true
     )
     {
@@ -236,7 +272,13 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
             queryable = queryable.AsNoTracking();
         if (include != null)
             queryable = include(queryable);
-        if (withDeleted)
+        if (ignoreQueryFilters)
+            queryable = queryable.IgnoreQueryFilters();
+
+        if (ignoreQueryFilters && !withDeleted)
+            queryable = queryable.Where(e => !e.DeletedDate.HasValue);
+
+        if (!ignoreQueryFilters && withDeleted)
             queryable = queryable.IgnoreQueryFilters();
         if (predicate != null)
             queryable = queryable.Where(predicate);
@@ -252,6 +294,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true
     )
     {
@@ -260,19 +303,36 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext> : IAsyncRepository<T
             queryable = queryable.AsNoTracking();
         if (include != null)
             queryable = include(queryable);
-        if (withDeleted)
+        if (ignoreQueryFilters)
+            queryable = queryable.IgnoreQueryFilters();
+
+        if (ignoreQueryFilters && !withDeleted)
+            queryable = queryable.Where(e => !e.DeletedDate.HasValue);
+
+        if (!ignoreQueryFilters && withDeleted)
             queryable = queryable.IgnoreQueryFilters();
         if (predicate != null)
             queryable = queryable.Where(predicate);
         return queryable.ToPaginate(index, size);
     }
 
-    public bool Any(Expression<Func<TEntity, bool>>? predicate = null, bool withDeleted = false, bool enableTracking = true)
+    public bool Any(
+        Expression<Func<TEntity, bool>>? predicate = null,
+        bool withDeleted = false,
+        bool ignoreQueryFilters = false,
+        bool enableTracking = true
+    )
     {
         IQueryable<TEntity> queryable = Query();
         if (!enableTracking)
             queryable = queryable.AsNoTracking();
-        if (withDeleted)
+        if (ignoreQueryFilters)
+            queryable = queryable.IgnoreQueryFilters();
+
+        if (ignoreQueryFilters && !withDeleted)
+            queryable = queryable.Where(e => !e.DeletedDate.HasValue);
+
+        if (!ignoreQueryFilters && withDeleted)
             queryable = queryable.IgnoreQueryFilters();
         if (predicate != null)
             queryable = queryable.Where(predicate);

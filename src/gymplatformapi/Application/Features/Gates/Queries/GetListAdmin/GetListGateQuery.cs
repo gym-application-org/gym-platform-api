@@ -37,7 +37,7 @@ public class GetListGateQuery : IRequest<GetListResponse<GetListGateListItemDto>
                 predicate: x => (!request.TenantId.HasValue || x.TenantId == request.TenantId),
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
-                withDeleted: true,
+                ignoreQueryFilters: true,
                 cancellationToken: cancellationToken
             );
 

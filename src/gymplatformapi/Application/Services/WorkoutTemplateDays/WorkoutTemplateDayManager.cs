@@ -25,6 +25,7 @@ public class WorkoutTemplateDayManager : IWorkoutTemplateDayService
         Expression<Func<WorkoutTemplateDay, bool>> predicate,
         Func<IQueryable<WorkoutTemplateDay>, IIncludableQueryable<WorkoutTemplateDay, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -33,6 +34,7 @@ public class WorkoutTemplateDayManager : IWorkoutTemplateDayService
             predicate,
             include,
             withDeleted,
+            ignoreQueryFilters,
             enableTracking,
             cancellationToken
         );
@@ -46,6 +48,7 @@ public class WorkoutTemplateDayManager : IWorkoutTemplateDayService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -57,6 +60,7 @@ public class WorkoutTemplateDayManager : IWorkoutTemplateDayService
             index,
             size,
             withDeleted,
+            ignoreQueryFilters,
             enableTracking,
             cancellationToken
         );

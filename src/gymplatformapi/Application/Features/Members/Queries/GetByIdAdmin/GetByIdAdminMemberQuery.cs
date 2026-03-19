@@ -33,7 +33,7 @@ public class GetByIdAdminMemberQuery : IRequest<GetByIdAdminMemberResponse>, ISe
         {
             Member? member = await _memberRepository.GetAsync(
                 predicate: m => m.Id == request.Id,
-                withDeleted: true,
+                ignoreQueryFilters: true,
                 cancellationToken: cancellationToken
             );
             await _memberBusinessRules.MemberShouldExistWhenSelected(member);

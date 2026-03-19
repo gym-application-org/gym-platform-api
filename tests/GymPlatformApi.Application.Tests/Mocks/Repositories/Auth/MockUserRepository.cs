@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using Application.Services.Repositories;
 using Core.Security.Entities;
 using Microsoft.EntityFrameworkCore.Query;
@@ -28,6 +28,7 @@ namespace StarterProject.Application.Tests.Mocks.Repositories.Auth
                         It.IsAny<Func<IQueryable<User>, IIncludableQueryable<User, object>>>(),
                         It.IsAny<bool>(),
                         It.IsAny<bool>(),
+                        It.IsAny<bool>(),
                         It.IsAny<CancellationToken>()
                     )
                 )
@@ -36,6 +37,7 @@ namespace StarterProject.Application.Tests.Mocks.Repositories.Auth
                         Expression<Func<User, bool>> predicate,
                         Func<IQueryable<User>, IIncludableQueryable<User, object>>? include,
                         bool withDeleted,
+                        bool ignoreQueryFilters,
                         bool enableTracking,
                         CancellationToken cancellationToken
                     ) =>

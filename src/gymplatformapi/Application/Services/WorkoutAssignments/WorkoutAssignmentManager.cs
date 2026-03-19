@@ -25,6 +25,7 @@ public class WorkoutAssignmentManager : IWorkoutAssignmentService
         Expression<Func<WorkoutAssignment, bool>> predicate,
         Func<IQueryable<WorkoutAssignment>, IIncludableQueryable<WorkoutAssignment, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -33,6 +34,7 @@ public class WorkoutAssignmentManager : IWorkoutAssignmentService
             predicate,
             include,
             withDeleted,
+            ignoreQueryFilters,
             enableTracking,
             cancellationToken
         );
@@ -46,6 +48,7 @@ public class WorkoutAssignmentManager : IWorkoutAssignmentService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -57,6 +60,7 @@ public class WorkoutAssignmentManager : IWorkoutAssignmentService
             index,
             size,
             withDeleted,
+            ignoreQueryFilters,
             enableTracking,
             cancellationToken
         );

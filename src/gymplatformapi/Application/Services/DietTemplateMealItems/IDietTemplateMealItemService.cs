@@ -11,6 +11,7 @@ public interface IDietTemplateMealItemService
         Expression<Func<DietTemplateMealItem, bool>> predicate,
         Func<IQueryable<DietTemplateMealItem>, IIncludableQueryable<DietTemplateMealItem, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );
@@ -21,6 +22,7 @@ public interface IDietTemplateMealItemService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );

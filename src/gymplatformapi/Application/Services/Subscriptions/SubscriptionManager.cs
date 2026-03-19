@@ -22,6 +22,7 @@ public class SubscriptionManager : ISubscriptionService
         Expression<Func<Subscription, bool>> predicate,
         Func<IQueryable<Subscription>, IIncludableQueryable<Subscription, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -30,6 +31,7 @@ public class SubscriptionManager : ISubscriptionService
             predicate,
             include,
             withDeleted,
+            ignoreQueryFilters,
             enableTracking,
             cancellationToken
         );
@@ -43,6 +45,7 @@ public class SubscriptionManager : ISubscriptionService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -54,6 +57,7 @@ public class SubscriptionManager : ISubscriptionService
             index,
             size,
             withDeleted,
+            ignoreQueryFilters,
             enableTracking,
             cancellationToken
         );

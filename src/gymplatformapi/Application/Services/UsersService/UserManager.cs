@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using Application.Features.Users.Rules;
 using Application.Services.Repositories;
 using Core.Persistence.Paging;
@@ -22,11 +22,12 @@ public class UserManager : IUserService
         Expression<Func<User, bool>> predicate,
         Func<IQueryable<User>, IIncludableQueryable<User, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
     {
-        User? user = await _userRepository.GetAsync(predicate, include, withDeleted, enableTracking, cancellationToken);
+        User? user = await _userRepository.GetAsync(predicate, include, withDeleted, ignoreQueryFilters, enableTracking, cancellationToken);
         return user;
     }
 
@@ -37,6 +38,7 @@ public class UserManager : IUserService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -48,6 +50,7 @@ public class UserManager : IUserService
             index,
             size,
             withDeleted,
+            ignoreQueryFilters,
             enableTracking,
             cancellationToken
         );

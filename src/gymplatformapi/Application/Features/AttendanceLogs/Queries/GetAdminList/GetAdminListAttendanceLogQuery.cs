@@ -54,7 +54,7 @@ public class GetAdminListAttendanceLogQuery : IRequest<GetListResponse<GetAdminL
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
                 enableTracking: false,
-                withDeleted: true,
+                ignoreQueryFilters: true,
                 cancellationToken: cancellationToken
             );
 

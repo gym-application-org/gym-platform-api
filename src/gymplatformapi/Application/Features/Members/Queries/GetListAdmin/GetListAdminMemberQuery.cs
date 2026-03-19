@@ -43,7 +43,7 @@ public class GetListAdminMemberQuery : IRequest<GetListResponse<GetListAdminMemb
                 predicate: x =>
                     (!request.Status.HasValue || request.Status == x.Status)
                     && (!request.TenantId.HasValue || request.TenantId == x.TenantId),
-                withDeleted: true,
+                ignoreQueryFilters: true,
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
                 cancellationToken: cancellationToken
