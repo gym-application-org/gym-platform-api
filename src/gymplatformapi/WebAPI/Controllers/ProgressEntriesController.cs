@@ -21,9 +21,10 @@ public class ProgressEntriesController : BaseController
         return Created(uri: "", response);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateProgressEntryCommand updateProgressEntryCommand)
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateProgressEntryCommand updateProgressEntryCommand)
     {
+        updateProgressEntryCommand.Id = id;
         UpdatedProgressEntryResponse response = await Mediator.Send(updateProgressEntryCommand);
 
         return Ok(response);
