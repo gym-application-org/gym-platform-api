@@ -11,8 +11,13 @@ namespace Persistence.Contexts;
 
 public class BaseDbContext : DbContext
 {
-    protected IConfiguration Configuration { get; set; }
-    public ICurrentTenant CurrentTenant { get; set; }
+    protected IConfiguration? Configuration { get; set; }
+    public ICurrentTenant? CurrentTenant { get; set; }
+
+    public Guid? CurrentTenantId => CurrentTenant?.TenantId;
+
+    public bool IgnoreTenantFilter { get; set; }
+
     public DbSet<EmailAuthenticator> EmailAuthenticators { get; set; }
     public DbSet<OperationClaim> OperationClaims { get; set; }
     public DbSet<OtpAuthenticator> OtpAuthenticators { get; set; }
@@ -41,8 +46,8 @@ public class BaseDbContext : DbContext
     public DbSet<EmailOtp> EmailOtps { get; set; }
     public DbSet<UserActionToken> UserActionTokens { get; set; }
 
-    public BaseDbContext(DbContextOptions dbContextOptions, IConfiguration configuration, ICurrentTenant currentTenant)
-        : base(dbContextOptions)
+    public BaseDbContext(DbContextOptions<BaseDbContext> options, IConfiguration configuration, ICurrentTenant currentTenant)
+        : base(options)
     {
         Configuration = configuration;
         CurrentTenant = currentTenant;
@@ -53,6 +58,8 @@ public class BaseDbContext : DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         ApplyGlobalQueryFilters(modelBuilder);
+
+        base.OnModelCreating(modelBuilder);
     }
 
     private void ApplyGlobalQueryFilters(ModelBuilder modelBuilder)
@@ -61,10 +68,7 @@ public class BaseDbContext : DbContext
         {
             var clrType = entityType.ClrType;
 
-            // Check if entity has DeletedDate property (soft delete support)
             var hasDeletedDate = clrType.GetProperty("DeletedDate") != null;
-
-            // Check if entity inherits from TenantEntity
             var isTenantEntity = typeof(TenantEntity<>).IsAssignableFromGenericType(clrType);
 
             if (hasDeletedDate || isTenantEntity)
@@ -81,39 +85,51 @@ public class BaseDbContext : DbContext
     private void SetGlobalQueryFilter<TEntity>(ModelBuilder modelBuilder, bool hasSoftDelete, bool isTenantEntity)
         where TEntity : class
     {
-        var parameter = Expression.Parameter(typeof(TEntity), "e");
+        ParameterExpression entityParameter = Expression.Parameter(typeof(TEntity), "e");
         Expression? filterExpression = null;
 
-        // Add soft delete filter
         if (hasSoftDelete)
         {
-            var deletedDateProperty = Expression.Property(parameter, "DeletedDate");
-            var deletedDateHasValue = Expression.Property(deletedDateProperty, "HasValue");
-            var softDeleteFilter = Expression.Not(deletedDateHasValue);
+            MemberExpression deletedDateProperty = Expression.Property(entityParameter, "DeletedDate");
+            MemberExpression deletedDateHasValue = Expression.Property(deletedDateProperty, "HasValue");
 
-            filterExpression = softDeleteFilter;
+            filterExpression = Expression.Equal(deletedDateHasValue, Expression.Constant(false));
         }
 
-        // Add tenant filter
         if (isTenantEntity)
         {
-            var currentTenantId = CurrentTenant?.TenantId;
+            ConstantExpression dbContextInstance = Expression.Constant(this);
 
-            if (currentTenantId.HasValue)
-            {
-                var tenantIdProperty = Expression.Property(parameter, "TenantId");
-                var tenantFilter = Expression.Equal(tenantIdProperty, Expression.Constant(currentTenantId.Value));
+            MemberExpression ignoreTenantFilterProperty = Expression.Property(dbContextInstance, nameof(IgnoreTenantFilter));
 
-                filterExpression = filterExpression == null ? tenantFilter : Expression.AndAlso(filterExpression, tenantFilter);
-            }
+            MemberExpression currentTenantIdProperty = Expression.Property(dbContextInstance, nameof(CurrentTenantId));
+
+            BinaryExpression currentTenantIsNullExpression = Expression.Equal(
+                currentTenantIdProperty,
+                Expression.Constant(null, typeof(Guid?))
+            );
+
+            MemberExpression tenantIdProperty = Expression.Property(entityParameter, "TenantId");
+
+            UnaryExpression tenantIdAsNullable = Expression.Convert(tenantIdProperty, typeof(Guid?));
+
+            BinaryExpression tenantMatchExpression = Expression.Equal(tenantIdAsNullable, currentTenantIdProperty);
+
+            BinaryExpression tenantFilterExpression = Expression.OrElse(
+                ignoreTenantFilterProperty,
+                Expression.OrElse(currentTenantIsNullExpression, tenantMatchExpression)
+            );
+
+            filterExpression =
+                filterExpression == null ? tenantFilterExpression : Expression.AndAlso(filterExpression, tenantFilterExpression);
         }
 
-        // Apply combined filter if we have any filters
-        if (filterExpression != null)
-        {
-            var lambda = Expression.Lambda(filterExpression, parameter);
-            modelBuilder.Entity<TEntity>().HasQueryFilter(lambda);
-        }
+        if (filterExpression == null)
+            return;
+
+        Expression<Func<TEntity, bool>> lambda = Expression.Lambda<Func<TEntity, bool>>(filterExpression, entityParameter);
+
+        modelBuilder.Entity<TEntity>().HasQueryFilter(lambda);
     }
 }
 
@@ -127,7 +143,7 @@ internal static class TypeExtensions
         return givenType == genericType
             || givenType.MapsToGenericTypeDefinition(genericType)
             || givenType.HasInterfaceThatMapsToGenericTypeDefinition(genericType)
-            || givenType.BaseType.IsAssignableFromGenericType(genericType);
+            || (givenType.BaseType != null && genericType.IsAssignableFromGenericType(givenType.BaseType));
     }
 
     private static bool MapsToGenericTypeDefinition(this Type givenType, Type genericType)
