@@ -6,6 +6,6 @@ public class DeleteSubscriptionCommandValidator : AbstractValidator<DeleteSubscr
 {
     public DeleteSubscriptionCommandValidator()
     {
-        RuleFor(c => c.Id).NotEmpty();
+        RuleFor(c => c.Id).GreaterThan(0);
     }
 }

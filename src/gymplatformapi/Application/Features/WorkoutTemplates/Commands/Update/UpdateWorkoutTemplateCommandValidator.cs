@@ -9,9 +9,9 @@ public class UpdateWorkoutTemplateCommandValidator : AbstractValidator<UpdateWor
     {
         RuleFor(c => c.Id).GreaterThan(0);
 
-        RuleFor(c => c.Name).NotEmpty().MaximumLength(200);
+        RuleFor(c => c.Name).NotEmpty().MinimumLength(2).MaximumLength(200);
 
-        RuleFor(c => c.Description).MaximumLength(1000);
+        RuleFor(c => c.Description).MaximumLength(1000).When(c => !string.IsNullOrWhiteSpace(c.Description));
 
         RuleFor(c => c.Level).IsInEnum();
 

@@ -6,6 +6,6 @@ public class DeleteDietAssignmentCommandValidator : AbstractValidator<DeleteDiet
 {
     public DeleteDietAssignmentCommandValidator()
     {
-        RuleFor(c => c.Id).NotEmpty();
+        RuleFor(c => c.Id).GreaterThan(0);
     }
 }

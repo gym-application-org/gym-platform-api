@@ -6,6 +6,6 @@ public class DeleteWorkoutTemplateCommandValidator : AbstractValidator<DeleteWor
 {
     public DeleteWorkoutTemplateCommandValidator()
     {
-        RuleFor(c => c.Id).NotEmpty();
+        RuleFor(c => c.Id).GreaterThan(0);
     }
 }

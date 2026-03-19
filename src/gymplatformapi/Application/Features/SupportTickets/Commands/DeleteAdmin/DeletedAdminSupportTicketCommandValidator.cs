@@ -6,6 +6,6 @@ public class DeleteAdminSupportTicketCommandValidator : AbstractValidator<Delete
 {
     public DeleteAdminSupportTicketCommandValidator()
     {
-        RuleFor(c => c.Id).NotEmpty();
+        RuleFor(c => c.Id).GreaterThan(0);
     }
 }

@@ -6,9 +6,12 @@ public class CreateDietTemplateDayCommandValidator : AbstractValidator<CreateDie
 {
     public CreateDietTemplateDayCommandValidator()
     {
-        RuleFor(c => c.DayNumber).NotEmpty();
-        RuleFor(c => c.Title).NotEmpty();
-        RuleFor(c => c.Notes).NotEmpty();
-        RuleFor(c => c.DietTemplateId).NotEmpty();
+        RuleFor(c => c.DayNumber).GreaterThan(0).LessThanOrEqualTo(365);
+
+        RuleFor(c => c.Title).NotEmpty().MinimumLength(2).MaximumLength(100);
+
+        RuleFor(c => c.Notes).MaximumLength(1000).When(c => !string.IsNullOrWhiteSpace(c.Notes));
+
+        RuleFor(c => c.DietTemplateId).GreaterThan(0);
     }
 }
