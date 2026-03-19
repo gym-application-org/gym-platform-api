@@ -1,14 +1,7 @@
-using Application.Features.DietAssignments.Constants;
-using Application.Features.DietAssignments.Rules;
-using Application.Services.Repositories;
 using Application.Services.UserActionTokens;
-using AutoMapper;
-using Core.Application.Pipelines.Authorization;
-using Core.Security.Constants;
 using Core.Security.Hashing;
 using Domain.Entities;
 using MediatR;
-using static Application.Features.DietAssignments.Constants.DietAssignmentsOperationClaims;
 
 namespace Application.Features.Auth.Queries.VerifyActionToken;
 
@@ -38,7 +31,7 @@ public class VerifyActionTokenQuery : IRequest<VerifyActionTokenQueryResponse>
                 || token.RevokedAt.HasValue
                 || token.UsedAt.HasValue
                 || token.DeletedDate.HasValue
-                || token.ExpiresAt >= DateTime.UtcNow
+                || token.ExpiresAt <= DateTime.UtcNow
             )
             {
                 return new VerifyActionTokenQueryResponse() { Status = "invalid" };

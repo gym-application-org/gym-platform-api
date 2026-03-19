@@ -44,9 +44,10 @@ public class UsersController : BaseController
         return Created(uri: "", result);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateUserCommand updateUserCommand)
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateUserCommand updateUserCommand)
     {
+        updateUserCommand.Id = id;
         UpdatedUserResponse result = await Mediator.Send(updateUserCommand);
         return Ok(result);
     }

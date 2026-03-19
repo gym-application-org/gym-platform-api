@@ -117,7 +117,7 @@ public class AuthBusinessRules : BaseBusinessRules
 
     public async Task ActionTokenShouldNotBeExpired(UserActionToken token)
     {
-        if (token.ExpiresAt >= DateTime.UtcNow)
+        if (token.ExpiresAt <= DateTime.UtcNow)
         {
             await throwBusinessException(AuthMessages.UserActionTokenExpired);
         }

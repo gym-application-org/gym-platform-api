@@ -21,9 +21,10 @@ public class AdminTenantsController : BaseController
         return Created(uri: "", response);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateTenantCommand updateTenantCommand)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateTenantCommand updateTenantCommand)
     {
+        updateTenantCommand.Id = id;
         UpdatedTenantResponse response = await Mediator.Send(updateTenantCommand);
 
         return Ok(response);

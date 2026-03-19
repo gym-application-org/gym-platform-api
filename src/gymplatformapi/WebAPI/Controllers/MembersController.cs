@@ -25,6 +25,7 @@ public class MembersController : BaseController
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateMemberCommand updateMemberCommand)
     {
+        updateMemberCommand.Id = id;
         UpdatedMemberResponse response = await Mediator.Send(updateMemberCommand);
 
         return Ok(response);

@@ -35,9 +35,10 @@ public class UserOperationClaimsController : BaseController
         return Created(uri: "", result);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateUserOperationClaimCommand updateUserOperationClaimCommand)
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateUserOperationClaimCommand updateUserOperationClaimCommand)
     {
+        updateUserOperationClaimCommand.Id = id;
         UpdatedUserOperationClaimResponse result = await Mediator.Send(updateUserOperationClaimCommand);
         return Ok(result);
     }
