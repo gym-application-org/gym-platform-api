@@ -11,6 +11,7 @@ public interface ITenantService
         Expression<Func<Tenant, bool>> predicate,
         Func<IQueryable<Tenant>, IIncludableQueryable<Tenant, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );
@@ -21,6 +22,7 @@ public interface ITenantService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );

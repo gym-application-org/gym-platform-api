@@ -22,11 +22,19 @@ public class ExerciseManager : IExerciseService
         Expression<Func<Exercise, bool>> predicate,
         Func<IQueryable<Exercise>, IIncludableQueryable<Exercise, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
     {
-        Exercise? exercise = await _exerciseRepository.GetAsync(predicate, include, withDeleted, enableTracking, cancellationToken);
+        Exercise? exercise = await _exerciseRepository.GetAsync(
+            predicate,
+            include,
+            withDeleted,
+            ignoreQueryFilters,
+            enableTracking,
+            cancellationToken
+        );
         return exercise;
     }
 
@@ -37,6 +45,7 @@ public class ExerciseManager : IExerciseService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -48,6 +57,7 @@ public class ExerciseManager : IExerciseService
             index,
             size,
             withDeleted,
+            ignoreQueryFilters,
             enableTracking,
             cancellationToken
         );

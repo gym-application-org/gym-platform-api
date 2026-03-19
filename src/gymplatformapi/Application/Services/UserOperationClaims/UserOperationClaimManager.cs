@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using Application.Features.UserOperationClaims.Rules;
 using Application.Services.Repositories;
 using Core.Persistence.Paging;
@@ -25,6 +25,7 @@ public class UserUserOperationClaimManager : IUserOperationClaimService
         Expression<Func<UserOperationClaim, bool>> predicate,
         Func<IQueryable<UserOperationClaim>, IIncludableQueryable<UserOperationClaim, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -33,6 +34,7 @@ public class UserUserOperationClaimManager : IUserOperationClaimService
             predicate,
             include,
             withDeleted,
+            ignoreQueryFilters,
             enableTracking,
             cancellationToken
         );
@@ -46,6 +48,7 @@ public class UserUserOperationClaimManager : IUserOperationClaimService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -57,6 +60,7 @@ public class UserUserOperationClaimManager : IUserOperationClaimService
             index,
             size,
             withDeleted,
+            ignoreQueryFilters,
             enableTracking,
             cancellationToken
         );

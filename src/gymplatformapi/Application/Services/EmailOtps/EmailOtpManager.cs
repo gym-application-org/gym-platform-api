@@ -22,11 +22,19 @@ public class EmailOtpManager : IEmailOtpService
         Expression<Func<EmailOtp, bool>> predicate,
         Func<IQueryable<EmailOtp>, IIncludableQueryable<EmailOtp, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
     {
-        EmailOtp? emailOtp = await _emailOtpRepository.GetAsync(predicate, include, withDeleted, enableTracking, cancellationToken);
+        EmailOtp? emailOtp = await _emailOtpRepository.GetAsync(
+            predicate,
+            include,
+            withDeleted,
+            ignoreQueryFilters,
+            enableTracking,
+            cancellationToken
+        );
         return emailOtp;
     }
 
@@ -37,6 +45,7 @@ public class EmailOtpManager : IEmailOtpService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -48,6 +57,7 @@ public class EmailOtpManager : IEmailOtpService
             index,
             size,
             withDeleted,
+            ignoreQueryFilters,
             enableTracking,
             cancellationToken
         );

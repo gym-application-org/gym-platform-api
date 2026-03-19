@@ -55,7 +55,7 @@ public class UpdateAdminSupportTicketCommand
             SupportTicket? supportTicket = await _supportTicketRepository.GetAsync(
                 predicate: st => st.Id == request.Id,
                 cancellationToken: cancellationToken,
-                withDeleted: true
+                ignoreQueryFilters: true
             );
             await _supportTicketBusinessRules.SupportTicketShouldExistWhenSelected(supportTicket);
             supportTicket = _mapper.Map(request, supportTicket);

@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using Core.Persistence.Paging;
 using Core.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore.Query;
@@ -44,6 +44,7 @@ public static class MockRepositoryHelper
                     It.IsAny<int>(),
                     It.IsAny<bool>(),
                     It.IsAny<bool>(),
+                    It.IsAny<bool>(),
                     It.IsAny<CancellationToken>()
                 )
             )
@@ -55,15 +56,18 @@ public static class MockRepositoryHelper
                     int index,
                     int size,
                     bool withDeleted,
+                    bool ignoreQueryFilters,
                     bool enableTracking,
                     CancellationToken cancellationToken
                 ) =>
                 {
                     IList<TEntity> list = new List<TEntity>();
 
-                    if (!withDeleted)
+                    if (!ignoreQueryFilters && !withDeleted)
                         list = entityList.Where(e => !e.DeletedDate.HasValue).ToList();
-                    list = expression == null ? entityList : (IList<TEntity>)entityList.Where(expression.Compile()).ToList();
+                    else
+                        list = entityList;
+                    list = expression == null ? list : (IList<TEntity>)list.Where(expression.Compile()).ToList();
 
                     Paginate<TEntity> paginateList = new() { Items = list };
                     return paginateList;
@@ -82,6 +86,7 @@ public static class MockRepositoryHelper
                     It.IsAny<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>(),
                     It.IsAny<bool>(),
                     It.IsAny<bool>(),
+                    It.IsAny<bool>(),
                     It.IsAny<CancellationToken>()
                 )
             )
@@ -90,13 +95,15 @@ public static class MockRepositoryHelper
                     Expression<Func<TEntity, bool>> expression,
                     Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include,
                     bool withDeleted,
+                    bool ignoreQueryFilters,
                     bool enableTracking,
                     CancellationToken cancellationToken
                 ) =>
                 {
-                    if (!withDeleted)
-                        entityList = entityList.Where(e => !e.DeletedDate.HasValue).ToList();
-                    TEntity? result = entityList.FirstOrDefault(predicate: expression.Compile());
+                    List<TEntity> filteredList = entityList;
+                    if (!ignoreQueryFilters && !withDeleted)
+                        filteredList = entityList.Where(e => !e.DeletedDate.HasValue).ToList();
+                    TEntity? result = filteredList.FirstOrDefault(predicate: expression.Compile());
                     return result;
                 }
             );
@@ -158,14 +165,27 @@ public static class MockRepositoryHelper
     {
         mockRepo
             .Setup(s =>
-                s.AnyAsync(It.IsAny<Expression<Func<TEntity, bool>>>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>())
+                s.AnyAsync(
+                    It.IsAny<Expression<Func<TEntity, bool>>>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<CancellationToken>()
+                )
             )
             .ReturnsAsync(
-                (Expression<Func<TEntity, bool>> expression, bool withDeleted, bool enableTracking, CancellationToken cancellationToken) =>
+                (
+                    Expression<Func<TEntity, bool>> expression,
+                    bool withDeleted,
+                    bool ignoreQueryFilters,
+                    bool enableTracking,
+                    CancellationToken cancellationToken
+                ) =>
                 {
-                    if (!withDeleted)
-                        entityList = entityList.Where(e => !e.DeletedDate.HasValue).ToList();
-                    return entityList.Any(expression.Compile());
+                    List<TEntity> filteredList = entityList;
+                    if (!ignoreQueryFilters && !withDeleted)
+                        filteredList = entityList.Where(e => !e.DeletedDate.HasValue).ToList();
+                    return filteredList.Any(expression.Compile());
                 }
             );
     }

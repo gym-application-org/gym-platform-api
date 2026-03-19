@@ -22,11 +22,12 @@ public class GateManager : IGateService
         Expression<Func<Gate, bool>> predicate,
         Func<IQueryable<Gate>, IIncludableQueryable<Gate, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
     {
-        Gate? gate = await _gateRepository.GetAsync(predicate, include, withDeleted, enableTracking, cancellationToken);
+        Gate? gate = await _gateRepository.GetAsync(predicate, include, withDeleted, ignoreQueryFilters, enableTracking, cancellationToken);
         return gate;
     }
 
@@ -37,6 +38,7 @@ public class GateManager : IGateService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -48,6 +50,7 @@ public class GateManager : IGateService
             index,
             size,
             withDeleted,
+            ignoreQueryFilters,
             enableTracking,
             cancellationToken
         );

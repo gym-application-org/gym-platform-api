@@ -22,11 +22,19 @@ public class StaffManager : IStaffService
         Expression<Func<Staff, bool>> predicate,
         Func<IQueryable<Staff>, IIncludableQueryable<Staff, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
     {
-        Staff? staff = await _staffRepository.GetAsync(predicate, include, withDeleted, enableTracking, cancellationToken);
+        Staff? staff = await _staffRepository.GetAsync(
+            predicate,
+            include,
+            withDeleted,
+            ignoreQueryFilters,
+            enableTracking,
+            cancellationToken
+        );
         return staff;
     }
 
@@ -37,6 +45,7 @@ public class StaffManager : IStaffService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -48,6 +57,7 @@ public class StaffManager : IStaffService
             index,
             size,
             withDeleted,
+            ignoreQueryFilters,
             enableTracking,
             cancellationToken
         );

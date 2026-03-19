@@ -11,6 +11,7 @@ public interface IWorkoutAssignmentService
         Expression<Func<WorkoutAssignment, bool>> predicate,
         Func<IQueryable<WorkoutAssignment>, IIncludableQueryable<WorkoutAssignment, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );
@@ -21,6 +22,7 @@ public interface IWorkoutAssignmentService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );

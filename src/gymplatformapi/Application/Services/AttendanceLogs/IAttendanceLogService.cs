@@ -11,6 +11,7 @@ public interface IAttendanceLogService
         Expression<Func<AttendanceLog, bool>> predicate,
         Func<IQueryable<AttendanceLog>, IIncludableQueryable<AttendanceLog, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );
@@ -21,6 +22,7 @@ public interface IAttendanceLogService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );

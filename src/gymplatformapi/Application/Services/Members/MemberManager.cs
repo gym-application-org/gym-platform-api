@@ -22,11 +22,19 @@ public class MemberManager : IMemberService
         Expression<Func<Member, bool>> predicate,
         Func<IQueryable<Member>, IIncludableQueryable<Member, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
     {
-        Member? member = await _memberRepository.GetAsync(predicate, include, withDeleted, enableTracking, cancellationToken);
+        Member? member = await _memberRepository.GetAsync(
+            predicate,
+            include,
+            withDeleted,
+            ignoreQueryFilters,
+            enableTracking,
+            cancellationToken
+        );
         return member;
     }
 
@@ -37,6 +45,7 @@ public class MemberManager : IMemberService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -48,6 +57,7 @@ public class MemberManager : IMemberService
             index,
             size,
             withDeleted,
+            ignoreQueryFilters,
             enableTracking,
             cancellationToken
         );

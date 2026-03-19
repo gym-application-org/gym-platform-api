@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using Core.Persistence.Dynamic;
 using Core.Persistence.Paging;
 using Microsoft.EntityFrameworkCore.Query;
@@ -12,6 +12,7 @@ public interface IAsyncRepository<TEntity, TEntityId> : IQuery<TEntity>
         Expression<Func<TEntity, bool>> predicate,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );
@@ -23,6 +24,7 @@ public interface IAsyncRepository<TEntity, TEntityId> : IQuery<TEntity>
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );
@@ -34,6 +36,7 @@ public interface IAsyncRepository<TEntity, TEntityId> : IQuery<TEntity>
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );
@@ -41,6 +44,7 @@ public interface IAsyncRepository<TEntity, TEntityId> : IQuery<TEntity>
     Task<bool> AnyAsync(
         Expression<Func<TEntity, bool>>? predicate = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );

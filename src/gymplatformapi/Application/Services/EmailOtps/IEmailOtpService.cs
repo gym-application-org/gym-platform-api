@@ -11,6 +11,7 @@ public interface IEmailOtpService
         Expression<Func<EmailOtp, bool>> predicate,
         Func<IQueryable<EmailOtp>, IIncludableQueryable<EmailOtp, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );
@@ -21,6 +22,7 @@ public interface IEmailOtpService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );

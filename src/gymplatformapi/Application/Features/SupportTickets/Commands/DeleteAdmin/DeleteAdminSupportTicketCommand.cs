@@ -48,7 +48,7 @@ public class DeleteAdminSupportTicketCommand
         {
             SupportTicket? supportTicket = await _supportTicketRepository.GetAsync(
                 predicate: st => st.Id == request.Id,
-                withDeleted: true,
+                ignoreQueryFilters: true,
                 cancellationToken: cancellationToken
             );
             await _supportTicketBusinessRules.SupportTicketShouldExistWhenSelected(supportTicket);

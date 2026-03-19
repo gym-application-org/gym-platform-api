@@ -51,7 +51,7 @@ public class GetAdminListSupportTicketQuery : IRequest<GetListResponse<GetAdminL
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
                 cancellationToken: cancellationToken,
-                withDeleted: true
+                ignoreQueryFilters: true
             );
 
             GetListResponse<GetAdminListSupportTicketListItemDto> response = _mapper.Map<

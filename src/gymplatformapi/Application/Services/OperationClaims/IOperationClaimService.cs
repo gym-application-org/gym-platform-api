@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using Core.Persistence.Paging;
 using Core.Security.Entities;
 using Microsoft.EntityFrameworkCore.Query;
@@ -11,6 +11,7 @@ public interface IOperationClaimService
         Expression<Func<OperationClaim, bool>> predicate,
         Func<IQueryable<OperationClaim>, IIncludableQueryable<OperationClaim, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );
@@ -22,6 +23,7 @@ public interface IOperationClaimService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );

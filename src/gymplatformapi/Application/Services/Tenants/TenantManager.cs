@@ -22,11 +22,19 @@ public class TenantManager : ITenantService
         Expression<Func<Tenant, bool>> predicate,
         Func<IQueryable<Tenant>, IIncludableQueryable<Tenant, object>>? include = null,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
     {
-        Tenant? tenant = await _tenantRepository.GetAsync(predicate, include, withDeleted, enableTracking, cancellationToken);
+        Tenant? tenant = await _tenantRepository.GetAsync(
+            predicate,
+            include,
+            withDeleted,
+            ignoreQueryFilters,
+            enableTracking,
+            cancellationToken
+        );
         return tenant;
     }
 
@@ -37,6 +45,7 @@ public class TenantManager : ITenantService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
+        bool ignoreQueryFilters = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
@@ -48,6 +57,7 @@ public class TenantManager : ITenantService
             index,
             size,
             withDeleted,
+            ignoreQueryFilters,
             enableTracking,
             cancellationToken
         );
