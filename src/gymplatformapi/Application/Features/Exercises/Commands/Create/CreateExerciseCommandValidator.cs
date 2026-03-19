@@ -8,21 +8,23 @@ public class CreateExerciseCommandValidator : AbstractValidator<CreateExerciseCo
     {
         RuleFor(c => c.Name).NotEmpty().MinimumLength(2).MaximumLength(120);
 
-        RuleFor(c => c.Description).MaximumLength(2000);
+        RuleFor(c => c.Description).MaximumLength(2000).When(c => !string.IsNullOrWhiteSpace(c.Description));
 
-        RuleFor(c => c.MuscleGroup).MaximumLength(80);
+        RuleFor(c => c.MuscleGroup).MaximumLength(80).When(c => !string.IsNullOrWhiteSpace(c.MuscleGroup));
 
-        RuleFor(c => c.Equipment).MaximumLength(80);
+        RuleFor(c => c.Equipment).MaximumLength(80).When(c => !string.IsNullOrWhiteSpace(c.Equipment));
 
         RuleFor(c => c.DifficultyLevel).IsInEnum();
 
-        RuleFor(c => c.VideoUrl).NotNull().NotEmpty().Must(BeValidAbsoluteUrl).WithMessage("VideoUrl must be a valid absolute URL.");
+        RuleFor(c => c.VideoUrl)
+            .Must(BeValidAbsoluteUrl)
+            .When(c => !string.IsNullOrWhiteSpace(c.VideoUrl))
+            .WithMessage("VideoUrl must be a valid absolute URL");
 
         RuleFor(c => c.ThumbnailUrl)
-            .NotNull()
-            .NotEmpty()
             .Must(BeValidAbsoluteUrl)
-            .WithMessage("ThumbnailUrl must be a valid absolute URL.");
+            .When(c => !string.IsNullOrWhiteSpace(c.ThumbnailUrl))
+            .WithMessage("ThumbnailUrl must be a valid absolute URL");
     }
 
     private static bool BeValidAbsoluteUrl(string? url)

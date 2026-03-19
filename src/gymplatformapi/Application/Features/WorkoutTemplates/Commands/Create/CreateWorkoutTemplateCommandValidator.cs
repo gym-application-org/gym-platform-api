@@ -6,9 +6,9 @@ public class CreateWorkoutTemplateCommandValidator : AbstractValidator<CreateWor
 {
     public CreateWorkoutTemplateCommandValidator()
     {
-        RuleFor(c => c.Name).NotEmpty().MaximumLength(200);
+        RuleFor(c => c.Name).NotEmpty().MinimumLength(2).MaximumLength(200);
 
-        RuleFor(c => c.Description).MaximumLength(1000);
+        RuleFor(c => c.Description).MaximumLength(1000).When(c => !string.IsNullOrWhiteSpace(c.Description));
 
         RuleFor(c => c.Level).IsInEnum();
 

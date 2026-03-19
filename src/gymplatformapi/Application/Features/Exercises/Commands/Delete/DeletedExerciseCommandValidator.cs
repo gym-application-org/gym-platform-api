@@ -6,6 +6,6 @@ public class DeleteExerciseCommandValidator : AbstractValidator<DeleteExerciseCo
 {
     public DeleteExerciseCommandValidator()
     {
-        RuleFor(c => c.Id).NotEmpty();
+        RuleFor(c => c.Id).GreaterThan(0);
     }
 }

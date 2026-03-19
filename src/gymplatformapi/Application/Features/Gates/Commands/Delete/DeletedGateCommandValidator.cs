@@ -6,6 +6,6 @@ public class DeleteGateCommandValidator : AbstractValidator<DeleteGateCommand>
 {
     public DeleteGateCommandValidator()
     {
-        RuleFor(c => c.Id).NotEmpty();
+        RuleFor(c => c.Id).GreaterThan(0);
     }
 }

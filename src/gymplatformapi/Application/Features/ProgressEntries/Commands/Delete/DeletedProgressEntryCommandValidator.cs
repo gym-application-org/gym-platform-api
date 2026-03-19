@@ -6,6 +6,6 @@ public class DeleteProgressEntryCommandValidator : AbstractValidator<DeleteProgr
 {
     public DeleteProgressEntryCommandValidator()
     {
-        RuleFor(c => c.Id).NotEmpty();
+        RuleFor(c => c.Id).GreaterThan(0);
     }
 }

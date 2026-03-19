@@ -6,14 +6,18 @@ public class CreateEmailOtpCommandValidator : AbstractValidator<CreateEmailOtpCo
 {
     public CreateEmailOtpCommandValidator()
     {
-        RuleFor(c => c.Email).NotEmpty();
-        RuleFor(c => c.CodeHash).NotEmpty();
-        RuleFor(c => c.Purpose).NotEmpty();
-        RuleFor(c => c.ExpiresAt).NotEmpty();
-        RuleFor(c => c.UsedDate).NotEmpty();
-        RuleFor(c => c.IsUsed).NotEmpty();
-        RuleFor(c => c.TryCount).NotEmpty();
-        RuleFor(c => c.TenantId).NotEmpty();
-        RuleFor(c => c.UserId).NotEmpty();
+        RuleFor(c => c.Email).NotEmpty().EmailAddress().MaximumLength(255);
+
+        RuleFor(c => c.CodeHash).NotEmpty().MinimumLength(10);
+
+        RuleFor(c => c.Purpose).IsInEnum();
+
+        RuleFor(c => c.ExpiresAt).NotEmpty().GreaterThan(DateTime.UtcNow).WithMessage("Expiration date must be in the future");
+
+        RuleFor(c => c.TryCount).InclusiveBetween(0, 10);
+
+        RuleFor(c => c.TenantId).NotEmpty().When(c => c.TenantId.HasValue);
+
+        RuleFor(c => c.UserId).NotEmpty().When(c => c.UserId.HasValue);
     }
 }

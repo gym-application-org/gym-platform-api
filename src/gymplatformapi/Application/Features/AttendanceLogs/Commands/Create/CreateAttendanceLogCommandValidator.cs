@@ -7,6 +7,15 @@ public class CreateAttendanceLogCommandValidator : AbstractValidator<CreateAtten
 {
     public CreateAttendanceLogCommandValidator()
     {
-        RuleFor(c => c.GateId).NotEmpty();
+        RuleFor(c => c.Result).IsInEnum();
+
+        RuleFor(c => c.DenyReason)
+            .NotEmpty()
+            .MinimumLength(3)
+            .MaximumLength(500)
+            .When(c => c.Result == AttendanceResult.Denied)
+            .WithMessage("Deny reason is required when attendance is denied");
+
+        RuleFor(c => c.GateId).GreaterThan(0);
     }
 }

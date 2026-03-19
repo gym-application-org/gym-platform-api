@@ -6,11 +6,19 @@ public class UpdateAdminSupportTicketCommandValidator : AbstractValidator<Update
 {
     public UpdateAdminSupportTicketCommandValidator()
     {
-        RuleFor(c => c.Id).NotEmpty();
-        RuleFor(c => c.Title).NotEmpty();
-        RuleFor(c => c.Description).NotEmpty();
-        RuleFor(c => c.Status).NotEmpty();
-        RuleFor(c => c.Priority).NotEmpty();
-        RuleFor(c => c.ClosedAt).NotEmpty();
+        RuleFor(c => c.Id).GreaterThan(0);
+
+        RuleFor(c => c.Title).NotEmpty().MinimumLength(3).MaximumLength(200);
+
+        RuleFor(c => c.Description).NotEmpty().MinimumLength(10).MaximumLength(5000);
+
+        RuleFor(c => c.Status).IsInEnum();
+
+        RuleFor(c => c.Priority).IsInEnum();
+
+        RuleFor(c => c.ClosedAt)
+            .GreaterThanOrEqualTo(DateTime.UtcNow.AddMinutes(-5))
+            .When(c => c.ClosedAt.HasValue)
+            .WithMessage("Closed date cannot be in the past");
     }
 }

@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 
 namespace Application.Features.OperationClaims.Commands.Create;
 
@@ -6,6 +6,6 @@ public class CreateOperationClaimCommandValidator : AbstractValidator<CreateOper
 {
     public CreateOperationClaimCommandValidator()
     {
-        RuleFor(c => c.Name).NotEmpty().MinimumLength(2);
+        RuleFor(c => c.Name).NotEmpty().MinimumLength(2).MaximumLength(100);
     }
 }
