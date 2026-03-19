@@ -17,10 +17,9 @@ public class StaffConfiguration : IEntityTypeConfiguration<Staff>
         builder.Property(s => s.Role).HasColumnName("Role");
         builder.Property(s => s.IsActive).HasColumnName("IsActive");
         builder.Property(s => s.UserId).HasColumnName("UserId");
+        builder.Property(s => s.TenantId).HasColumnName("TenantId").IsRequired();
         builder.Property(s => s.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(s => s.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(s => s.DeletedDate).HasColumnName("DeletedDate");
-
-        builder.HasQueryFilter(s => !s.DeletedDate.HasValue);
     }
 }

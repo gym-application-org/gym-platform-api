@@ -15,12 +15,10 @@ public class DietAssignmentConfiguration : IEntityTypeConfiguration<DietAssignme
         builder.Property(da => da.EndDate).HasColumnName("EndDate");
         builder.Property(da => da.Status).HasColumnName("Status");
         builder.Property(da => da.MemberId).HasColumnName("MemberId");
-        builder.Property(da => da.Member).HasColumnName("Member");
         builder.Property(da => da.DietTemplateId).HasColumnName("DietTemplateId");
+        builder.Property(da => da.TenantId).HasColumnName("TenantId").IsRequired();
         builder.Property(da => da.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(da => da.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(da => da.DeletedDate).HasColumnName("DeletedDate");
-
-        builder.HasQueryFilter(da => !da.DeletedDate.HasValue);
     }
 }

@@ -18,10 +18,9 @@ public class DietTemplateConfiguration : IEntityTypeConfiguration<DietTemplate>
         builder.Property(dt => dt.CarbGramsTarget).HasColumnName("CarbGramsTarget");
         builder.Property(dt => dt.FatGramsTarget).HasColumnName("FatGramsTarget");
         builder.Property(dt => dt.IsActive).HasColumnName("IsActive");
+        builder.Property(dt => dt.TenantId).HasColumnName("TenantId").IsRequired();
         builder.Property(dt => dt.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(dt => dt.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(dt => dt.DeletedDate).HasColumnName("DeletedDate");
-
-        builder.HasQueryFilter(dt => !dt.DeletedDate.HasValue);
     }
 }

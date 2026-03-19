@@ -22,10 +22,9 @@ public class SubscriptionConfiguration : IEntityTypeConfiguration<Subscription>
         builder.Property(s => s.TotalPaid).HasColumnName("TotalPaid");
         builder.Property(s => s.MemberId).HasColumnName("MemberId");
         builder.Property(s => s.SubscriptionPlanId).HasColumnName("SubscriptionPlanId");
+        builder.Property(s => s.TenantId).HasColumnName("TenantId").IsRequired();
         builder.Property(s => s.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(s => s.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(s => s.DeletedDate).HasColumnName("DeletedDate");
-
-        builder.HasQueryFilter(s => !s.DeletedDate.HasValue);
     }
 }

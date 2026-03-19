@@ -1,4 +1,4 @@
-﻿using Core.Security.Entities;
+using Core.Security.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -16,8 +16,6 @@ public class UserOperationClaimConfiguration : IEntityTypeConfiguration<UserOper
         builder.Property(uoc => uoc.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(uoc => uoc.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(uoc => uoc.DeletedDate).HasColumnName("DeletedDate");
-
-        builder.HasQueryFilter(uoc => !uoc.DeletedDate.HasValue);
 
         builder.HasOne(uoc => uoc.User);
         builder.HasOne(uoc => uoc.OperationClaim);

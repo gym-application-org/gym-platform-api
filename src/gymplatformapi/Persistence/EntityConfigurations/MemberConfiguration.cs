@@ -17,10 +17,9 @@ public class MemberConfiguration : IEntityTypeConfiguration<Member>
         builder.Property(m => m.Email).HasColumnName("Email");
         builder.Property(m => m.Status).HasColumnName("Status");
         builder.Property(m => m.UserId).HasColumnName("UserId");
+        builder.Property(m => m.TenantId).HasColumnName("TenantId").IsRequired();
         builder.Property(m => m.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(m => m.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(m => m.DeletedDate).HasColumnName("DeletedDate");
-
-        builder.HasQueryFilter(m => !m.DeletedDate.HasValue);
     }
 }
