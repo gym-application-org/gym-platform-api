@@ -23,7 +23,5 @@ public class EmailOtpConfiguration : IEntityTypeConfiguration<EmailOtp>
         builder.Property(eo => eo.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(eo => eo.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(eo => eo.DeletedDate).HasColumnName("DeletedDate");
-
-        builder.HasQueryFilter(eo => !eo.DeletedDate.HasValue);
     }
 }

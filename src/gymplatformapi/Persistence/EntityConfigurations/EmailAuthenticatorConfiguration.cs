@@ -1,4 +1,4 @@
-﻿using Core.Security.Entities;
+using Core.Security.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -17,8 +17,6 @@ public class EmailAuthenticatorConfiguration : IEntityTypeConfiguration<EmailAut
         builder.Property(ea => ea.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(ea => ea.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(ea => ea.DeletedDate).HasColumnName("DeletedDate");
-
-        builder.HasQueryFilter(ea => !ea.DeletedDate.HasValue);
 
         builder.HasOne(ea => ea.User);
     }

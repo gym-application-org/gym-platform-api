@@ -15,10 +15,9 @@ public class DietTemplateMealConfiguration : IEntityTypeConfiguration<DietTempla
         builder.Property(dtm => dtm.Order).HasColumnName("Order");
         builder.Property(dtm => dtm.Notes).HasColumnName("Notes");
         builder.Property(dtm => dtm.DietTemplateDayId).HasColumnName("DietTemplateDayId");
+        builder.Property(dtm => dtm.TenantId).HasColumnName("TenantId").IsRequired();
         builder.Property(dtm => dtm.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(dtm => dtm.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(dtm => dtm.DeletedDate).HasColumnName("DeletedDate");
-
-        builder.HasQueryFilter(dtm => !dtm.DeletedDate.HasValue);
     }
 }

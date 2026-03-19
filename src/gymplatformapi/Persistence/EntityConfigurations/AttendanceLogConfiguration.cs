@@ -15,10 +15,9 @@ public class AttendanceLogConfiguration : IEntityTypeConfiguration<AttendanceLog
         builder.Property(al => al.DenyReason).HasColumnName("DenyReason");
         builder.Property(al => al.MemberId).HasColumnName("MemberId");
         builder.Property(al => al.GateId).HasColumnName("GateId");
+        builder.Property(al => al.TenantId).HasColumnName("TenantId").IsRequired();
         builder.Property(al => al.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(al => al.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(al => al.DeletedDate).HasColumnName("DeletedDate");
-
-        builder.HasQueryFilter(al => !al.DeletedDate.HasValue);
     }
 }

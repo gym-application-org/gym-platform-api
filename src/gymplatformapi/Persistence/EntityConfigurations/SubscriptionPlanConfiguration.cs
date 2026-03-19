@@ -17,10 +17,9 @@ public class SubscriptionPlanConfiguration : IEntityTypeConfiguration<Subscripti
         builder.Property(sp => sp.Currency).HasColumnName("Currency");
         builder.Property(sp => sp.Description).HasColumnName("Description");
         builder.Property(sp => sp.IsActive).HasColumnName("IsActive");
+        builder.Property(sp => sp.TenantId).HasColumnName("TenantId").IsRequired();
         builder.Property(sp => sp.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(sp => sp.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(sp => sp.DeletedDate).HasColumnName("DeletedDate");
-
-        builder.HasQueryFilter(sp => !sp.DeletedDate.HasValue);
     }
 }

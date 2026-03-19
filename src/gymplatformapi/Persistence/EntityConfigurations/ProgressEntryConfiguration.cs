@@ -22,10 +22,9 @@ public class ProgressEntryConfiguration : IEntityTypeConfiguration<ProgressEntry
         builder.Property(pe => pe.LegCm).HasColumnName("LegCm");
         builder.Property(pe => pe.Note).HasColumnName("Note");
         builder.Property(pe => pe.MemberId).HasColumnName("MemberId");
+        builder.Property(pe => pe.TenantId).HasColumnName("TenantId").IsRequired();
         builder.Property(pe => pe.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(pe => pe.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(pe => pe.DeletedDate).HasColumnName("DeletedDate");
-
-        builder.HasQueryFilter(pe => !pe.DeletedDate.HasValue);
     }
 }

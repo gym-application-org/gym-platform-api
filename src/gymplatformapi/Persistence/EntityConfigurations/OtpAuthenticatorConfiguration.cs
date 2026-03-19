@@ -1,4 +1,4 @@
-﻿using Core.Security.Entities;
+using Core.Security.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -17,8 +17,6 @@ public class OtpAuthenticatorConfiguration : IEntityTypeConfiguration<OtpAuthent
         builder.Property(oa => oa.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(oa => oa.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(oa => oa.DeletedDate).HasColumnName("DeletedDate");
-
-        builder.HasQueryFilter(oa => !oa.DeletedDate.HasValue);
 
         builder.HasOne(oa => oa.User);
     }

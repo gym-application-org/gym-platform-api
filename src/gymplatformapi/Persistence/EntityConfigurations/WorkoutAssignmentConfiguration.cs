@@ -16,10 +16,9 @@ public class WorkoutAssignmentConfiguration : IEntityTypeConfiguration<WorkoutAs
         builder.Property(wa => wa.Status).HasColumnName("Status");
         builder.Property(wa => wa.MemberId).HasColumnName("MemberId");
         builder.Property(wa => wa.WorkoutTemplateId).HasColumnName("WorkoutTemplateId");
+        builder.Property(wa => wa.TenantId).HasColumnName("TenantId").IsRequired();
         builder.Property(wa => wa.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(wa => wa.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(wa => wa.DeletedDate).HasColumnName("DeletedDate");
-
-        builder.HasQueryFilter(wa => !wa.DeletedDate.HasValue);
     }
 }

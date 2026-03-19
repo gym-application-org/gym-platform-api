@@ -17,10 +17,9 @@ public class SupportTicketConfiguration : IEntityTypeConfiguration<SupportTicket
         builder.Property(st => st.Priority).HasColumnName("Priority");
         builder.Property(st => st.ClosedAt).HasColumnName("ClosedAt");
         builder.Property(st => st.CreatedByStaffId).HasColumnName("CreatedByStaffId");
+        builder.Property(st => st.TenantId).HasColumnName("TenantId").IsRequired();
         builder.Property(st => st.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(st => st.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(st => st.DeletedDate).HasColumnName("DeletedDate");
-
-        builder.HasQueryFilter(st => !st.DeletedDate.HasValue);
     }
 }

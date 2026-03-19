@@ -14,10 +14,9 @@ public class GateConfiguration : IEntityTypeConfiguration<Gate>
         builder.Property(g => g.Name).HasColumnName("Name");
         builder.Property(g => g.GateCode).HasColumnName("GateCode");
         builder.Property(g => g.IsActive).HasColumnName("IsActive");
+        builder.Property(g => g.TenantId).HasColumnName("TenantId").IsRequired();
         builder.Property(g => g.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(g => g.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(g => g.DeletedDate).HasColumnName("DeletedDate");
-
-        builder.HasQueryFilter(g => !g.DeletedDate.HasValue);
     }
 }

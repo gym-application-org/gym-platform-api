@@ -27,7 +27,5 @@ public class UserActionTokenConfiguration : IEntityTypeConfiguration<UserActionT
         builder.Property(uat => uat.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(uat => uat.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(uat => uat.DeletedDate).HasColumnName("DeletedDate");
-
-        builder.HasQueryFilter(uat => !uat.DeletedDate.HasValue);
     }
 }
