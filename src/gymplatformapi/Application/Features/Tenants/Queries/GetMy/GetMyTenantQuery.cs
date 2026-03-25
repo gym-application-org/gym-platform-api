@@ -72,7 +72,7 @@ public class GetMyTenantQuery : IRequest<GetMyTenantResponse>, ISecuredRequest
             else
             {
                 await _tenantBusinessRules.MemberShouldBeActivated(member);
-                tenantId = member!.Id;
+                tenantId = member!.TenantId;
             }
 
             Tenant? tenant = await _tenantRepository.GetAsync(

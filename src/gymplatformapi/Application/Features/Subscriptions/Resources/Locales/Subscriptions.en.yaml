@@ -1,1 +1,3 @@
 SubscriptionNotExists: "Subscription don't exists."
+SubscriptionPlanNotExists: "Subscription plan don't exists."
+MemberNotExists: "Member don't exists."

@@ -103,8 +103,16 @@ public class ActivateInvitedUserCommand : IRequest
                 await _memberService.UpdateAsync(member);
             }
 
+            HashingHelper.CreatePasswordHash(
+                command.NewPassword,
+                passwordHash: out byte[] passwordHash,
+                passwordSalt: out byte[] passwordSalt
+            );
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+
             user!.Status = true;
-            user!.MustChangePassword = true;
+            user!.MustChangePassword = false;
             await _userService.UpdateAsync(user);
 
             token.UsedAt = DateTime.UtcNow;

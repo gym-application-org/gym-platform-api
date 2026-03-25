@@ -101,7 +101,7 @@ public class CreateStaffCommand : IRequest<CreatedStaffResponse>, ISecuredReques
             );
             await _staffBusinessRules.OperationClaimShouldExistWhenSelected(claim);
 
-            UserOperationClaim userClaim = new UserOperationClaim(userId, claim!.Id);
+            UserOperationClaim userClaim = new UserOperationClaim(user.Id, claim!.Id);
             await _userOperationClaimService.AddAsync(userClaim);
 
             Staff staff = _mapper.Map<Staff>(request);

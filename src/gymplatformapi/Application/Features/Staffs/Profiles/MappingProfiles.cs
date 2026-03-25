@@ -2,7 +2,9 @@ using Application.Features.Staffs.Commands.Create;
 using Application.Features.Staffs.Commands.Delete;
 using Application.Features.Staffs.Commands.Update;
 using Application.Features.Staffs.Queries.GetById;
+using Application.Features.Staffs.Queries.GetByIdAdmin;
 using Application.Features.Staffs.Queries.GetList;
+using Application.Features.Staffs.Queries.GetListAdmin;
 using Application.Features.Tenants.Commands.Create;
 using AutoMapper;
 using Core.Application.Responses;
@@ -30,5 +32,8 @@ public class MappingProfiles : Profile
         CreateMap<Staff, GetByIdStaffResponse>().ReverseMap();
         CreateMap<Staff, GetListStaffListItemDto>().ReverseMap();
         CreateMap<IPaginate<Staff>, GetListResponse<GetListStaffListItemDto>>().ReverseMap();
+        CreateMap<Staff, GetByIdAdminStaffResponse>().ReverseMap();
+        CreateMap<Staff, GetListAdminStaffListItemDto>().ReverseMap();
+        CreateMap<IPaginate<Staff>, GetListResponse<GetListAdminStaffListItemDto>>().ReverseMap();
     }
 }

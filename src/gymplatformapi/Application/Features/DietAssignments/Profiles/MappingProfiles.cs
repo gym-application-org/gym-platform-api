@@ -28,7 +28,9 @@ public class MappingProfiles : Profile
         CreateMap<DietAssignment, GetByIdDietAssignmentResponse>().ReverseMap();
         CreateMap<DietAssignment, GetListDietAssignmentListItemDto>().ReverseMap();
         CreateMap<IPaginate<DietAssignment>, GetListResponse<GetListDietAssignmentListItemDto>>().ReverseMap();
-        CreateMap<DietAssignment, GetMyDietAssignmentsListItemDto>().ReverseMap();
+        CreateMap<DietAssignment, GetMyDietAssignmentsListItemDto>()
+            .ForMember(dest => dest.AssignmentId, opt => opt.MapFrom(src => src.Id))
+            .ReverseMap();
         CreateMap<IPaginate<DietAssignment>, GetListResponse<GetMyDietAssignmentsListItemDto>>().ReverseMap();
 
         CreateMap<DietAssignment, GetMyDietAssignmentByIdResponse>()

@@ -8,6 +8,7 @@ using Core.Persistence.Paging;
 using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using static Application.Features.DietTemplates.Constants.DietTemplatesOperationClaims;
 
 namespace Application.Features.DietTemplates.Queries.GetList;
@@ -38,6 +39,7 @@ public class GetListDietTemplateQuery : IRequest<GetListResponse<GetListDietTemp
             IPaginate<DietTemplate> dietTemplates = await _dietTemplateRepository.GetListAsync(
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
+                include: dt => dt.Include(d => d.Days),
                 cancellationToken: cancellationToken
             );
 

@@ -1,1 +1,3 @@
 AttendanceLogNotExists: "Attendance log don't exists."
+MemberNotExists: "Member don't exists."
+TenantNotExists: "Tenant don't exists."

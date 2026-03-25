@@ -4,6 +4,7 @@ using Application.Features.DietTemplates.Commands.Update;
 using Application.Features.DietTemplates.Queries.GetById;
 using Application.Features.DietTemplates.Queries.GetById.Dtos;
 using Application.Features.DietTemplates.Queries.GetList;
+using Application.Features.Members.Queries.GetList;
 using AutoMapper;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
@@ -28,5 +29,6 @@ public class MappingProfiles : Profile
         CreateMap<DietTemplate, GetListDietTemplateListItemDto>()
             .ForMember(dest => dest.DayCount, opt => opt.MapFrom(src => src.Days.Count))
             .ReverseMap();
+        CreateMap<IPaginate<DietTemplate>, GetListResponse<GetListDietTemplateListItemDto>>().ReverseMap();
     }
 }

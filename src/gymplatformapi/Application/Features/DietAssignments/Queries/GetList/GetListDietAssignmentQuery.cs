@@ -43,7 +43,7 @@ public class GetListDietAssignmentQuery : IRequest<GetListResponse<GetListDietAs
             IPaginate<DietAssignment> dietAssignments = await _dietAssignmentRepository.GetListAsync(
                 predicate: x =>
                     (!request.From.HasValue || x.StartDate >= request.From)
-                    && (!request.To.HasValue || x.EndDate.HasValue ? x.EndDate <= request.To : false)
+                    && (!request.To.HasValue || ((!x.EndDate.HasValue) || (x.EndDate.HasValue && x.EndDate <= request.To)))
                     && (!request.Status.HasValue || x.Status == request.Status),
                 orderBy: x => x.OrderByDescending(x => x.CreatedDate),
                 index: request.PageRequest.PageIndex,
