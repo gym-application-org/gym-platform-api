@@ -1,1 +1,3 @@
 WorkoutAssignmentNotExists: "Workout assignment don't exists."
+WorkoutTemplateNotExists: "Workout template don't exists."
+MemberNotExists: "Member don't exists."

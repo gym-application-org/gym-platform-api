@@ -1,0 +1,5 @@
+TenantNotExists: "Kiracı mevcut değil."
+TenantMemberNotExists: "Kiracı üyesi mevcut değil."
+OperationClaimNotExists: "İşlem hakkı mevcut değil."
+MemberNotActive: "Üye aktif değil."
+StaffNotActive: "Personel aktif değil."

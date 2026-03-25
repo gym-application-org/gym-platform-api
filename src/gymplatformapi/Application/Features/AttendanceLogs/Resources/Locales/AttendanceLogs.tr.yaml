@@ -1,0 +1,3 @@
+AttendanceLogNotExists: "Devam kaydı mevcut değil."
+MemberNotExists: "Üye mevcut değil."
+TenantNotExists: "Kiracı mevcut değil."

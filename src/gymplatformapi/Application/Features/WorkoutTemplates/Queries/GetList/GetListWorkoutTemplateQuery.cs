@@ -8,6 +8,7 @@ using Core.Persistence.Paging;
 using Core.Security.Constants;
 using Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using static Application.Features.WorkoutTemplates.Constants.WorkoutTemplatesOperationClaims;
 
 namespace Application.Features.WorkoutTemplates.Queries.GetList;
@@ -38,6 +39,7 @@ public class GetListWorkoutTemplateQuery : IRequest<GetListResponse<GetListWorko
             IPaginate<WorkoutTemplate> workoutTemplates = await _workoutTemplateRepository.GetListAsync(
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
+                include: q => q.Include(q => q.Days),
                 cancellationToken: cancellationToken
             );
 

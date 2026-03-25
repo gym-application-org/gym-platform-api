@@ -34,7 +34,6 @@ public class GetListStaffQuery : IRequest<GetListResponse<GetListStaffListItemDt
             IPaginate<Staff> staffs = await _staffRepository.GetListAsync(
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
-                withDeleted: true,
                 cancellationToken: cancellationToken
             );
 

@@ -102,7 +102,7 @@ public class CreateMemberCommand : IRequest<CreatedMemberResponse>, ISecuredRequ
             );
             await _memberBusinessRules.OperationClaimShouldExistWhenSelected(claim);
 
-            UserOperationClaim userClaim = new UserOperationClaim(userId, claim!.Id);
+            UserOperationClaim userClaim = new UserOperationClaim(user.Id, claim!.Id);
             await _userOperationClaimService.AddAsync(userClaim);
 
             Member member = _mapper.Map<Member>(request);

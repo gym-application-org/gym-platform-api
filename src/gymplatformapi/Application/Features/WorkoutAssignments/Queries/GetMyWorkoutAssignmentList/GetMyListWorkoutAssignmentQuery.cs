@@ -25,7 +25,7 @@ public class GetMyListWorkoutAssignmentQuery : IRequest<GetListResponse<GetMyLis
 
     public AssignmentStatus? Status { get; set; }
 
-    public string[] Roles => [GeneralOperationClaims.Owner, GeneralOperationClaims.Staff];
+    public string[] Roles => [GeneralOperationClaims.Member];
 
     public class GetMyListWorkoutAssignmentQueryHandler
         : IRequestHandler<GetMyListWorkoutAssignmentQuery, GetListResponse<GetMyListWorkoutAssignmentListItemDto>>
@@ -63,7 +63,7 @@ public class GetMyListWorkoutAssignmentQuery : IRequest<GetListResponse<GetMyLis
                 predicate: x =>
                     x.MemberId == member!.Id
                     && (!request.From.HasValue || request.From.Value <= x.StartDate)
-                    && (!request.To.HasValue || request.To.Value >= x.EndDate)
+                    && (!request.To.HasValue || ((!x.EndDate.HasValue) || (x.EndDate.HasValue && x.EndDate <= request.To)))
                     && (!request.Status.HasValue || request.Status.Value == x.Status),
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,

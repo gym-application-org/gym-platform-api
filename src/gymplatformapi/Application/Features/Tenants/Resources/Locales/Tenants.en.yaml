@@ -1,1 +1,5 @@
 TenantNotExists: "Tenant don't exists."
+TenantMemberNotExists: "Tenant member don't exists."
+OperationClaimNotExists: "Operation claim don't exists."
+MemberNotActive: "Member not active."
+StaffNotActive: "Staff not active."

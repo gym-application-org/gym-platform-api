@@ -8,6 +8,6 @@ public class LoginCommandValidator : AbstractValidator<LoginCommand>
     {
         RuleFor(c => c.UserForLoginDto.Email).NotEmpty().EmailAddress().MaximumLength(255);
 
-        RuleFor(c => c.UserForLoginDto.Password).NotEmpty().MinimumLength(6).MaximumLength(100);
+        RuleFor(c => c.UserForLoginDto.Password).NotEmpty().MinimumLength(3).MaximumLength(100);
     }
 }

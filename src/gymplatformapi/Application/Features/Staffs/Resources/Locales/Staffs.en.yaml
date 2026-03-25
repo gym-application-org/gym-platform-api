@@ -1,1 +1,3 @@
 StaffNotExists: "Staff don't exists."
+TenantNotExists: "Tenant don't exists."
+OperationClaimNotExists: "Operation claim don't exists."

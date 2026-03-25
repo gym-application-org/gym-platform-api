@@ -1,19 +1,15 @@
 using System.Text.RegularExpressions;
 using FluentValidation;
 
-namespace Application.Features.Users.Commands.Create;
+namespace Application.Features.Auth.Commands.ActivateInvitedUser;
 
-public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
+public class ActivateInvitedUserCommandValidator : AbstractValidator<ActivateInvitedUserCommand>
 {
-    public CreateUserCommandValidator()
+    public ActivateInvitedUserCommandValidator()
     {
-        RuleFor(c => c.FirstName).NotEmpty().MinimumLength(2).MaximumLength(50);
+        RuleFor(c => c.Token).NotEmpty();
 
-        RuleFor(c => c.LastName).NotEmpty().MinimumLength(2).MaximumLength(50);
-
-        RuleFor(c => c.Email).NotEmpty().EmailAddress().MaximumLength(255);
-
-        RuleFor(c => c.Password)
+        RuleFor(c => c.NewPassword)
             .NotEmpty()
             .MinimumLength(8)
             .MaximumLength(100)

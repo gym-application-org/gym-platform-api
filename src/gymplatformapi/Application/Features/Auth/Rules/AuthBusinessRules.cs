@@ -101,7 +101,7 @@ public class AuthBusinessRules : BaseBusinessRules
 
     public async Task ActionTokenShouldNotBeRevoked(UserActionToken token)
     {
-        if (token.RevokedAt == null || !token.RevokedAt.HasValue)
+        if (token.RevokedAt != null && token.RevokedAt.HasValue)
         {
             await throwBusinessException(AuthMessages.UserActionTokenRevoked);
         }
@@ -109,7 +109,7 @@ public class AuthBusinessRules : BaseBusinessRules
 
     public async Task ActionTokenShouldNotBeUsed(UserActionToken token)
     {
-        if (token.UsedAt == null || !token.UsedAt.HasValue)
+        if (token.UsedAt != null && token.UsedAt.HasValue)
         {
             await throwBusinessException(AuthMessages.UserActionTokenUsed);
         }

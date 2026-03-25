@@ -7,6 +7,7 @@ using AutoMapper;
 using Core.Application.Pipelines.Authorization;
 using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
+using Core.Security.Constants;
 using Domain.Entities;
 using Domain.Enums;
 using MediatR;
@@ -27,7 +28,7 @@ public class UpdateWorkoutAssignmentCommand
     public Guid MemberId { get; set; }
     public int WorkoutTemplateId { get; set; }
 
-    public string[] Roles => [Admin, Write, WorkoutAssignmentsOperationClaims.Update];
+    public string[] Roles => [GeneralOperationClaims.Owner, GeneralOperationClaims.Staff];
 
     public class UpdateWorkoutAssignmentCommandHandler : IRequestHandler<UpdateWorkoutAssignmentCommand, UpdatedWorkoutAssignmentResponse>
     {

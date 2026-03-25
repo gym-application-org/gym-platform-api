@@ -24,7 +24,7 @@ public class GetMyListAttendanceLogQuery : IRequest<GetListResponse<GetMyListAtt
     public DateTime? From { get; set; }
     public DateTime? To { get; set; }
 
-    public string[] Roles => [GeneralOperationClaims.Staff, GeneralOperationClaims.Owner];
+    public string[] Roles => [GeneralOperationClaims.Member];
 
     public class GetMyListAttendanceLogQueryHandler
         : IRequestHandler<GetMyListAttendanceLogQuery, GetListResponse<GetMyListAttendanceLogListItemDto>>

@@ -1,0 +1,3 @@
+StaffNotExists: "Personel mevcut değil."
+TenantNotExists: "Kiracı mevcut değil."
+OperationClaimNotExists: "İşlem hakkı mevcut değil."
