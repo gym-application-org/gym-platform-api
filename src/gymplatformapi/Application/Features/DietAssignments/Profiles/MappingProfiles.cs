@@ -29,8 +29,7 @@ public class MappingProfiles : Profile
         CreateMap<DietAssignment, GetListDietAssignmentListItemDto>().ReverseMap();
         CreateMap<IPaginate<DietAssignment>, GetListResponse<GetListDietAssignmentListItemDto>>().ReverseMap();
         CreateMap<DietAssignment, GetMyDietAssignmentsListItemDto>()
-            .ForMember(dest => dest.AssignmentId, opt => opt.MapFrom(src => src.Id))
-            .ReverseMap();
+            .ForMember(dest => dest.AssignmentId, opt => opt.MapFrom(src => src.Id));
         CreateMap<IPaginate<DietAssignment>, GetListResponse<GetMyDietAssignmentsListItemDto>>().ReverseMap();
 
         CreateMap<DietAssignment, GetMyDietAssignmentByIdResponse>()

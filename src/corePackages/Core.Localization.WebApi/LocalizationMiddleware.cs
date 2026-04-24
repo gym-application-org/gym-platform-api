@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 using Core.Localization.Abstraction;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
@@ -22,6 +22,8 @@ public class LocalizationMiddleware
                 .OrderByDescending(x => x.Quality ?? 1)
                 .Select(x => x.Value.ToString())
                 .ToImmutableArray();
+        else
+            localizationService.AcceptLocales = new[] { "en" }.ToImmutableArray();
 
         await _next(context);
     }

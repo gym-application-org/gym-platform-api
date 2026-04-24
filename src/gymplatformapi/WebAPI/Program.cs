@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Persistence;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using System;
 using WebAPI;
 using WebAPI.Services.Security;
 
@@ -21,6 +22,9 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+// Add problem details for better error responses
+builder.Services.AddProblemDetails();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -87,17 +91,64 @@ builder.Services.AddSwaggerGen(opt =>
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+// TEMPORARY: Enable detailed errors for debugging in Production
+// Remove this after debugging is complete!
+/*
+app.UseDeveloperExceptionPage();
+
+// Add exception handler middleware as fallback
+app.UseExceptionHandler(exceptionHandlerApp =>
+{
+    exceptionHandlerApp.Run(async context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.ContentType = "application/json";
+
+        var exceptionHandlerPathFeature = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerPathFeature>();
+        var exception = exceptionHandlerPathFeature?.Error;
+
+        if (exception != null)
+        {
+            var response = new
+            {
+                error = "Internal Server Error",
+                message = exception.Message,
+                type = exception.GetType().Name,
+                stackTrace = exception.StackTrace,
+                innerException = exception.InnerException != null ? new
+                {
+                    message = exception.InnerException.Message,
+                    type = exception.InnerException.GetType().Name,
+                    stackTrace = exception.InnerException.StackTrace
+                } : null
+            };
+
+            await context.Response.WriteAsJsonAsync(response);
+        }
+    });
+});
+*/
+// Enable Swagger in all environments for debugging (TEMPORARY)
 if (app.Environment.IsDevelopment())
 {
-    _ = app.UseSwagger();
-    _ = app.UseSwaggerUI(opt =>
+    app.UseSwagger();
+    app.UseSwaggerUI(opt =>
     {
         opt.DocExpansion(DocExpansion.None);
     });
-}
 
+}
+app.UseSwagger();
+app.UseSwaggerUI(opt =>
+{
+    opt.DocExpansion(DocExpansion.None);
+});
+
+// TEMPORARY: Commented out to see detailed errors instead of custom error handling
+// Uncomment this after debugging:
 if (app.Environment.IsProduction())
-    app.ConfigureCustomExceptionMiddleware();
+     app.ConfigureCustomExceptionMiddleware();
 
 _ = app.UseDbMigrationApplier();
 
@@ -113,5 +164,7 @@ WebApiConfiguration webApiConfiguration =
 app.UseCors(opt => opt.WithOrigins(webApiConfiguration.AllowedOrigins).AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 
 app.UseResponseLocalization();
+
+
 
 app.Run();

@@ -34,7 +34,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         List<User> users = new();
 
         HashingHelper.CreatePasswordHash(
-            password: "31102003Eg.",
+            password: "Admin123!",
             passwordHash: out byte[] passwordHash,
             passwordSalt: out byte[] passwordSalt
         );

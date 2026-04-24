@@ -48,7 +48,7 @@ public class AdminGatesController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetList([FromQuery] Guid tenantId, [FromQuery] PageRequest pageRequest)
+    public async Task<IActionResult> GetList([FromQuery] Guid? tenantId, [FromQuery] PageRequest pageRequest)
     {
         GetListGateQuery getListGateQuery = new() { PageRequest = pageRequest, TenantId = tenantId };
         GetListResponse<GetListGateListItemDto> response = await Mediator.Send(getListGateQuery);
