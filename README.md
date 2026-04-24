@@ -842,7 +842,7 @@ For questions, issues, or feature requests:
 
 - **GitHub Issues**: [Create an issue](https://github.com/yourusername/gym-platform-api/issues)
 - **Documentation**: Check the [docs](docs/) folder
-- **Email**: support@yourdomain.com
+- **Email**: erenkrabulut@gmail.com
 
 ---
 
