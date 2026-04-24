@@ -8,7 +8,6 @@ using AutoMapper;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
 using Domain.Entities;
-using OtpNet;
 
 namespace Application.Features.WorkoutTemplates.Profiles;
 
@@ -16,19 +15,21 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
-        CreateMap<WorkoutTemplate, CreateWorkoutTemplateCommand>().ReverseMap();
-        CreateMap<WorkoutTemplate, CreatedWorkoutTemplateResponse>().ReverseMap();
-        CreateMap<WorkoutTemplate, UpdateWorkoutTemplateCommand>().ReverseMap();
-        CreateMap<WorkoutTemplate, UpdatedWorkoutTemplateResponse>().ReverseMap();
+        CreateMap<WorkoutTemplate, CreateWorkoutTemplateCommand>()
+            .ForMember(dest => dest.Days, opt => opt.Ignore())
+            .ReverseMap();
+        CreateMap<WorkoutTemplate, CreatedWorkoutTemplateResponse>();
+        CreateMap<WorkoutTemplate, UpdateWorkoutTemplateCommand>()
+            .ForMember(dest => dest.Days, opt => opt.Ignore())
+            .ReverseMap();
+        CreateMap<WorkoutTemplate, UpdatedWorkoutTemplateResponse>();
         CreateMap<WorkoutTemplate, DeleteWorkoutTemplateCommand>().ReverseMap();
-        CreateMap<WorkoutTemplate, DeletedWorkoutTemplateResponse>().ReverseMap();
-        CreateMap<WorkoutTemplate, GetListWorkoutTemplateListItemDto>().ReverseMap();
-        CreateMap<IPaginate<WorkoutTemplate>, GetListResponse<GetListWorkoutTemplateListItemDto>>().ReverseMap();
-        CreateMap<WorkoutTemplate, GetByIdWorkoutTemplateResponse>().ReverseMap();
+        CreateMap<WorkoutTemplate, DeletedWorkoutTemplateResponse>();
+        CreateMap<IPaginate<WorkoutTemplate>, GetListResponse<GetListWorkoutTemplateListItemDto>>();
+        CreateMap<WorkoutTemplate, GetByIdWorkoutTemplateResponse>();
         CreateMap<WorkoutTemplateDay, GetByIdWorkoutTemplateDayDto>();
         CreateMap<WorkoutTemplateDayExercise, GetByIdWorkoutTemplateDayExerciseDto>();
         CreateMap<WorkoutTemplate, GetListWorkoutTemplateListItemDto>()
-            .ForMember(dest => dest.DayCount, opt => opt.MapFrom(src => src.Days.Count))
-            .ReverseMap();
+            .ForMember(dest => dest.DayCount, opt => opt.MapFrom(src => src.Days.Count));
     }
 }

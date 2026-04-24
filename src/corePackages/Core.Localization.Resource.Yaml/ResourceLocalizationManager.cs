@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using Core.Localization.Abstraction;
 using YamlDotNet.RepresentationModel;
 
@@ -27,7 +27,7 @@ public class ResourceLocalizationManager : ILocalizationService
 
     public Task<string> GetLocalizedAsync(string key, string? keySection = null)
     {
-        return GetLocalizedAsync(key, AcceptLocales ?? throw new NoNullAllowedException(nameof(AcceptLocales)), keySection);
+        return GetLocalizedAsync(key, AcceptLocales ?? new[] { _defaultLocale }, keySection);
     }
 
     public Task<string> GetLocalizedAsync(string key, ICollection<string> acceptLocales, string? keySection = null)

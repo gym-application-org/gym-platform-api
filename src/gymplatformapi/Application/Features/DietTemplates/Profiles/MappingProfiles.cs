@@ -16,19 +16,22 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
-        CreateMap<DietTemplate, CreateDietTemplateCommand>().ReverseMap();
-        CreateMap<DietTemplate, CreatedDietTemplateResponse>().ReverseMap();
-        CreateMap<DietTemplate, UpdateDietTemplateCommand>().ReverseMap();
-        CreateMap<DietTemplate, UpdatedDietTemplateResponse>().ReverseMap();
+        CreateMap<DietTemplate, CreateDietTemplateCommand>()
+            .ForMember(dest => dest.Days, opt => opt.Ignore())
+            .ReverseMap();
+        CreateMap<DietTemplate, CreatedDietTemplateResponse>();
+        CreateMap<DietTemplate, UpdateDietTemplateCommand>()
+            .ForMember(dest => dest.Days, opt => opt.Ignore())
+            .ReverseMap();
+        CreateMap<DietTemplate, UpdatedDietTemplateResponse>();
         CreateMap<DietTemplate, DeleteDietTemplateCommand>().ReverseMap();
-        CreateMap<DietTemplate, DeletedDietTemplateResponse>().ReverseMap();
+        CreateMap<DietTemplate, DeletedDietTemplateResponse>();
         CreateMap<DietTemplate, GetByIdDietTemplateResponse>();
         CreateMap<DietTemplateDay, GetByIdDietTemplateDayDto>();
         CreateMap<DietTemplateMeal, GetByIdDietTemplateMealDto>();
         CreateMap<DietTemplateMealItem, GetByIdDietTemplateMealItemDto>();
         CreateMap<DietTemplate, GetListDietTemplateListItemDto>()
-            .ForMember(dest => dest.DayCount, opt => opt.MapFrom(src => src.Days.Count))
-            .ReverseMap();
-        CreateMap<IPaginate<DietTemplate>, GetListResponse<GetListDietTemplateListItemDto>>().ReverseMap();
+            .ForMember(dest => dest.DayCount, opt => opt.MapFrom(src => src.Days.Count));
+        CreateMap<IPaginate<DietTemplate>, GetListResponse<GetListDietTemplateListItemDto>>();
     }
 }

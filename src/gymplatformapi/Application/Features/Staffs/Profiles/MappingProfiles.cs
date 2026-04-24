@@ -19,11 +19,11 @@ public class MappingProfiles : Profile
     public MappingProfiles()
     {
         CreateMap<Staff, CreateStaffCommand>()
-            .ForMember(dest => dest.Name, opt => opt.MapFrom(opt => opt.Name))
-            .ForMember(dest => dest.Email, opt => opt.MapFrom(opt => opt.Email))
-            .ForMember(dest => dest.Phone, opt => opt.MapFrom(opt => opt.Phone))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+            .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))
             .ReverseMap();
-        CreateMap<User, CreateStaffCommand>().ForMember(dest => dest.Email, opt => opt.MapFrom(opt => opt.Email)).ReverseMap();
+        CreateMap<User, CreateStaffCommand>().ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email)).ReverseMap();
         CreateMap<Staff, CreatedStaffResponse>().ReverseMap();
         CreateMap<Staff, UpdateStaffCommand>().ReverseMap();
         CreateMap<Staff, UpdatedStaffResponse>().ReverseMap();

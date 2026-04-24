@@ -19,12 +19,12 @@ public class MappingProfiles : Profile
     public MappingProfiles()
     {
         CreateMap<Member, CreateMemberCommand>()
-            .ForMember(dest => dest.FirstName, opt => opt.MapFrom(opt => opt.FirstName))
-            .ForMember(dest => dest.LastName, opt => opt.MapFrom(opt => opt.LastName))
-            .ForMember(dest => dest.Email, opt => opt.MapFrom(opt => opt.Email))
-            .ForMember(dest => dest.Phone, opt => opt.MapFrom(opt => opt.Phone))
+            .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
+            .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+            .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))
             .ReverseMap();
-        CreateMap<User, CreateMemberCommand>().ForMember(dest => dest.Email, opt => opt.MapFrom(opt => opt.Email)).ReverseMap();
+        CreateMap<User, CreateMemberCommand>().ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email)).ReverseMap();
         CreateMap<Member, CreatedMemberResponse>().ReverseMap();
         CreateMap<Member, UpdateMemberCommand>().ReverseMap();
         CreateMap<Member, UpdatedMemberResponse>().ReverseMap();
